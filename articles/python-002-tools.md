@@ -7,60 +7,56 @@ published: false
 ---
 
 # 対象の読者
-- FastAPIをこれから初めてみようと思っている人
-- poetry
+- 2020/10のpython事情を知りたい人
 
-# 環境構築
-
-``` shell
-mkdir sample
-cd sample
-
-poetry init
-# <プロジェクトの情報を入力>
-
-poetry add fastapi
-poetry add uvicorn
-poetry add genson
-poetry add datamodel-code-generator
-
-touch main.py
-```
-
-# コードを書く
-
-``` python
-from fastapi import FastAPI
-import asyncio
-
-app = FastAPI()
-
-@app.get("/")
-async def get_info():
-    return {
-        "name": "yamada"
-    }
-```
-
-# asyncio
-awaitable オブジェクトには主に3つの種類があります
-
-- coroutine
-- Task
-- Future
+# 近況
+2020/10/5に、python3.9がリリースされた。python3.9では、型ヒントがtypingモジュールのインポートなしに利用できるようになり、型ヒントを簡単に扱えるようになったため、積極的に移行していきたい。ただ、現時点では、3.9に対応していないライブラリも多いため、３ヵ月後など状況を確認するなど、移行時期を見極めていきたい。
 
 
-```
-import asyncio
+# Web Framework
+REST APIをベースとするアプリケーションなら、Fast API一強。Open API Schemaやpydanticなど、開発に便利なスタックが取り入れられている。
+htmlをレンダリングするのであれば、お好みで。Fast APIは、REST API用のスタックしか同梱していないため、環境構築が面倒。
+現在の主流としては、バックエンドはREST API専用で開発し、フロントエンドはReact Vue等で対応する。
 
-async def func():
- return True
+- Django
+- flask
+- responder
+- fastapi
 
-loop = asyncio.get_event_loop()
+# コマンドライン作成ツール
+- typer
+- click
 
-print(type(func)) #function
-print(type(func())) #coroutine
+# パッケージ管理/環境管理
+今後は、パッケージ作成等が楽なPoetryか。
 
-task = loop.create_task(get_info())
-print(task) # ta
-```
+- pip
+- venv
+- pyenv
+- pipenv
+- Poetry
+
+# コードチェック
+コードチェッカーとフォーマッタを併用する。
+
+## コードチェッカー
+- pylint
+- flake8
+
+## 型チェッカー
+- mypy
+
+## フォーマッタ
+- autopep8
+- black
+- isort
+
+# テスト
+- unittest
+- pytest
+
+# database/validator
+- pydantic
+- sqlalchemy
+- Django orm
+
