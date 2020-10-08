@@ -60,3 +60,9 @@ htmlをレンダリングするのであれば、お好みで。Fast APIは、RE
 - sqlalchemy
 - Django orm
 
+# 暗号化
+- RSA
+- 共通鍵方式
+- CSPRNG
+- エントロピー源
+- UUID
