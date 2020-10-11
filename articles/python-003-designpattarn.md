@@ -54,3 +54,20 @@ dog.cry_bowwow()
 dog.cry_wow()
 ```
 
+
+# 責任をシンプルにしろ
+そんなことはどうでもよい。ビジネス課題に徹しろ。
+あなたは、ビジネス課題を解決するために、最短で最善だと思う手法で実装すればいい。
+
+```
+class MyDog(Dog, Animal):
+  def hello(self):
+    self.hello_bowwow()
+    
+  def hungry(self):
+    self.wow()
+    
+  def is_hungry(self):
+    self.hp < 10
+```
+
