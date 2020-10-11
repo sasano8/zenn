@@ -19,7 +19,7 @@ https://qiita.com/hayashida-katsutoshi/items/ef2e59219ba0942d3225?utm_content=bu
 要はボトムアプローチとトップアプローチがある。
 汎化から入るな。まずは、特化から入れ。
 その後、汎化できるか考えろ。
-'''
+```
 # 特化
 # あなたには、具体的なオブジェクトが与えられている。設計など存在せず、ただ存在しているもの。
 dog.bowwow()
@@ -45,5 +45,8 @@ class MyCat(Cat, Animal):
     self.hello_nyaaa()
 
 animal.hello()
-'''
+
+dog.cry_bowwow()
+dog.cry_wow()
+```
 
