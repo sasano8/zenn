@@ -48,3 +48,10 @@ headers={"X-Token": secret_token}
 - 内包型のアクセストークンは、有効期限前にアクセストークンを失効させることが難しいと書かれた記事がある。アクセストークンに生成日時を埋め込めば可能では。
 - そもそもJWTのアクセストークン自体に、仕様を利用した脆弱性があるとの声もある。
 
+# 認証時のパラメータは以下の通りだが、これはOAuth2の仕様なのだろうか？
+grant_type="password",
+username=USERNAME,
+password=PASSWORD,
+scope=" ".join(["me", "items"]),  # 複数のスコープは、スペースで区切って指定する
+client_id=None,
+client_secret=None
