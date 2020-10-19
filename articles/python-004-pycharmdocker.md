@@ -1,9 +1,10 @@
-# PyCharm　＋　docker環境上で快適な開発をしたい
+# PyCharm　＋　docker　＋ fastapi環境上で快適な開発をしたい
 
 
 # 対象読者
-- PyCharm + docker でWEB Application開発をしたい方（ライブラリ開発は、仮想環境を使用した方がシンプルでオススメです）
+- PyCharm + docker　＋ fastapiで開発をしたい方
 - Pycharm利用ユーザー（VS Codeの方がdockerの扱いは優れているようです。それでもPyCharmでdockerを使いたい方が対象です。）
+- fastapiに関する教養がある程度ある方
 - Dockerに関する教養がある程度ある方
 
 # 筆者開発環境
@@ -55,3 +56,6 @@ PyCharmでは、dockerを利用した開発をサポートしていますが、�
 ```
 sudo jupyter notebook --ip=0.0.0.0 --allow-root
 ```
+
+これが最強だと思います。
+
