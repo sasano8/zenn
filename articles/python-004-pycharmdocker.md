@@ -49,6 +49,8 @@ PyCharmでは、dockerを利用した開発をサポートしていますが、�
 - ブレークポイントの利用
 - pytestの実行
 - コンテナへの入り方
+- パッケージ追加時（）
+
 
 ```
 sudo jupyter notebook --ip=0.0.0.0 --allow-root
