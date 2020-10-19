@@ -32,9 +32,10 @@ PyCharmでは、dockerを利用した開発をサポートしていますが、�
 # 結局どういう開発環境が構築できるの？
 
 - アプリケーションコードのホットリロード
-- [swagger-ui](https://swagger.io/tools/swagger-ui/)を利用した機能検証
+- [swagger-ui](https://swagger.io/tools/swagger-ui/)を利用した機能検
 - dockerイメージを再ビルドせずにpytestを起動・デバッグ
 - jupyterによる機能検証
+- (おまけ)frontendで利用するapi clientの自動生成
 
 # 開発環境の構築
 - dockerイメージ作成・権限設定
