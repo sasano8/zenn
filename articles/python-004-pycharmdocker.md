@@ -32,18 +32,23 @@ PyCharmでは、dockerを利用した開発をサポートしていますが、�
 # 結局どういう開発環境が構築できるの？
 
 - アプリケーションコードのホットリロード
-- [swagger-ui](https://swagger.io/tools/swagger-ui/)を利用した検証
-- dockerイメージを再ビルドせずに機能の検証・デバッグ
+- [swagger-ui](https://swagger.io/tools/swagger-ui/)を利用した機能検証
 - dockerイメージを再ビルドせずにpytestを起動・デバッグ
-- jupyterによるコード検証
+- jupyterによる機能検証
 
-# 手順
+# 開発環境の構築
 - dockerイメージ作成・権限設定
 - プロジェクトインタープリタの設定
 - プロジェクトとdocker環境上のファイル同期
 - サンプルアプリケーションの作成
 - ホットリロードでサンプルアプリケーションを起動（シェル経由だと、pycharmがpythonコードを捕捉できないため、スクリプトから実行する）
+
+
+# 開発環境の利用方法
 - ブレークポイントの利用
 - pytestの実行
 - コンテナへの入り方
 
+```
+sudo jupyter notebook --ip=0.0.0.0 --allow-root
+```
