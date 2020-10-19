@@ -30,6 +30,9 @@ PyCharmでは、dockerを利用した開発をサポートしていますが、�
 ## docker環境上で追加されたpackageを自動認識できない
 ホスト上のpythonの仮想環境を参照し、dockerコンテナのディレクトリと同期すれば何とかなりそうですが、労力が大きそうなので今回は見送りしましたm(_ _)m
 
+## PyCharmのjupyter notebookに関する機能が利用できない
+現状、PyCharmはリモートインタプリタ上でjupyter notebookを利用できないため、jupyter notebook本体の機能を利用してください。
+
 # 結局どういう開発環境が構築できるの？
 
 - アプリケーションコードのホットリロード
@@ -51,10 +54,17 @@ PyCharmでは、dockerを利用した開発をサポートしていますが、�
 - pytestの実行
 - コンテナへの入り方
 - パッケージ追加時（）
+- jupyter環境の構築・補完有効化オプション
+
+```
+sudo jupyter contrib nbextension install
+sudo jupyter nbextensions_configurator enable
+```
 
 
 ```
-sudo jupyter notebook --ip=0.0.0.0 --allow-root
+# sudo jupyter notebook --ip=0.0.0.0 --allow-root --notebook-dir jupyter
+sudo jupyter notebook --ip=0.0.0.0 --allow-root --notebook-dir=jupyter --NotebookApp.token='' --NotebookApp.password=''
 ```
 
 これが最強だと思います。
