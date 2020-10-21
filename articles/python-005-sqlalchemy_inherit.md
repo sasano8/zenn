@@ -42,7 +42,7 @@ class CommonTable(Base):
   name = sa.Column(sa.String(255), nullable=False)
 
 # => sqlalchemy.exc.InvalidRequestError: Class <class 'CommonTable'> does not have a __table__ or __tablename__ specified and does not inherit from an existing table-mapped class.
-
+```
 
 ## ケース２
 制約名は、スキーマで一意なため、共通化することができない。
