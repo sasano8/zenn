@@ -38,7 +38,7 @@ Base = declarative_base()
 - [ミックスイン](https://docs.sqlalchemy.org/en/13/orm/extensions/declarative/mixins.html)
 
 
-## ケース１
+## NGケース１
 Baseを継承したクラスを抽象クラスとして利用することはできない。
 Baseを継承した際は、__tablename__を設定し、具象化する必要がある。
 
@@ -50,7 +50,7 @@ class CommonTable(Base):
 # => sqlalchemy.exc.InvalidRequestError: Class <class 'CommonTable'> does not have a __table__ or __tablename__ specified and does not inherit from an existing table-mapped class.
 ```
 
-## ケース２
+## NGケース２
 制約名は、スキーマで一意なため、共通化することができない。
 
 ```
@@ -71,7 +71,7 @@ class Table2(CommonBase, Base):
 # => sqlalchemy.exc.ProgrammingError: (psycopg2.errors.DuplicateTable) relation "uq_name" already exists
 ```
 
-## ケース３
+## NGケース３
 ケース２と同じく。
 
 ```
@@ -94,7 +94,7 @@ class Table2(CommonBase, Base):
 # => sqlalchemy.exc.ProgrammingError: (psycopg2.errors.DuplicateTable) relation "uq_name" already exists
 ```
 
-## ケース４
+## OKケース４
 制約名は省略することができる。
 
 ```
@@ -110,8 +110,9 @@ class Table1(CommonBase, Base):
 ```
 
 
-## ケース５
-共通化クラスでの制約定義は、具象化クラスで適用されてない恐れがあるので、利用しないほうがよい。
+## NGケース５
+共通クラスにおける__targle_args__等のオプション宣言は、@declared_attrを用いること
+そうでない場合、ORMが意図を正しく解釈しない。
 
 ```
 class CommonTable:
@@ -137,7 +138,7 @@ def upgrade():
 
 
 
-# カラムの共通化
+# ミックスインによる共通化
 プレーンな抽象宣言クラスとBaseをミックスインする。
 
 ## 方法１
@@ -161,7 +162,22 @@ class CommonBase:
   id = sa.Column(sa.Integer, primary_key=True, index=True)
   name = sa.Column(sa.String(255), nullable=False)
 
-class MyTable(CommonBase):
+class MyTable(CommonBase, Base):
   __tablename__ = "mytable"
+
+```
+
+# Baseクラス拡張による共通化
+```
+class Base:
+    @declared_attr
+    def __tablename__(cls):
+        return cls.__name__.lower()
+
+    __table_args__ = {}
+
+    id = Column(Integer, primary_key=True)
+
+Base = declarative_base(cls=Base)
 
 ```
