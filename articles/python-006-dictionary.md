@@ -105,13 +105,13 @@ dic1 |= dic2
 
 # チートシート
 
-|      |   コード   |  結果  |
-| ---- | ---- | ---- |
-| 作成 | {\**dic1, \**dic2} | {"name": "mary", "age": 20} |
-| 作成 | dict(\**dic1, \**dic2) | TypeError: func() got multiple values for keyword argument 'name' |
-| 作成 | func(\**dic1, \**dic2) | TypeError: func() got multiple values for keyword argument 'name' |
-| 作成 | dict(dic1, \**dic2) | {"name": "mary", "age": 20} |
-| 作成 | dic1 \| dic2 | {"name": "mary", "age": 20} |
-| 更新 | dic1.update(dic2) | {"name": "mary", "age": 20} |
-| 更新 | dic1 \|= dic2 | {"name": "mary", "age": 20} |
+|      |   コード   |  結果  |  備考  |
+| ---- | ---- | ---- | ---- |
+| 作成 | {\**dic1, \**dic2} | {"name": "mary", "age": 20} | 使うな |
+| 作成 | dict(\**dic1, \**dic2) | TypeError: func() got multiple values for keyword argument 'name' | |
+| 作成 | func(\**dic1, \**dic2) | TypeError: func() got multiple values for keyword argument 'name' | |
+| 作成 | dict(dic1, \**dic2) | {"name": "mary", "age": 20} | 使うな |
+| 作成 | dic1 \| dic2 | {"name": "mary", "age": 20} | |
+| 更新 | dic1.update(dic2) | {"name": "mary", "age": 20} | |
+| 更新 | dic1 \|= dic2 | {"name": "mary", "age": 20} | |
 
