@@ -87,7 +87,7 @@ dic1 | dic2
 
 ## 辞書の更新
 １つ目の辞書を２つ目の辞書で更新したい場合は、以下の方法を用いる。
-破壊的な変更の副作用を考慮したくない場合は、新たな辞書を作成し、新たな変数に格納する方法を持ちいる。
+破壊的な変更の副作用を考慮したくない場合は、新たな辞書を作成し、新たな変数に格納する方法を用いる。
 
 -----
 ``` python
@@ -103,15 +103,15 @@ dic1 |= dic2
 ```
 コンフリクトは右辺で上書きされる。dic1のソースが変更される。
 
-# チートシート
+# まとめ
+最後に検証結果と、python3.9以上の環境でどの方法を用いるか個人的ルールをまとめる。
 
-|      |   コード   |  結果  |  備考  |
+|      | 利用可能バージョン | コード | 結果 | 備考 |
 | ---- | ---- | ---- | ---- |
-| 作成 | {\**dic1, \**dic2} | {"name": "mary", "age": 20} | 使うな |
-| 作成 | dict(\**dic1, \**dic2) | TypeError: func() got multiple values for keyword argument 'name' | |
-| 作成 | func(\**dic1, \**dic2) | TypeError: func() got multiple values for keyword argument 'name' | |
-| 作成 | dict(dic1, \**dic2) | {"name": "mary", "age": 20} | 使うな |
-| 作成 | dic1 \| dic2 | {"name": "mary", "age": 20} | |
-| 更新 | dic1.update(dic2) | {"name": "mary", "age": 20} | |
-| 更新 | dic1 \|= dic2 | {"name": "mary", "age": 20} | |
-
+| 作成 | 3.5~ | {\**dic1, \**dic2} | {"name": "mary", "age": 20} | 使うな |
+| 作成 | ? | dict(\**dic1, \**dic2) | TypeError: func() got multiple values for keyword argument 'name' | 常用的に用いる |
+| 作成 | ? | func(\**dic1, \**dic2) | TypeError: func() got multiple values for keyword argument 'name' | 常用的に用いる |
+| 作成 | ? | dict(dic1, \**dic2) | {"name": "mary", "age": 20} | 使うな |
+| 作成 | 3.9~ | dic1 \| dic2 | {"name": "mary", "age": 20} | マージしたい時に意識的に用いる |
+| 更新 | ? | dic1.update(dic2) | {"name": "mary", "age": 20} | 使うな |
+| 更新 | 3.9~ | dic1 \|= dic2 | {"name": "mary", "age": 20} | マージしたい時に意識的に用いる |
