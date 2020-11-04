@@ -39,7 +39,7 @@ dic2 = {"name": "mary"}
 -----
 ``` python
 {**dic1, **dic2}
-# => {"name": "mary", "age": 20} 
+# => {"name": "mary", "age": 20}
 ```
 コンフリクトは右辺で上書きされる。マージしたいのか、合成したいのか意図が明確でないため好みではない。Python3.5以上でしか使えない模様。
 
@@ -103,5 +103,15 @@ dic1 |= dic2
 ```
 コンフリクトは右辺で上書きされる。dic1のソースが変更される。
 
+# チートシート
 
+|      |   コード   |  結果  |
+| ---- | ---- | ---- |
+| 作成 | {\**dic1, \**dic2} | {"name": "mary", "age": 20} |
+| 作成 | dict(\**dic1, \**dic2) | TypeError: func() got multiple values for keyword argument 'name' |
+| 作成 | func(\**dic1, \**dic2) | TypeError: func() got multiple values for keyword argument 'name' |
+| 作成 | dict(dic1, \**dic2) | {"name": "mary", "age": 20} |
+| 作成 | dic1 | dic2 | {"name": "mary", "age": 20} |
+| 更新 | dic1.update(dic2) | {"name": "mary", "age": 20} |
+| 更新 | dic1 |= dic2 | {"name": "mary", "age": 20} |
 
