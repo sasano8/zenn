@@ -106,12 +106,12 @@ dic1 |= dic2
 # まとめ
 最後に検証結果と、python3.9以上の環境でどの方法を用いるか個人的ルールをまとめる。
 
-|      | バージョン | コード | 結果 | 備考 |
+|      | バージョン | コード | 挙動 | 備考 |
 | ---- | ---- | ---- | ---- | ---- |
-| 作成 | 3.5~ | {\**dic1, \**dic2} | {"name": "mary", "age": 20} | 使うな |
-| 作成 | ? | dict(\**dic1, \**dic2) | TypeError: func() got multiple values for keyword argument 'name' | 常用的に用いる |
-| 作成 | ? | func(\**dic1, \**dic2) | TypeError: func() got multiple values for keyword argument 'name' | 常用的に用いる |
-| 作成 | ? | dict(dic1, \**dic2) | {"name": "mary", "age": 20} | 使うな |
-| 作成 | 3.9~ | dic1 \| dic2 | {"name": "mary", "age": 20} | マージしたい時に意識的に用いる |
-| 更新 | ? | dic1.update(dic2) | {"name": "mary", "age": 20} | 使うな |
-| 更新 | 3.9~ | dic1 \|= dic2 | {"name": "mary", "age": 20} | 破壊的変更、かつ、マージしたい時に意識的に用いる |
+| 作成 | 3.5~ | {\**dic1, \**dic2} | マージ | 使うな |
+| 作成 | ? | dict(\**dic1, \**dic2) | 合成 | 常用的に用いる |
+| 作成 | ? | func(\**dic1, \**dic2) | 合成 | 常用的に用いる |
+| 作成 | ? | dict(dic1, \**dic2) | マージ | 使うな |
+| 作成 | 3.9~ | dic1 \| dic2 | マージ | マージしたい時に意識的に用いる |
+| 更新 | ? | dic1.update(dic2) | マージ | 使うな |
+| 更新 | 3.9~ | dic1 \|= dic2 | マージ | 破壊的変更、かつ、マージしたい時に意識的に用いる |
