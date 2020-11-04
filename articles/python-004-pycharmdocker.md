@@ -1,4 +1,10 @@
-# PyCharm　＋　docker　＋ fastapi環境上で快適な開発をしたい
+---
+title: "PyCharm　＋　docker　＋ fastapi環境上で快適な開発をしたい"
+emoji: "😸" # アイキャッチとして使われる絵文字（1文字だけ）
+type: "tech" # tech: 技術記事 / idea: アイデア記事
+topics: ["markdown", "python"]
+published: false
+---
 
 
 # 対象読者
