@@ -6,37 +6,87 @@ topics: ["markdown", "python"]
 published: false
 ---
 
-# 対象の読者
+# はじめに
+pythonにおいて辞書のマージ操作は基礎的な操作です。しかし、著者は泥臭いマージをしていたり、マージの挙動について理解が足りていないと感じるシーンが多かったため、理解を整理するために本記事を執筆しました。
 
-辞書の合成
-２つの辞書を合成した場合、重複したキーはどうなるか検証した。 dict(**dic1, **dic2)、func(**dic1, **dic2)は重複したキーが投入された時、エラーとなるので積極的に使ってよい。 {**dic1, **dic2}は、後勝ちで上書きされるので危険。
+# 検証環境
+- python3.9.0
 
+# 用語
+本記事では以下の挙動を区別し、執筆しています。（これらの概念の正式名称があれば教えていただけると幸いです。）
+
+## 結合
+２つの辞書を１つにする操作。
+
+## マージ
+２つの辞書を合成し、かつ、コンフリクトするキーは合成する辞書の値で合成元の値で上書きされることを想定する。
+
+## 合成
+２つの辞書を合成し、かつ、コンフリクトするキーが存在する場合、合成が許可されないことを想定する。
+
+# 辞書の取り扱い
+
+## ソース辞書
+合成対象の辞書として、以下２つ辞書をソースとして利用します。
+```
 dic1 = {"name": "bob", "age": 20}
 dic2 = {"name": "mary"}
+```
 
-# 辞書作成時
-{**dic1, **dic2}  # => {"name": "mary", "age": 20}  右辺の値で上書き
-dict(**dic1, **dic2)  # => TypeError: func() got multiple values for keyword argument 'name'
+## 辞書の作成
+辞書時の挙動を見ます。
 
-# update / 代入演算子
-update_dic = {"name": "bob", "age": 20}
-update_dic.update(dic2)
-# または
-update_dic |= dic2
-# => {"name": "mary", "age": 20}  右辺の値で上書きされる。また、元データを変更するので、できればあまり使わないほうがよい。
+-----
+``` python
+{**dic1, **dic2}
+# => {"name": "mary", "age": 20} 
+```
+コンフリクトは右辺で上書きされる。マージしたいのか、合成したいのか意図が明確でないため好みではない。Python3.5以上でしか使えない模様。
 
-dict(update_dic, **dic2)
-# 元のソース自体は更新されない
-# => {"name": "mary", "age": 20}
+-----
+``` python
+dict(**dic1, **dic2)
+# => TypeError: func() got multiple values for keyword argument 'name'
+```
+コンフリクトは許容されない。意図は明確でないが、意図せずマージされてしまうことはない。
 
-# マージ演算子
-new_dic = dict_1 | dict_2
-# => {"name": "mary", "age": 20}  右辺の値で上書きされる
-
-
-# キーワード引数として渡す際に合成
+-----
+``` python
 def func(**kwargs):
-    print(kwargs)
+  ...
 
 func(**dic1, **dic2)
 # => TypeError: func() got multiple values for keyword argument 'name'
+```
+コンフリクトは許容されない。意図は明確でないが、意図せずマージされてしまうことはない。
+
+-----
+``` python
+dict(dic1, **dic2)
+# => {"name": "mary", "age": 20}
+```
+コンフリクトは右辺で上書きされる。dic1のソースが変更されることはない。
+
+-----
+``` python
+dic1 | dic2
+# => {"name": "mary", "age": 20}
+```
+コンフリクトは右辺で上書きされる。和集合演算子で意図は伝わりやすいので積極的に使いたい。
+
+-----
+``` python
+dic1.update(dic2)
+# => {"name": "mary", "age": 20}
+```
+dic1に対して、dic2の値で上書き合成する。
+
+-----
+``` python
+dic1 |= dic2
+# => {"name": "mary", "age": 20}
+```
+コンフリクトは右辺で上書きされる。dic1のソースが変更される。
+
+
+
