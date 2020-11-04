@@ -69,7 +69,7 @@ def func(name, age, **kwargs):
 func(**dic1, **dic2)
 # => TypeError: func() got multiple values for keyword argument 'name'
 ```
-コンフリクトは許容されない。重複したキーが、可変長キーワード引数に渡ってくることはない。
+コンフリクトは許容されない。重複したキーが、可変長キーワード引数に渡ってくる心配をする必要はない。
 
 -----
 ``` python
