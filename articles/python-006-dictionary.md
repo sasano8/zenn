@@ -38,7 +38,7 @@ dic2 = {"name": "mary"}
 
 ## 波括弧
 挙動はマージとなる。Python3.5から辞書作成時にアンパック記法（\**）が利用可能。[^2]
-[^2]: [pep448](https://www.python.org/dev/peps/pep-0448/)
+[^2]: pep448 [リンク](https://www.python.org/dev/peps/pep-0448/)
 
 ``` python
 {**dic1, **dic2}
