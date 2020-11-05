@@ -6,6 +6,10 @@ topics: ["markdown", "python"]
 published: false
 ---
 
+これも参考になるかも
+https://gist.github.com/kemsakurai/3f2c5ad0638391e01fd687bd5fa8bd88
+
+
 # はじめに
 pythonにおいて辞書のマージ操作は基礎的な操作です。しかし、人の方法を参考にしようにも人により様々な方法を用いていたり、著者も毎回やり方がブレるという状況でしたので、自分なりのプラクティスをを整理するために本記事を執筆しました。
 
