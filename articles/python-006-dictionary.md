@@ -97,9 +97,76 @@ func(**dic1, **dic2)
 # => TypeError: func() got multiple values for keyword argument 'name'
 ```
 
+## 辞書をコピーしたい
+辞書をコピーする場合、シャローコピー（参照のコピー）とディープコピー（再帰的に値をコピーし、新たなインスタンスを作成）に注意しましょう。
+シャローコピーでは、コンテナ型オブジェクト（リストや辞書など）の内部値はコピーされません。
+
+``` python
+src = {"name": "bob", "age": 20, "nest": {"name": "mary", "age": 30}}
+
+# 方法１（シャローコピー）
+# copyメソッドと同様。copyメソッドを利用しましょう。
+copy1 = dict(\**src)
+
+# 方法２（シャローコピー）
+# copyメソッドと同様。copyメソッドを利用しましょう。
+copy1 = dict(src)
+
+# 方法３（シャローコピー）
+copy1 = src.copy()
+
+# 方法４（ディープコピー）
+import copy
+copy2 = copy.deepcopy(src)
+
+# 結果確認
+copy1["nest"]["age"] = 40
+print(src)
+# => {"name": "bob", "age": 20, "nest": {"name": "mary", "age": 40}}
+
+print(copy1)
+# => {"name": "bob", "age": 20, "nest": {"name": "mary", "age": 40}}
+
+copy2["nest"]["age"] = 50
+print(src)
+# => {"name": "bob", "age": 20, "nest": {"name": "mary", "age": 40}}
+
+print(copy2)
+# => {"name": "bob", "age": 20, "nest": {"name": "mary", "age": 50}}
+```
+
+## 辞書からキーと値を削除したい
+``` python
+# 方法１
+# パフォーマンス的に最も効率的です
+# キーが存在しない場合は、KeyErrorが発生します
+del dic1["name"]
+
+# 方法２
+# キーを削除しながら値を受け取ることができます
+# キーが存在しない場合は、KeyErrorが発生します
+val = dic1.pop("name")
+
+# 方法３
+# キーを削除しながら値を受け取ることができます
+# キーが存在しない場合は、第２引数の値をデフォルト値として受け取ります
+val = dic1.pop("a", None)
+```
+
+複数のキーを削除したい場合があると思うのでサンプルを載せておきます。
+``` python
+# 方法１
+for key in some_keys:
+  del dic1[key]
+
+# 方法２
+# ※delはリスト内包表記で利用することはできません
+[dic1.pop(key, None) for key in some_keys]
+```
+
 # ガイドライン
 ケースに応じて様々な実現方法がありますが、ルールなく使うと一貫性が崩れるので個人ルールを定めます。
-バージョンを考慮すると話がややこしくなるため、python3.9を軸にルールを設けます。
+python3.9を軸にルールを設けていますので、皆様はバージョン毎にカスタマイズしてご利用ください。
 
 | バージョン | コード例 | 挙動 | 備考 |
 | ---- | ---- | ---- | ---- |
