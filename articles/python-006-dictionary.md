@@ -75,6 +75,7 @@ dic1 |= dic2
 ```
 
 ## 辞書をユニオンしたい（重複するキーの上書きは許容しない）
+辞書をマージする際、重複キーを上書きしたくない、もしくは、キーの重複があるか分からない場合は、以下の方法で重複時にエラーを発生させることが可能。
 
 ``` python
 # 方法１
@@ -82,20 +83,22 @@ dict(**dic1, **dic2)
 # => TypeError: func() got multiple values for keyword argument 'name'
 
 # 方法２
-# 方法１と同様に、dict関数を利用しなくとも同様の効果が得られる
+# 関数の引数に直接アンパックするなら、dict関数を用いる必要はない。もちろん、可読性の観点からは行を分けたほうがよい。
 def func(**kwargs):
   pass
 
 func(**dic1, **dic2)
 # => TypeError: func() got multiple values for keyword argument 'name'
 
-# 可変長キーワード引数を持っていても、重複したキーが渡ってくることはない
+# 可変長キーワード引数を持っていても、重複したキーは渡らない
 def func(name, age, **kwargs):
   pass
 
 func(**dic1, **dic2)
 # => TypeError: func() got multiple values for keyword argument 'name'
 ```
+<font color="Red">dict(\**dic1, \**dic2)と{\**dic1, \**dic2}は挙動が違うため注意。</font>
+筆者は、可能な限り辞書作成時は常にdict関数を用いるようにしています。
 
 ## 辞書をコピーしたい
 辞書をコピーする場合、シャローコピー（参照のコピー）とディープコピー（再帰的に値をコピーし、新たなインスタンスを作成）に注意しましょう。
@@ -106,7 +109,7 @@ src = {"name": "bob", "age": 20, "nest": {"name": "mary", "age": 30}}
 
 # 方法１（シャローコピー）
 # copyメソッドと同様。copyメソッドを利用しましょう。
-copy1 = dict(\**src)
+copy1 = dict(**src)
 
 # 方法２（シャローコピー）
 # copyメソッドと同様。copyメソッドを利用しましょう。
