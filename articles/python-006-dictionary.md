@@ -185,7 +185,9 @@ print(copy2) # => {"name": "bob", "age": 20, "nest": {"name": "mary", "age": 0}}
 値を変更する時、副作用に注意しましょう
 :::
 
-## 要素を列挙したい
+## キーや値を列挙したい
+以下のようにキーや値を列挙することができます。
+
 ``` python
 # キーを列挙する
 for key in dic1.keys():
@@ -209,6 +211,16 @@ for key, value in dic1.items():
 ## キー名を変更したい
 ``` python
 dic1["new_key"] = dic1.pop("old_key")
+```
+
+## 値を変更したいが、キーが存在する場合はエラーとしたい
+１行で実現する方法はない？ようだ。
+
+``` python
+if key in dic1:
+  raise Exception()
+else:
+  dic1[key] = "new_value"
 ```
 
 
