@@ -259,6 +259,35 @@ else:
   dic1[key] = "new_value"
 ```
 
+## 初期値を持つ辞書を作成したい
+リストを初期値とする辞書を作成したい場合など、いちいち初期値とするリストを渡すのは億劫です。
+そのような場合、defaultdictを利用することができます。
+
+``` python
+from collections import defaultdict
+
+# 方法１
+# 引数無しで実行可能なコンストラクタを持つ型を渡せば、初期値としてインスタンスを渡してくれます
+dic = defaultdict(list)
+
+dic["family"].append("father")
+print(dic)
+# => defaultdict(<class 'list'>, {'family': ['father']})
+
+# 方法２
+# 引数無しで実行可能な関数を渡せば、戻り値を初期値としてくれます
+def create_default():
+    return ["mather"]
+
+dic = defaultdict(create_default)
+# もしくは
+dic = defaultdict(lambda: ["mather"])
+
+dic["family"].append("father")
+print(dic)
+# => defaultdict(<function <lambda> at 0xXXXXXXXXX>, {'family': ['mather', 'father']})
+```
+
 
 # ガイドライン
 ケースに応じて様々な実現方法がありますが、ルールなく使うと一貫性が崩れるので個人ルールを定めます。
