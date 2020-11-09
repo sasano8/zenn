@@ -42,81 +42,64 @@ dic1 = {"name": "bob", "age": 20}
 dic2 = {"name": "mary"}
 ```
 
-## 波括弧
+## 辞書をマージしたい（重複するキーは上書き）
 挙動はマージとなる。Python3.5から辞書作成時にアンパック記法（\**）が利用可能。[^2]
 [^2]: pep448 [リンク](https://www.python.org/dev/peps/pep-0448/)
 
 ``` python
+# 方法１（python3.5から辞書作成時に展開記法が使用可能）
 {**dic1, **dic2}
 # => {"name": "mary", "age": 20}
-```
 
-ちなみに、波括弧での辞書宣言は以下のようにキーが重複してようとおかまいなし。
-宣言と中身が一致しておらず、いけてない。。。
-``` python
+# 波括弧での辞書宣言はキーが重複してようとおかまいなし。
 {"name": "bob", "name": "mary"}
 # => {"name": "mary"}
-```
 
-## dict関数
-挙動はユニオンとなる。意図は明確でないが、意図せずマージされてしまうことはない。波括弧よりdict関数を積極的に使いたい。
-``` python
-dict(**dic1, **dic2)
-# => TypeError: func() got multiple values for keyword argument 'name'
-```
-
-## 関数呼び出し時
-挙動はユニオンとなる。意図は明確でないが、意図せずマージされてしまうことはない。
-``` python
-def func(**kwargs):
-  ...
-
-func(**dic1, **dic2)
-# => TypeError: func() got multiple values for keyword argument 'name'
-```
-
-
-## 可変長キーワード引数持ちの関数呼び出し時
-挙動はユニオンとなる。重複したキーが、可変長キーワード引数に渡ってくる心配をする必要はない。
-``` python
-def func(name, age, **kwargs):
-  ...
-
-func(**dic1, **dic2)
-# => TypeError: func() got multiple values for keyword argument 'name'
-```
-
-## dict関数の第一引数に辞書を渡す
-挙動はマージとなる。dic1のソースが変更されることはない。
-``` python
+# 方法2
 dict(dic1, **dic2)
 # => {"name": "mary", "age": 20}
-```
 
-## 和集合演算子
-挙動はマージとなる。和集合演算子で意図は伝わりやすいので積極的に使いたい。
-``` python
+# 方法３（python3.9から和集合演算子が使用可能）
 dic1 | dic2
 # => {"name": "mary", "age": 20}
-```
 
-## updateメソッド
-挙動はマージとなる。dic1に対して破壊的変更が行われる。
-``` python
+# 方法４
+# ソースの辞書が更新されるため注意
 dic1.update(dic2)
 # => {"name": "mary", "age": 20}
-```
 
-## 累算代入演算子
-挙動はマージとなる。updateと同等だが、和集合演算子（|）でマージする意図が表現されているためこちらを使っていきたい。
-``` python
+# 方法５（python3.9から累算代入演算子が使用可能）
+# ソースの辞書が更新されるため注意
 dic1 |= dic2
 # => {"name": "mary", "age": 20}
 ```
 
-# まとめ
-最後に検証結果と、どの方法を用いるか個人的ルールをまとめる。
-バージョンを考慮すると話がややこしくなるため、python3.9のみの考慮とする。
+## 辞書をユニオンしたい（重複するキーの上書きは許容しない）
+
+``` python
+# 方法１
+dict(**dic1, **dic2)
+# => TypeError: func() got multiple values for keyword argument 'name'
+
+# 方法２
+# 方法１と同様に、dict関数を利用しなくとも同様の効果が得られる
+def func(**kwargs):
+  pass
+
+func(**dic1, **dic2)
+# => TypeError: func() got multiple values for keyword argument 'name'
+
+# 可変長キーワード引数を持っていても、重複したキーが渡ってくることはない
+def func(name, age, **kwargs):
+  pass
+
+func(**dic1, **dic2)
+# => TypeError: func() got multiple values for keyword argument 'name'
+```
+
+# ガイドライン
+ケースに応じて様々な実現方法がありますが、ルールなく使うと一貫性が崩れるので個人ルールを定めます。
+バージョンを考慮すると話がややこしくなるため、python3.9を軸にルールを設けます。
 
 | バージョン | コード例 | 挙動 | 備考 |
 | ---- | ---- | ---- | ---- |
