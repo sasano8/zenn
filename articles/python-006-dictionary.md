@@ -33,73 +33,7 @@ pythonにおける辞書操作は基礎的なことですが、ケースによ�
 
 [^1]: [pep584](https://www.python.org/dev/peps/pep-0584/)にて、ユニオンオペレーターはマージのことを指していますが、本記事におけるユニオンとはpep584のユニオンと関係ないものとしてください。（適切な単語が思い浮かびませんでした。）
 
-# 辞書の取り扱い
-
-## ソース辞書
-結合対象の辞書として、以下２つ辞書をソースとして利用します。
-```
-dic1 = {"name": "bob", "age": 20}
-dic2 = {"name": "mary"}
-```
-
-## 辞書をマージしたい（重複するキーは上書き）
-挙動はマージとなる。Python3.5から辞書作成時にアンパック記法（\**）が利用可能。[^2]
-[^2]: pep448 [リンク](https://www.python.org/dev/peps/pep-0448/)
-
-``` python
-# 方法１（python3.5から辞書作成時に展開記法が使用可能）
-{**dic1, **dic2}
-# => {"name": "mary", "age": 20}
-
-# 波括弧での辞書宣言はキーが重複してようとおかまいなし。
-{"name": "bob", "name": "mary"}
-# => {"name": "mary"}
-
-# 方法2
-dict(dic1, **dic2)
-# => {"name": "mary", "age": 20}
-
-# 方法３（python3.9から和集合演算子が使用可能）
-dic1 | dic2
-# => {"name": "mary", "age": 20}
-
-# 方法４
-# ソースの辞書が更新されるため注意
-dic1.update(dic2)
-# => {"name": "mary", "age": 20}
-
-# 方法５（python3.9から累算代入演算子が使用可能）
-# ソースの辞書が更新されるため注意
-dic1 |= dic2
-# => {"name": "mary", "age": 20}
-```
-
-## 辞書をユニオンしたい（重複するキーの上書きは許容しない）
-辞書をマージする際、重複キーを上書きしたくない、もしくは、キーの重複があるか分からない場合は、以下の方法で重複時にエラーを発生させることが可能。
-
-``` python
-# 方法１
-dict(**dic1, **dic2)
-# => TypeError: func() got multiple values for keyword argument 'name'
-
-# dict関数を用いなくとも、キーワード引数としてアンパックする際は同様の効果が得られる
-def func(**kwargs):
-  pass
-
-func(**dic1, **dic2)
-# => TypeError: func() got multiple values for keyword argument 'name'
-
-# 以下のようなケースでも、重複したキーが渡ってくることはない
-def func(name, age, **kwargs):
-  pass
-
-func(**dic1, **dic2)
-# => TypeError: func() got multiple values for keyword argument 'name'
-```
-
-:::message alert
-dict(\**dic1, \**dic2)と{\**dic1, \**dic2}は挙動が違うため、重複を許容しない場合は必ずdict関数を使うように意識しましょう
-:::
+# 基礎編
 
 ## 値を追加したい
 
@@ -242,6 +176,74 @@ for key, value in dic1.items():
   print(key, value)
 ```
 
+# 結合操作編
+
+## ソース辞書
+結合対象の辞書として、以下２つ辞書をソースとして利用します。
+```
+dic1 = {"name": "bob", "age": 20}
+dic2 = {"name": "mary"}
+```
+
+## 辞書をマージしたい（重複するキーは上書き）
+挙動はマージとなる。Python3.5から辞書作成時にアンパック記法（\**）が利用可能。[^2]
+[^2]: pep448 [リンク](https://www.python.org/dev/peps/pep-0448/)
+
+``` python
+# 方法１（python3.5から辞書作成時に展開記法が使用可能）
+{**dic1, **dic2}
+# => {"name": "mary", "age": 20}
+
+# 波括弧での辞書宣言はキーが重複してようとおかまいなし。
+{"name": "bob", "name": "mary"}
+# => {"name": "mary"}
+
+# 方法2
+dict(dic1, **dic2)
+# => {"name": "mary", "age": 20}
+
+# 方法３（python3.9から和集合演算子が使用可能）
+dic1 | dic2
+# => {"name": "mary", "age": 20}
+
+# 方法４
+# ソースの辞書が更新されるため注意
+dic1.update(dic2)
+# => {"name": "mary", "age": 20}
+
+# 方法５（python3.9から累算代入演算子が使用可能）
+# ソースの辞書が更新されるため注意
+dic1 |= dic2
+# => {"name": "mary", "age": 20}
+```
+
+## 辞書をユニオンしたい（重複するキーの上書きは許容しない）
+辞書をマージする際、重複キーを上書きしたくない、もしくは、キーの重複があるか分からない場合は、以下の方法で重複時にエラーを発生させることが可能。
+
+``` python
+# 方法１
+dict(**dic1, **dic2)
+# => TypeError: func() got multiple values for keyword argument 'name'
+
+# dict関数を用いなくとも、キーワード引数としてアンパックする際は同様の効果が得られる
+def func(**kwargs):
+  pass
+
+func(**dic1, **dic2)
+# => TypeError: func() got multiple values for keyword argument 'name'
+
+# 以下のようなケースでも、重複したキーが渡ってくることはない
+def func(name, age, **kwargs):
+  pass
+
+func(**dic1, **dic2)
+# => TypeError: func() got multiple values for keyword argument 'name'
+```
+
+:::message alert
+dict(\**dic1, \**dic2)と{\**dic1, \**dic2}は挙動が違うため、重複を許容しない場合は必ずdict関数を使うように意識しましょう
+:::
+
 # 応用編
 
 ## キーを変更したい
@@ -296,8 +298,8 @@ python3.9を軸にルールを設けていますので、皆様はバージョ�
 | バージョン | コード例 | 挙動 | 備考 |
 | ---- | ---- | ---- | ---- |
 | 3.5~ | {\**dic1, \**dic2} | 作成/マージ | 使うな |
-|  | dict(\**dic1, \**dic2) | 作成/ユニオン | キーの衝突を想定しない場合に用いる |
-|  | func(\**dic1, \**dic2) | 作成/ユニオン | キーの衝突を想定しない場合に用いる |
+| 3.x~ | dict(\**dic1, \**dic2) | 作成/ユニオン | キーの衝突を想定しない場合に用いる |
+| 3.x~  | func(\**dic1, \**dic2) | 作成/ユニオン | キーの衝突を想定しない場合に用いる |
 | | dict(dic1, \**dic2) | 作成/マージ | 使うな |
 | 3.9~ | dic1 \| dic2 | 作成/マージ | マージしたい場合に用いる |
 | 3.9~ | func(\**(dic1 \| dic2)) | 作成/マージ | 行を分けろ |
