@@ -185,6 +185,32 @@ print(copy2) # => {"name": "bob", "age": 20, "nest": {"name": "mary", "age": 0}}
 値を変更する時、副作用に注意しましょう
 :::
 
+## 要素を列挙したい
+``` python
+# キーを列挙する
+for key in dic1.keys():
+  print(key)
+
+# 値を列挙する
+for value in dic1:
+  print(value)
+
+# 値を列挙する
+for value in dic1.values():
+  print(value)
+
+# キーと値を列挙する
+for key, value in dic1.items():
+  print(key, value)
+```
+
+# 応用編
+
+## キー名を変更したい
+``` python
+dic1["new_key"] = dic1.pop("old_key")
+```
+
 
 # ガイドライン
 ケースに応じて様々な実現方法がありますが、ルールなく使うと一貫性が崩れるので個人ルールを定めます。
