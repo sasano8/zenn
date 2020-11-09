@@ -217,8 +217,68 @@ dic1 |= dic2
 # => {"name": "mary", "age": 20}
 ```
 
+### マージの際、ネストした辞書はどうなる？
+さて、マージの方法が分かったところで、以下のコードを見てみましょう。
+あなたはどんな結果を想定しますか？
+
+``` python
+a = {"nest": {"name": "bob", "age": 20}}
+b = {"nest": {"name": "mary"}}
+
+# 方法１
+{**a, **b}
+# => {'nest': {'name': 'mary'}}
+
+# 方法２
+dict(a, **b)
+# => {'nest': {'name': 'mary'}}
+
+# 方法３
+a | b
+# => {'nest': {'name': 'mary'}}
+
+# 方法４
+a.update(b)
+# => {'nest': {'name': 'mary'}}
+
+# 方法５
+dic1 |= dic2
+# => {'nest': {'name': 'mary'}}
+```
+
+紹介した方法のいずれも、ネストした辞書は単純に辞書を置き換えているだけですね。
+もし、ネストした辞書をマージしたい場合は別の方法を検討しなければいけません。
+
+:::message alert
+ネストした辞書のマージ結果を意識しましょう
+:::
+
+## ネストした辞書をマージしたい
+ネストした辞書をマージするための機能は標準では用意されていないようです。
+
+```
+dict(dict1.items() + dict2.items())  # できない
+itertools.chain
+
+def deep_merge(dic1, dic2):
+  for key in dic2.keys():
+    if isinstance(dic2[key], dict):
+      deep_merge(dic1[key], dic2[key])
+    else:
+      
+
+# https://www.greptips.com/posts/1242/
+def deepupdate(dict_base, other):
+  for k, v in other.items():
+    if isinstance(v, collections.Mapping) and k in dict_base:
+      deepupdate(dict_base[k], v)
+    else:
+      dict_base[k] = v
+```
+
+
 ## 辞書をユニオンしたい（重複するキーの上書きは許容しない）
-辞書をマージする際、重複キーを上書きしたくない、もしくは、キーの重複があるか分からない場合は、以下の方法で重複時にエラーを発生させることが可能。
+辞書をマージする際、重複キーを上書きしたくない、もしくは、キーの重複があるか分からない場合は、以下の方法で重複時にエラーを発生させることが可能です。
 
 ``` python
 # 方法１
@@ -238,14 +298,15 @@ def func(name, age, **kwargs):
 
 func(**dic1, **dic2)
 # => TypeError: func() got multiple values for keyword argument 'name'
+
+# 注意
+# dictの代わりに{}を使用した場合、結果はマージとなるため、混同して使用しないようにしましょう
+{**dic1, **dic2}
+# => {"name": "mary", "age": 20}
 ```
 
 :::message alert
 dict(\**dic1, \**dic2)と{\**dic1, \**dic2}は挙動が違うため、重複を許容しない場合は必ずdict関数を使うように意識しましょう
-:::
-
-:::message alert
-ネストした辞書をマージした時、挙動はどうなる？？？
 :::
 
 # 応用編
