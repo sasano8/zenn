@@ -82,15 +82,14 @@ dic1 |= dic2
 dict(**dic1, **dic2)
 # => TypeError: func() got multiple values for keyword argument 'name'
 
-# 方法２
-# 関数の引数に直接アンパックするなら、dict関数を用いる必要はない。もちろん、可読性の観点からは行を分けたほうがよい。
+# dict関数を用いなくとも、キーワード引数としてアンパックする際は同様の効果が得られる
 def func(**kwargs):
   pass
 
 func(**dic1, **dic2)
 # => TypeError: func() got multiple values for keyword argument 'name'
 
-# 可変長キーワード引数を持っていても、重複したキーは渡らない
+# 以下のようなケースでも、重複したキーが渡ってくることはない
 def func(name, age, **kwargs):
   pass
 
@@ -99,47 +98,7 @@ func(**dic1, **dic2)
 ```
 
 :::message alert
-dict(\**dic1, \**dic2)と{\**dic1, \**dic2}は挙動が違うため注意
-:::
-筆者は、可能な限り辞書作成時は常にdict関数を用いるようにしています。
-
-## 辞書をコピーしたい
-辞書をコピーする場合、シャローコピー（参照のコピー）とディープコピー（再帰的に値をコピーし、新たなインスタンスを作成）に注意しましょう。
-シャローコピーでは、コンテナ型オブジェクト（リストや辞書など）の内部値はコピーされません。
-
-``` python
-src = {"name": "bob", "age": 20, "nest": {"name": "mary", "age": 30}}
-
-# 方法１（シャローコピー）
-# copyメソッドと同様。copyメソッドを利用しましょう。
-copy1 = dict(**src)
-
-# 方法２（シャローコピー）
-# copyメソッドと同様。copyメソッドを利用しましょう。
-copy1 = dict(src)
-
-# 方法３（シャローコピー）
-copy1 = src.copy()
-
-# 方法４（ディープコピー）
-import copy
-copy2 = copy.deepcopy(src)
-
-# 結果確認
-print(src)   # => {"name": "bob", "age": 20, "nest": {"name": "mary", "age": 30}}
-
-copy1["age"] += 5
-copy1["nest"]["age"] += 100
-print(src)   # => {"name": "bob", "age": 20, "nest": {"name": "mary", "age": 130}}
-print(copy1) # => {"name": "bob", "age": 25, "nest": {"name": "mary", "age": 130}}
-
-copy2["nest"]["age"] -= 30
-print(src)   # => {"name": "bob", "age": 20, "nest": {"name": "mary", "age": 130}}
-print(copy2) # => {"name": "bob", "age": 20, "nest": {"name": "mary", "age": 0}}
-```
-
-:::message alert
-値を変更する時、副作用に注意しましょう
+dict(\**dic1, \**dic2)と{\**dic1, \**dic2}は挙動が違うため、重複を許容しない場合は必ずdict関数を使うように意識しましょう
 :::
 
 ## 辞書からキーに対応する値を取得したい
@@ -186,6 +145,47 @@ for key in some_keys:
 [dic1.pop(key, None) for key in some_keys]
 ```
 
+
+## 辞書をコピーしたい
+辞書をコピーする場合、シャローコピー（参照のコピー）とディープコピー（再帰的に値をコピーし、新たなインスタンスを作成）に注意しましょう。
+シャローコピーでは、コンテナ型オブジェクト（リストや辞書など）の内部値はコピーされません。
+
+``` python
+src = {"name": "bob", "age": 20, "nest": {"name": "mary", "age": 30}}
+
+# 方法１（シャローコピー）
+# copyメソッドと同様。copyメソッドを利用しましょう。
+copy1 = dict(**src)
+
+# 方法２（シャローコピー）
+# copyメソッドと同様。copyメソッドを利用しましょう。
+copy1 = dict(src)
+
+# 方法３（シャローコピー）
+copy1 = src.copy()
+
+# 方法４（ディープコピー）
+import copy
+copy2 = copy.deepcopy(src)
+
+# 結果確認
+print(src)   # => {"name": "bob", "age": 20, "nest": {"name": "mary", "age": 30}}
+
+copy1["age"] += 5
+copy1["nest"]["age"] += 100
+print(src)   # => {"name": "bob", "age": 20, "nest": {"name": "mary", "age": 130}}
+print(copy1) # => {"name": "bob", "age": 25, "nest": {"name": "mary", "age": 130}}
+
+copy2["nest"]["age"] -= 30
+print(src)   # => {"name": "bob", "age": 20, "nest": {"name": "mary", "age": 130}}
+print(copy2) # => {"name": "bob", "age": 20, "nest": {"name": "mary", "age": 0}}
+```
+
+:::message alert
+値を変更する時、副作用に注意しましょう
+:::
+
+
 # ガイドライン
 ケースに応じて様々な実現方法がありますが、ルールなく使うと一貫性が崩れるので個人ルールを定めます。
 python3.9を軸にルールを設けていますので、皆様はバージョン毎にカスタマイズしてご利用ください。
@@ -201,10 +201,13 @@ python3.9を軸にルールを設けていますので、皆様はバージョ�
 | ? | dic1.update(dic2) | 更新/マージ | updateにはマージとユニオンの意思が表現されてないため使わない |
 | 3.9~ | dic1 \|= dic2 | 更新/マージ | 更新、かつ、マージしたい場合に用いる |
 | | ~~dic1 += dic2~~ | ~~更新/ユニオン~~ | 更新、かつ、ユニオンに対応する操作は存在しない |
+| | dic1["name"] | 取得 | キーが存在しない場合KeyError発生 |
+| | dic1.get("name") | 取得 | 存在しない場合Noneを返す |
+| | dic1.get("name", 0) | 取得 | 存在しない場合第２引数の値を返す |
+| | del dic1["name"] | 削除 | キーが存在しない場合KeyError発生 |
+| | dic1.pop("name") | 削除/取得 | キーが存在しない場合KeyError発生 |
+| | dic1.pop("a", None) | 削除/取得 | KeyErrorは発生しない。キーが存在しない場合、第２引数の値を受け取る。 |
 | | dict(\**dic1) | シャローコピー | copyメソッドを用いる |
 | | dict(dic1) | シャローコピー | copyメソッドを用いる |
 | | dic1.copy() | シャローコピー | ネストされたオブジェクトはコピーされないでいい場合に用いる |
 | | copy.deepcopy(dic1) | ディープコピー | ネストされたオブジェクトまでコピーしたい場合に用いる |
-| | del dic1["name"] | 削除 | 削除したい場合に用いる |
-| | dic1.pop("name") | 削除 | 削除した値を受け取りたい場合に用いる |
-| | dic1.pop("a", None) | 削除 | Key Errorを無視したい場合、または、Key Error時にデフォルト値を受け取りたい場合に用いる |
