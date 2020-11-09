@@ -97,7 +97,10 @@ def func(name, age, **kwargs):
 func(**dic1, **dic2)
 # => TypeError: func() got multiple values for keyword argument 'name'
 ```
-<font color="Red">dict(\**dic1, \**dic2)と{\**dic1, \**dic2}は挙動が違うため注意。</font>
+
+:::message alert
+dict(\**dic1, \**dic2)と{\**dic1, \**dic2}は挙動が違うため注意
+:::
 筆者は、可能な限り辞書作成時は常にdict関数を用いるようにしています。
 
 ## 辞書をコピーしたい
@@ -123,20 +126,37 @@ import copy
 copy2 = copy.deepcopy(src)
 
 # 結果確認
-copy1["nest"]["age"] = 40
-print(src)
-# => {"name": "bob", "age": 20, "nest": {"name": "mary", "age": 40}}
+print(src)   # => {"name": "bob", "age": 20, "nest": {"name": "mary", "age": 30}}
 
-print(copy1)
-# => {"name": "bob", "age": 20, "nest": {"name": "mary", "age": 40}}
+copy1["age"] += 5
+copy1["nest"]["age"] += 100
+print(src)   # => {"name": "bob", "age": 20, "nest": {"name": "mary", "age": 130}}
+print(copy1) # => {"name": "bob", "age": 25, "nest": {"name": "mary", "age": 130}}
 
-copy2["nest"]["age"] = 50
-print(src)
-# => {"name": "bob", "age": 20, "nest": {"name": "mary", "age": 40}}
-
-print(copy2)
-# => {"name": "bob", "age": 20, "nest": {"name": "mary", "age": 50}}
+copy2["nest"]["age"] -= 30
+print(src)   # => {"name": "bob", "age": 20, "nest": {"name": "mary", "age": 130}}
+print(copy2) # => {"name": "bob", "age": 20, "nest": {"name": "mary", "age": 0}}
 ```
+
+:::message alert
+値を変更する時、副作用に注意しましょう
+:::
+
+## 辞書からキーに対応する値を取得したい
+``` python
+# 方法１
+# キーが存在しない場合は、KeyErrorが発生します
+val = dic1["name"]
+
+# 方法２
+# キーが存在しない場合は、Noneが返ります
+val = dic1.get("name")
+
+# 方法２
+# キーが存在しない場合は、第２引数の値をデフォルト値として受け取ります
+val = dic1.get("name", 0)
+```
+
 
 ## 辞書からキーと値を削除したい
 ``` python
@@ -156,14 +176,13 @@ val = dic1.pop("name")
 val = dic1.pop("a", None)
 ```
 
-複数のキーを削除したい場合があると思うのでサンプルを載せておきます。
+複数のキーを削除したい場合は以下のように。delはリスト内包表記で利用することはできません。
 ``` python
 # 方法１
 for key in some_keys:
   del dic1[key]
 
 # 方法２
-# ※delはリスト内包表記で利用することはできません
 [dic1.pop(key, None) for key in some_keys]
 ```
 
