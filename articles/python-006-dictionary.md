@@ -194,7 +194,11 @@ dic2 = {"name": "mary"}
 {**dic1, **dic2}
 # => {"name": "mary", "age": 20}
 
-# 波括弧での辞書宣言はキーが衝突してようとおかまいなし。
+# リテラル表記と組み合わせて使用することも可能
+{"key1": "val1", "key2": "val2", **dic1}
+# => {"key1": "val1", "key2": "val2", "name": "bob", "age": 20}
+
+# なお、波括弧での辞書宣言時はキーが衝突してようとおかまいなしなので注意
 {"name": "bob", "name": "mary"}
 # => {"name": "mary"}
 
@@ -284,6 +288,10 @@ def deepupdate(dict_base, other):
 # 方法１
 dict(**dic1, **dic2)
 # => TypeError: func() got multiple values for keyword argument 'name'
+
+# リテラル表記と組み合わせて使用することも可能
+dict(key1="val1", key2="val2", **dic1}
+# => {"key1": "val1", "key2": "val2", "name": "bob", "age": 20}
 
 # dict関数を用いなくとも、キーワード引数としてアンパックする際は同様の効果が得られる
 def func(**kwargs):
@@ -391,5 +399,6 @@ python3.9を軸にルールを設けていますので、皆様はバージョ�
 | 3.9~ | dic1 \|= dic2 | 更新/シャローマージ | |
 | | | ディープマージ | 自作かライブラリを用いる |
 | 3.x~ | dict(\**dic1, \**dic2) | 作成/ユニオン | キーが衝突する場合、TypeErrorが発生 |
+| 3.x~ | dict(key1=1, key2=2, \**dic2) | 作成/ユニオン | キーが衝突する場合、TypeErrorが発生 |
 | 3.x~  | func(\**dic1, \**dic2) | 作成/ユニオン | キーが衝突する場合、TypeErrorが発生 |
 | | | 更新/ユニオン | 対応する操作は存在しない |
