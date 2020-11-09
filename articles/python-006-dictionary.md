@@ -244,7 +244,7 @@ for key, value in dic1.items():
 
 # 応用編
 
-## キー名を変更したい
+## キーを変更したい
 ``` python
 dic1["new_key"] = dic1.pop("old_key")
 ```
