@@ -101,6 +101,24 @@ func(**dic1, **dic2)
 dict(\**dic1, \**dic2)と{\**dic1, \**dic2}は挙動が違うため、重複を許容しない場合は必ずdict関数を使うように意識しましょう
 :::
 
+## 値を追加したい
+
+``` python
+# 方法１
+# キーが存在する場合、新たな値で上書きされる
+dic1['key'] = "val"
+
+# 方法２
+# キーが存在しない場合、値をにNoneを追加する
+val = dic1.setdefault('new_key')
+# => None
+
+# 方法３
+# キーが存在しない場合、値をに第２引数の値を追加する
+val = dic1.setdefault('new_key', 0)
+# => 0
+```
+
 ## 辞書からキーに対応する値を取得したい
 ``` python
 # 方法１
@@ -133,8 +151,14 @@ val = dic1.pop("name")
 # キーを削除しながら値を受け取ることができます
 # キーが存在しない場合は、第２引数の値をデフォルト値として受け取ります
 val = dic1.pop("a", None)
+
+# 方法４
+# 要素をランダムに一つ削除する。（python3.7からは要素の順序が保存されるようになったため、最後の要素から削除される？？collections.OrderedDict相当）
+key_value = dic1.popitem()
+# => ('age', 20)
 ```
 
+## 辞書から複数のキーと値を削除したい
 複数のキーを削除したい場合は以下のように。delはリスト内包表記で利用することはできません。
 ``` python
 # 方法１
@@ -143,6 +167,18 @@ for key in some_keys:
 
 # 方法２
 [dic1.pop(key, None) for key in some_keys]
+```
+
+## 辞書から全ての要素を削除したい
+``` python
+# 方法１
+dic1.clear()
+# => {}
+
+# 方法２
+for key, value in dic1.popitem():
+  pass
+# => {}
 ```
 
 
