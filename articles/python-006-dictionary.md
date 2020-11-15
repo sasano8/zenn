@@ -174,6 +174,13 @@ for value in dic1.values():
 # キーと値を列挙する
 for key, value in dic1.items():
   print(key, value)
+
+# キーと値を列挙する
+# python2.x系ではitemsよりオーバーヘッドが少ないiteritemsが用意されている。（itemsはリストを生成しているためコストが大きい）
+# python3系ではitemsの実装が改善され、dict_items（キーバリューペア列挙機能を実装したイテラブルなオブジェクト）を返すようになったため、iteritemsは廃止された。
+for key, value in dic1.iteritems():
+  print(key, value)
+
 ```
 
 # 結合操作編
@@ -387,18 +394,23 @@ python3.9を軸にルールを設けていますので、皆様はバージョ�
 | | del dic1["name"] | 削除 | キーが存在しない場合、KeyErrorが発生 |
 | | dic1.pop("name") | 削除/取得 | キーが存在しない場合、KeyErrorが発生 |
 | | dic1.pop("a", None) | 削除/取得 | キーが存在しない場合、第２引数の値を返す |
+| | dic1.keys() | 列挙 | キーを列挙する |
+| | for value in dic1: | 列挙 | valuesと同等 |
+| | dic1.values() | 列挙 | 値を列挙する |
+| | dic1.items() | 列挙 | キーバリュータプルを列挙する |
+| <=2.* | dic1.iteritems() | 列挙 | キーバリュータプルを列挙する。python3でitemsに統合 |
 | | dict(\**dic1) | シャローコピー | copyメソッドを使おう |
 | | dict(dic1) | シャローコピー | copyメソッドを使おう |
 | | dic1.copy() | シャローコピー | |
 | | copy.deepcopy(dic1) | ディープコピー | |
-| 3.5~ | {\**dic1, \**dic2} | 作成/シャローマージ | 和集合演算子（\|）を使おう |
-| 2.x~| dict(dic1, \**dic2) | 作成/シャローマージ | 和集合演算子（\|）を使おう |
-| 3.9~ | dic1 \| dic2 | 作成/シャローマージ | |
-| 3.9~ | func(\**(dic1 \| dic2)) | 作成/シャローマージ | |
-| 2.x~ | dic1.update(dic2) | 更新/シャローマージ | 累算代入演算子（\|=）を使おう |
-| 3.9~ | dic1 \|= dic2 | 更新/シャローマージ | |
+| 3.5 | {\**dic1, \**dic2} | 作成/シャローマージ | 和集合演算子（\|）を使おう |
+| | dict(dic1, \**dic2) | 作成/シャローマージ | 和集合演算子（\|）を使おう |
+| 3.9 | dic1 \| dic2 | 作成/シャローマージ | |
+| 3.9 | func(\**(dic1 \| dic2)) | 作成/シャローマージ | |
+|  | dic1.update(dic2) | 更新/シャローマージ | 累算代入演算子（\|=）を使おう |
+| 3.9 | dic1 \|= dic2 | 更新/シャローマージ | |
 | | | ディープマージ | 自作かライブラリを用いる |
-| 3.x~ | dict(\**dic1, \**dic2) | 作成/ユニオン | キーが衝突する場合、TypeErrorが発生 |
-| 3.x~ | dict(key1=1, key2=2, \**dic2) | 作成/ユニオン | キーが衝突する場合、TypeErrorが発生 |
-| 3.x~  | func(\**dic1, \**dic2) | 作成/ユニオン | キーが衝突する場合、TypeErrorが発生 |
+| 3.5 | dict(\**dic1, \**dic2) | 作成/ユニオン | キーが衝突する場合、TypeErrorが発生 |
+|  | dict(key1=1, key2=2, \**dic2) | 作成/ユニオン | キーが衝突する場合、TypeErrorが発生 |
+| 3.5  | func(\**dic1, \**dic2) | 作成/ユニオン | キーが衝突する場合、TypeErrorが発生 |
 | | | 更新/ユニオン | 対応する操作は存在しない |
