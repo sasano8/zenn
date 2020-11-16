@@ -394,11 +394,11 @@ python3.9を軸にルールを設けていますので、皆様はバージョ�
 | | del dic1["name"] | 削除 | キーが存在しない場合、KeyErrorが発生 |
 | | dic1.pop("name") | 削除/取得 | キーが存在しない場合、KeyErrorが発生 |
 | | dic1.pop("a", None) | 削除/取得 | キーが存在しない場合、第２引数の値を返す |
-| | for value in dic1: | 列挙 | keysを使おう |
-| | dic1.keys() | 列挙 | キーを列挙する |
-| | dic1.values() | 列挙 | 値を列挙する |
-| | dic1.items() | 列挙 | キーバリュータプルを列挙する |
-| <=2.* | dic1.iteritems() | 列挙 | キーバリュータプルを列挙する。python3でitemsに統合 |
+| | for value in dic1: | 列挙/キー | keysを使おう |
+| | dic1.keys() | 列挙/キー | |
+| | dic1.values() | 列挙/バリュー | |
+| | dic1.items() | 列挙/キーバリュー | |
+| <=2.* | dic1.iteritems() | 列挙/キーバリュー | python3でitemsに統合 |
 | | dict(\**dic1) | シャローコピー | copyメソッドを使おう |
 | | dict(dic1) | シャローコピー | copyメソッドを使おう |
 | | dic1.copy() | シャローコピー | |
