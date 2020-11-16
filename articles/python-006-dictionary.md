@@ -396,6 +396,8 @@ python3.9を軸にルールを設けていますので、バージョン毎に�
 | | del dic1["name"] | 削除 | キーが存在しない場合、KeyErrorが発生 |
 | | dic1.pop("name") | 削除/取得 | キーが存在しない場合、KeyErrorが発生 |
 | | dic1.pop("a", None) | 削除/取得 | キーが存在しない場合、第２引数の値を返す |
+| | dic1.clear() | 全削除 | |
+| | dic1["new"] = dic1.pop("old") | キー変更 | |
 | | for value in dic1: | 列挙/キー | keysを使おう |
 | | dic1.keys() | 列挙/キー | |
 | | dic1.values() | 列挙/バリュー | |
