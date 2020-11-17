@@ -53,6 +53,60 @@ val = dic1.setdefault('new_key', 0)
 # => 0
 ```
 
+## 初期値を持つ辞書を作成したい
+リストを初期値とする辞書を作成したい場合など、いちいち初期値とするリストを渡すのは億劫です。
+そのような場合、defaultdictを利用することができます。
+
+``` python
+from collections import defaultdict
+
+# 方法１
+# 引数無しで実行可能なコンストラクタを持つ型を渡せば、初期値としてインスタンスを渡してくれます
+dic = defaultdict(list)
+
+dic["family"].append("father")
+print(dic)
+# => defaultdict(<class 'list'>, {'family': ['father']})
+
+# 方法２
+# 引数無しで実行可能な関数を渡せば、戻り値を初期値としてくれます
+def create_default():
+    return ["mather"]
+
+dic = defaultdict(create_default)
+# もしくは
+dic = defaultdict(lambda: ["mather"])
+
+dic["family"].append("father")
+print(dic)
+# => defaultdict(<function <lambda> at 0xXXXXXXXXX>, {'family': ['mather', 'father']})
+```
+
+なお、getを利用して同様のことができそうですが、ソースの辞書に初期値を登録するわけではないので、以下の例では元の辞書は空っぽのままです。
+``` python
+dic = {}
+dic.get("family", []).append("father")
+# => {}
+```
+
+
+## 再代入禁止の辞書を作成したい
+
+
+``` python
+class OnceDict(dict):
+    def __setitem__(self, key, value):
+        if key in self:
+            raise KeyError(f"{key} is already exists.")
+        super().__setitem__(key, value)
+
+
+dic = OnceDict({"a": 1})
+dic["a"] = 3
+# => KeyError: 'a is already exists.'
+```
+
+
 ## 辞書からキーに対応する値を取得したい
 ``` python
 # 方法１
@@ -335,51 +389,7 @@ dict(\**dic1, \**dic2)と{\**dic1, \**dic2}は挙動が違うため、キーの�
 dic1["new_key"] = dic1.pop("old_key")
 ```
 
-## 値を変更したいが、キーが存在する場合はエラーとしたい
-１行で実現する方法はない？ようだ。
 
-``` python
-if key in dic1:
-  raise Exception()
-else:
-  dic1[key] = "new_value"
-```
-
-## 初期値を持つ辞書を作成したい
-リストを初期値とする辞書を作成したい場合など、いちいち初期値とするリストを渡すのは億劫です。
-そのような場合、defaultdictを利用することができます。
-
-``` python
-from collections import defaultdict
-
-# 方法１
-# 引数無しで実行可能なコンストラクタを持つ型を渡せば、初期値としてインスタンスを渡してくれます
-dic = defaultdict(list)
-
-dic["family"].append("father")
-print(dic)
-# => defaultdict(<class 'list'>, {'family': ['father']})
-
-# 方法２
-# 引数無しで実行可能な関数を渡せば、戻り値を初期値としてくれます
-def create_default():
-    return ["mather"]
-
-dic = defaultdict(create_default)
-# もしくは
-dic = defaultdict(lambda: ["mather"])
-
-dic["family"].append("father")
-print(dic)
-# => defaultdict(<function <lambda> at 0xXXXXXXXXX>, {'family': ['mather', 'father']})
-```
-
-なお、getを利用して同様のことができそうですが、ソースの辞書に初期値を登録するわけではないので、以下の例では元の辞書は空っぽのままです。
-``` python
-dic = {}
-dic.get("family", []).append("father")
-# => {}
-```
 
 
 # まとめ
@@ -390,6 +400,8 @@ python3.9を軸にルールを設けていますので、バージョン毎に�
 
 | バージョン | コード例 | 要求 | 備考 |
 | ---- | ---- | ---- | ---- |
+| | dic1["name"] = val | 登録 | |
+| | dic1.setdefault("key", 0) = val | 登録 | keyが存在しない場合、第２引数の値を登録 |
 | | dic1["name"] | 取得 | キーが存在しない場合、KeyErrorが発生 |
 | | dic1.get("name") | 取得 | キーが存在しない場合、Noneを返す |
 | | dic1.get("name", 0) | 取得 | キーが存在しない場合、第２引数の値を返す |
@@ -418,4 +430,5 @@ python3.9を軸にルールを設けていますので、バージョン毎に�
 |  | dict(key1=1, \**dic2) | 作成/ユニオン | キーが衝突する場合、TypeErrorが発生 |
 | 3.5  | func(\**dic1, \**dic2) | 作成/ユニオン | キーが衝突する場合、TypeErrorが発生 |
 | | | 更新/ユニオン | 対応する操作は存在しない |
+| | defaultdict(list) | 初期値保持 | コンストラクタに渡したファクトリ関数の戻り値を初期値とする辞書を作成 |
 | <=3.6 | OrderedDict | 順序性保持 | python3.7以降はdictがOrderedDict相当の順序を保持するようになったため不要。 |
