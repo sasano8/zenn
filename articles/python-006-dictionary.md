@@ -400,35 +400,36 @@ python3.9を軸にルールを設けていますので、バージョン毎に�
 
 | バージョン | コード例 | 要求 | 備考 |
 | ---- | ---- | ---- | ---- |
-| | dic1["name"] = val | 登録 | |
-| | dic1.setdefault("key", 0) | 登録/取得 | キーが存在しない場合、第２引数の値を登録した上で、キーの値を返す |
-| | dic1["name"] | 取得 | キーが存在しない場合、KeyErrorが発生 |
-| | dic1.get("name") | 取得 | キーが存在しない場合、Noneを返す |
-| | dic1.get("name", 0) | 取得 | キーが存在しない場合、第２引数の値を返す |
-| | del dic1["name"] | 削除 | キーが存在しない場合、KeyErrorが発生 |
-| | dic1.pop("name") | 削除/取得 | キーが存在しない場合、KeyErrorが発生 |
-| | dic1.pop("a", None) | 削除/取得 | キーが存在しない場合、第２引数の値を返す |
-| | dic1.clear() | 全削除 | |
-| | dic1["new"] = dic1.pop("old") | キー変更 | |
-| | for value in dic1: | 列挙/キー | keysを使おう |
-| | dic1.keys() | 列挙/キー | |
-| | dic1.values() | 列挙/バリュー | |
-| | dic1.items() | 列挙/キーバリュー | |
-| <=2.* | dic1.iteritems() | 列挙/キーバリュー | python3でitemsに統合 |
-| | dict(\**dic1) | シャローコピー | copyメソッドを使おう |
-| | dict(dic1) | シャローコピー | copyメソッドを使おう |
-| | dic1.copy() | シャローコピー | |
-| | copy.deepcopy(dic1) | ディープコピー | |
-| 3.5 | {\**dic1, \**dic2} | 作成/シャローマージ | 和集合演算子（\|）を使おう |
+| | dic["name"] = val | 登録 | |
+| | dic.setdefault("key", 0) | 登録/取得 | キーが存在しない場合、第２引数の値を登録した上で、キーの値を返す |
+| | dic["name"] | 取得 | キーが存在しない場合、KeyErrorが発生 |
+| | dic.get("name") | 取得 | キーが存在しない場合、Noneを返す |
+| | dic.get("name", 0) | 取得 | キーが存在しない場合、第２引数の値を返す |
+| | del dic["name"] | 削除 | キーが存在しない場合、KeyErrorが発生 |
+| | dic.pop("name") | 削除/取得 | キーが存在しない場合、KeyErrorが発生 |
+| | dic.pop("a", None) | 削除/取得 | キーが存在しない場合、第２引数の値を返す |
+| | dic["new"] = dic.pop("a") | キー変更 | |
+| | dic.clear() | 全削除 | |
+| | dic["new"] = dic.pop("old") | キー変更 | |
+| | for value in dic: | 列挙/キー | keysを使おう |
+| | dic.keys() | 列挙 | キーを列挙する |
+| | dic1.values() | 列挙 | 値を列挙する |
+| | dic1.items() | 列挙 | キーと値のタプルを列挙する |
+| <=2.* | dic1.iteritems() | 列挙 | python3でitemsに統合された |
+| | dict(\**dic) | シャローコピー | copyメソッドを使おう |
+| | dict(dic) | シャローコピー | copyメソッドを使おう |
+| | dic.copy() | シャローコピー | |
+| | copy.deepcopy(dic) | ディープコピー | |
+| ^3.5 | {\**dic1, \**dic2} | 作成/シャローマージ | 和集合演算子（\|）を使おう |
 | | dict(dic1, \**dic2) | 作成/シャローマージ | 和集合演算子（\|）を使おう |
-| 3.9 | dic1 \| dic2 | 作成/シャローマージ | |
-| 3.9 | func(\**(dic1 \| dic2)) | 作成/シャローマージ | |
+| ^3.9 | dic1 \| dic2 | 作成/シャローマージ | |
+| ^3.9 | func(\**(dic1 \| dic2)) | 作成/シャローマージ | |
 |  | dic1.update(dic2) | 更新/シャローマージ | 累算代入演算子（\|=）を使おう |
-| 3.9 | dic1 \|= dic2 | 更新/シャローマージ | |
+| ^3.9 | dic1 \|= dic2 | 更新/シャローマージ | |
 | | | ディープマージ | 自作かライブラリを用いる |
-| 3.5 | dict(\**dic1, \**dic2) | 作成/ユニオン | キーが衝突する場合、TypeErrorが発生 |
+| ^3.5 | dict(\**dic1, \**dic2) | 作成/ユニオン | キーが衝突する場合、TypeErrorが発生 |
 |  | dict(key1=1, \**dic2) | 作成/ユニオン | キーが衝突する場合、TypeErrorが発生 |
-| 3.5  | func(\**dic1, \**dic2) | 作成/ユニオン | キーが衝突する場合、TypeErrorが発生 |
+| ^3.5  | func(\**dic1, \**dic2) | 作成/ユニオン | キーが衝突する場合、TypeErrorが発生 |
 | | | 更新/ユニオン | 対応する操作は存在しない |
 | | defaultdict(list) | 初期値保持 | コンストラクタに渡したファクトリ関数の戻り値を初期値とする辞書を作成 |
 | <=3.6 | OrderedDict | 順序性保持 | python3.7以降はdictがOrderedDict相当の順序を保持するようになったため不要。 |
