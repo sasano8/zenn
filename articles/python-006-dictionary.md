@@ -413,9 +413,9 @@ python3.9を軸にルールを設けていますので、バージョン毎に�
 | | dic["new"] = dic.pop("old") | キー変更 | |
 | | for value in dic: | 列挙/キー | keysを使おう |
 | | dic.keys() | 列挙 | キーを列挙する |
-| | dic1.values() | 列挙 | 値を列挙する |
-| | dic1.items() | 列挙 | キーと値のタプルを列挙する |
-| <=2.* | dic1.iteritems() | 列挙 | python3でitemsに統合された |
+| | dic.values() | 列挙 | 値を列挙する |
+| | dic.items() | 列挙 | キーと値のタプルを列挙する |
+| <=2.* | dic.iteritems() | 列挙 | python3でitemsに統合された |
 | | dict(\**dic) | シャローコピー | copyメソッドを使おう |
 | | dict(dic) | シャローコピー | copyメソッドを使おう |
 | | dic.copy() | シャローコピー | |
