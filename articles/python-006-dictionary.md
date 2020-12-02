@@ -160,45 +160,67 @@ for key, value in dic1.iteritems():
 
 ```
 
-
-## コピーする
-辞書をコピーする場合、シャローコピー（参照のコピー）とディープコピー（再帰的に値をコピーし、新たなインスタンスを作成）に注意しましょう。
-シャローコピーでは、コンテナ型オブジェクト（リストや辞書など）の内部値はコピーされません。
+## シャローコピーする
+辞書をコピーする方法を紹介します。本章で紹介するコピーはシャローコピーです。
+ネストした値はコピーされず、オブジェクトの参照を共有するため、副作用があることに注意してください。
 
 ``` python
 src = {"name": "bob", "age": 20, "nest": {"name": "mary", "age": 30}}
 
-# 方法１（シャローコピー）
+# 方法１
 # copyメソッドと同様。copyメソッドを利用しましょう。
-copy1 = dict(**src)
+dest1 = dict(**src)
 
-# 方法２（シャローコピー）
+# 方法２
 # copyメソッドと同様。copyメソッドを利用しましょう。
-copy1 = dict(src)
+dest2 = dict(src)
 
-# 方法３（シャローコピー）
-copy1 = src.copy()
-
-# 方法４（ディープコピー）
-import copy
-copy2 = copy.deepcopy(src)
+# 方法３
+dest3 = src.copy()
 
 # 結果確認
 print(src)   # => {"name": "bob", "age": 20, "nest": {"name": "mary", "age": 30}}
 
-copy1["age"] += 5
-copy1["nest"]["age"] += 100
-print(src)   # => {"name": "bob", "age": 20, "nest": {"name": "mary", "age": 130}}
-print(copy1) # => {"name": "bob", "age": 25, "nest": {"name": "mary", "age": 130}}
+dest1["age"] = 0
+dest1["nest"]["age"] = 1
+print(src)   # => {"name": "bob", "age": 20, "nest": {"name": "mary", "age": 1}}
+print(dest1) # => {"name": "bob", "age": 0, "nest": {"name": "mary", "age": 1}}
 
-copy2["nest"]["age"] -= 30
-print(src)   # => {"name": "bob", "age": 20, "nest": {"name": "mary", "age": 130}}
-print(copy2) # => {"name": "bob", "age": 20, "nest": {"name": "mary", "age": 0}}
+dest2["age"] = 2
+dest2["nest"]["age"] = 3
+print(src)   # => {"name": "bob", "age": 20, "nest": {"name": "mary", "age": 3}}
+print(dest2) # => {"name": "bob", "age": 2, "nest": {"name": "mary", "age": 3}}
+
+dest3["age"] = 4
+dest3["nest"]["age"] = 5
+print(src)   # => {"name": "bob", "age": 20, "nest": {"name": "mary", "age": 5}}
+print(dest3) # => {"name": "bob", "age": 4, "nest": {"name": "mary", "age": 5}}
+
+print(src)  # => {"name": "bob", "age": 20, "nest": {"name": "mary", "age": 5}}
+print(dest1)  # => {"name": "bob", "age": 0, "nest": {"name": "mary", "age": 5}}
+print(dest2)  # => {"name": "bob", "age": 2, "nest": {"name": "mary", "age": 5}}
+print(dest3)  # => {"name": "bob", "age": 4, "nest": {"name": "mary", "age": 5}}
 ```
 
 :::message alert
-値を変更する時、副作用に注意しましょう
+- プリミティブ型（整数や文字列）など単一の値は状態が分離されていますが、コンテナ型（辞書やリストなど）は内包している値が共有されてしまうことに注意しましょう
 :::
+
+## ディープコピーする
+ネストした値までコピーしたい場合は、`copy`モジュールの`deepcopy`で実現することができます。
+
+``` python
+src = {"name": "bob", "age": 20, "nest": {"name": "mary", "age": 30}}
+
+# 方法１
+import copy
+dest = copy.deepcopy(src)
+
+# 結果確認
+dest["nest"]["age"] = 0
+print(src)   # => {"name": "bob", "age": 20, "nest": {"name": "mary", "age": 30}}
+print(dest) # => {"name": "bob", "age": 20, "nest": {"name": "mary", "age": 0}}
+```
 
 # マージ編
 ２つ以上の辞書をマージする方法はいくつもあります。それらは、同じ挙動であったり、異なる挙動であったり注意点があるため、状況に応じて使い分けてください。
