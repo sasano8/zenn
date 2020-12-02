@@ -411,15 +411,15 @@ python3.9を軸にルールを設けていますので、バージョン毎に�
 | | dic["new"] = dic.pop("a") | キー変更 | |
 | | dic.clear() | 全削除 | |
 | | dic["new"] = dic.pop("old") | キー変更 | |
-| | for value in dic: | 列挙/キー | keysを使おう |
+| | for value in dic: | 列挙 | keysを使おう |
 | | dic.keys() | 列挙 | キーを列挙する |
 | | dic.values() | 列挙 | 値を列挙する |
 | | dic.items() | 列挙 | キーと値のタプルを列挙する |
 | <=2.* | dic.iteritems() | 列挙 | python3でitemsに統合された |
 | | dict(\**dic) | コピー | copyメソッドを使おう |
 | | dict(dic) | コピー | copyメソッドを使おう |
-| | dic.copy() | コピー | |
-| | copy.deepcopy(dic) | ディープコピー | |
+| | dic.copy() | コピー | シャローコピーする |
+| | copy.deepcopy(dic) | コピー | ディープコピーする |
 | ^3.5 | {\**dic1, \**dic2} | 作成/マージ | 和集合演算子（\|）を使おう |
 | | dict(dic1, \**dic2) | 作成/マージ | 和集合演算子（\|）を使おう |
 | ^3.9 | dic1 \| dic2 | 作成/マージ | キーが衝突する場合、右辺の値で上書き |
