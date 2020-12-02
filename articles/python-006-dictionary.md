@@ -440,7 +440,7 @@ python3.9を軸にルールを設けていますので、バージョン毎に�
 | マージ/作成 | dict(key1=1, \**dic2) | キーが衝突する場合、TypeErrorが発生 |  |
 | マージ/作成 | func(\**dic1, \**dic2) | キーが衝突する場合、TypeErrorが発生 | ^3.5 |
 | 初期値保持 | defaultdict(list) | コンストラクタに渡したファクトリ関数の戻り値を初期値とする辞書を作成 | |
-| 順序性保持 | OrderedDict | python3.7以降はdictがOrderedDict相当の順序を保持するようになったため不要 | <=3.6 |
+| 順序性保持 | OrderedDict | python3.7以降はdictがOrderedDict相当の順序を保持するようになったため不要 | <=3.6.* |
 | 再登録禁止 | | 自作する（__setitem__等をオーバーライド） | |
 
 
