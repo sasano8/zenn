@@ -198,9 +198,9 @@ for key, value in dic1.iteritems():
 ```
 
 # マージ編
+２つ以上の辞書をマージする方法はいくつもあります。それらは、同じ挙動であったり、異なる挙動であったり注意点があるため、状況に応じて使い分けてください。
 
-## ソース辞書
-結合対象の辞書として、以下２つ辞書をソースとして利用します。
+前提として、以下２つの辞書をマージ対象の辞書として利用します。
 ```
 dic1 = {"name": "bob", "age": 20}
 dic2 = {"name": "mary"}
@@ -241,6 +241,46 @@ dic1.update(dic2)
 dic1 |= dic2
 # => {"name": "mary", "age": 20}
 ```
+
+## 辞書をマージする（衝突するキーは許容しない）
+辞書をマージする際、衝突したキーの値を上書きしたくない、もしくは、キーの衝突があるか分からない場合は、以下の方法でキー衝突時にエラーを発生させることが可能です。
+
+``` python
+# 方法１
+dict(**dic1, **dic2)
+# => TypeError: func() got multiple values for keyword argument 'name'
+
+# リテラル表記と組み合わせて使用することも可能
+dict(key1="val1", key2="val2", **dic1}
+# => {"key1": "val1", "key2": "val2", "name": "bob", "age": 20}
+
+# dict関数を用いなくとも、キーワード引数としてアンパックする際は同様の効果が得られる
+def func(**kwargs):
+  pass
+
+func(**dic1, **dic2)
+# => TypeError: func() got multiple values for keyword argument 'name'
+
+# 以下のようなケースでも、重複してキーが渡ってくることはない
+def func(name, age, **kwargs):
+  pass
+
+func(**dic1, **dic2)
+# => TypeError: func() got multiple values for keyword argument 'name'
+
+# 注意
+# dictの代わりに{}を使用した場合、結果はマージとなるため、混同して使用しないようにしましょう
+{**dic1, **dic2}
+# => {"name": "mary", "age": 20}
+```
+
+:::message
+- キーが衝突するか分からない場合は、キーの衝突が検知できるようにこの方法を使用しましょう
+:::
+
+:::message alert
+dict(\**dic1, \**dic2)と{\**dic1, \**dic2}は挙動が違うため、キーの衝突を許容しない場合は必ずdict関数を使うように意識しましょう
+:::
 
 ### マージの際、ネストした辞書はどうなる？
 さて、マージの方法が分かったところで、以下のコードを見てみましょう。
@@ -301,46 +341,6 @@ def deepupdate(dict_base, other):
       dict_base[k] = v
 ```
 
-
-## 辞書をユニオンする（衝突するキーの値の上書きを許容しない）
-辞書をマージする際、衝突したキーの値を上書きしたくない、もしくは、キーの衝突があるか分からない場合は、以下の方法でキー衝突時にエラーを発生させることが可能です。
-
-``` python
-# 方法１
-dict(**dic1, **dic2)
-# => TypeError: func() got multiple values for keyword argument 'name'
-
-# リテラル表記と組み合わせて使用することも可能
-dict(key1="val1", key2="val2", **dic1}
-# => {"key1": "val1", "key2": "val2", "name": "bob", "age": 20}
-
-# dict関数を用いなくとも、キーワード引数としてアンパックする際は同様の効果が得られる
-def func(**kwargs):
-  pass
-
-func(**dic1, **dic2)
-# => TypeError: func() got multiple values for keyword argument 'name'
-
-# 以下のようなケースでも、重複してキーが渡ってくることはない
-def func(name, age, **kwargs):
-  pass
-
-func(**dic1, **dic2)
-# => TypeError: func() got multiple values for keyword argument 'name'
-
-# 注意
-# dictの代わりに{}を使用した場合、結果はマージとなるため、混同して使用しないようにしましょう
-{**dic1, **dic2}
-# => {"name": "mary", "age": 20}
-```
-
-:::message
-- キーが衝突するか分からない場合は、キーの衝突が検知できるようにこの方法を使用しましょう
-:::
-
-:::message alert
-dict(\**dic1, \**dic2)と{\**dic1, \**dic2}は挙動が違うため、キーの衝突を許容しない場合は必ずdict関数を使うように意識しましょう
-:::
 
 # 特殊な辞書編
 
