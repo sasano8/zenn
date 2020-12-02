@@ -13,7 +13,7 @@ https://gist.github.com/kemsakurai/3f2c5ad0638391e01fd687bd5fa8bd88
 # この記事を書いた動機
 pythonで辞書を操作する際に、状況別の特定操作の実現方法が様々で混乱していたため、自分なりに検証・整理するために本記事を執筆しました。
 
-本記事[まとめ](#まとめ)の章で、検証結果をコンパクトにまとめましたので、実装する際のガイドラインとして活用いただければ幸いです。
+本記事で紹介する操作と挙動は、本記事[まとめ](#まとめ)の章でコンパクトにまとめましたので、実装する際のガイドラインとして活用いただければ幸いです。
 
 # 検証環境
 - python3.9.0
@@ -46,6 +46,7 @@ dic = dict(1=0)  # 整数はキーワード引数で用いることができな�
 :::
 
 ## 要素（キーと値）を登録する
+要素を登録する際は、キーの有無に応じて、いくつか登録方法を使い分けることができます。
 
 ``` python
 # 方法１
@@ -53,13 +54,13 @@ dic = dict(1=0)  # 整数はキーワード引数で用いることができな�
 dic1['key'] = "val"
 
 # 方法２
-# キーが存在しない場合、値をにNoneを登録した上で、登録されている値を取得する
-val = dic1.setdefault('new')
+# キーに対応する値を返す。キーが存在しない場合、値をにNoneを登録した上で、登録されている値を返す
+val = dic.setdefault('new')
 # => None
 
 # 方法３
-# キーが存在しない場合、値をに第２引数の値を登録した上で、登録されている値を取得する
-val = dic1.setdefault('new', 0)
+# キーに対応する値を返す。キーが存在しない場合、値をに第２引数の値を登録した上で、登録されている値を返す
+val = dic.setdefault('new', 0)
 # => 0
 ```
 
@@ -89,50 +90,53 @@ dic["new"] = dic.pop("old")
 
 
 ## 要素を削除する
+要素を削除する際は、キーの有無に応じて、いくつか削除方法を使い分けることができます。
+
 ``` python
 # 方法１
-# パフォーマンスが最も優れます
-# キーが存在しない場合は、KeyErrorが発生します
-del dic1["name"]
+# 性能が最も優れる
+# キーが存在しない場合は、KeyErrorが発生する
+del dic["name"]
 
 # 方法２
-# キーを削除しながら値を受け取ることができます
-# キーが存在しない場合は、KeyErrorが発生します
-val = dic1.pop("name")
+# キーを削除しながら値を返す
+# キーが存在しない場合は、KeyErrorが発生する
+val = dic.pop("name")
 
 # 方法３
-# キーを削除しながら値を受け取ることができます
-# キーが存在しない場合は、第２引数の値をデフォルト値として受け取ります
-val = dic1.pop("a", None)
+# キーを削除しながら値を返す
+# キーが存在しない場合は、第２引数の値を返す
+val = dic.pop("a", None)
 
 # 方法４
 # 要素を一つ無作為に削除する
 # どの要素が削除されるか不明。python3.7からは辞書の要素順が保存されるようになり、最後の要素から削除されている模様だが、順序を期待した処理を書くべきではない
-key_value = dic1.popitem()
-# => ('age', 20)
+key_value = dic.popitem()
 ```
 
+:::message
+- 多少でも性能を気にしたい場合は、delを用いましょう
+:::
+
+
 ## 複数の要素を削除する
-複数のキーを削除したい場合は以下のように。なお、delはリスト内包表記で利用することはできません。
+複数の要素を削除したい場合の例を紹介します。なお、delはリスト内包表記で利用することはできません。
 
 ``` python
 # 方法１
 for key in some_keys:
-  del dic1[key]
+  del dic[key]
 
 # 方法２(パフォーマンス的に方法1を推奨)
-[dic1.pop(key, None) for key in some_keys]
+[dic.pop(key, None) for key in some_keys]
 ```
 
 ## 全ての要素を削除する
+全ての要素を削除する場合は、`clear`メソッドを用います。
+
 ``` python
 # 方法１
-dic1.clear()
-# => {}
-
-# 方法２
-for key, value in dic1.popitem():
-  pass
+dic.clear()
 # => {}
 ```
 
@@ -141,27 +145,26 @@ for key, value in dic1.popitem():
 
 ``` python
 # キーを列挙する
-for key in dic1:
+for key in dic:
   print(key)
 
 # キーを列挙する
-for key in dic1.keys():
+for key in dic.keys():
   print(key)
 
 # 値を列挙する
-for value in dic1.values():
+for value in dic.values():
   print(value)
 
-# キーと値を列挙する
-for key, value in dic1.items():
+# 要素（キーと値のタプル）を列挙する
+for key, value in dic.items():
   print(key, value)
 
-# キーと値を列挙する
+# 要素（キーと値のタプル）を列挙する
 # python2.x系ではitemsよりオーバーヘッドが少ないiteritemsが用意されている。（itemsはリストを生成しているためコストが大きい）
 # python3系ではitemsの実装が改善され、dict_items（キーバリューペア列挙機能を実装したイテラブルなオブジェクト）を返すようになったため、iteritemsは廃止された。
-for key, value in dic1.iteritems():
+for key, value in dic.iteritems():
   print(key, value)
-
 ```
 
 ## シャローコピーする
@@ -221,16 +224,16 @@ import copy
 dest = copy.deepcopy(src)
 
 # 結果確認
-dest["nest"]["age"] = 0
+dest["nest"]["age"] = 5
 print(src)   # => {"name": "bob", "age": 20, "nest": {"name": "mary", "age": 30}}
-print(dest) # => {"name": "bob", "age": 20, "nest": {"name": "mary", "age": 0}}
+print(dest) # => {"name": "bob", "age": 20, "nest": {"name": "mary", "age": 5}}
 ```
 
 # マージ編
 ２つ以上の辞書をマージする方法はいくつもあります。それらは、同じ挙動であったり、異なる挙動であったり注意点があるため、状況に応じて使い分けてください。
 
 前提として、以下２つの辞書をマージ対象の辞書として利用します。
-```
+``` python
 dic1 = {"name": "bob", "age": 20}
 dic2 = {"name": "mary"}
 ```
@@ -352,7 +355,7 @@ deep_merge(a, b)
 
 参考までに、ディープマージするためのコード例を載せておきます。
 
-```
+``` python
 def deep_merge(dic1, dic2):
   import copy
   src1 = copy.deepcopy(dic1)
