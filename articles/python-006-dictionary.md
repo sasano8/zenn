@@ -130,6 +130,34 @@ for key, value in dic1.popitem():
 # => {}
 ```
 
+## キーや値を列挙する
+以下のようにキーや値を列挙することができます。
+
+``` python
+# キーを列挙する
+for value in dic1:
+  print(value)
+
+# キーを列挙する
+for key in dic1.keys():
+  print(key)
+
+# 値を列挙する
+for value in dic1.values():
+  print(value)
+
+# キーと値を列挙する
+for key, value in dic1.items():
+  print(key, value)
+
+# キーと値を列挙する
+# python2.x系ではitemsよりオーバーヘッドが少ないiteritemsが用意されている。（itemsはリストを生成しているためコストが大きい）
+# python3系ではitemsの実装が改善され、dict_items（キーバリューペア列挙機能を実装したイテラブルなオブジェクト）を返すようになったため、iteritemsは廃止された。
+for key, value in dic1.iteritems():
+  print(key, value)
+
+```
+
 
 ## 辞書をコピーする
 辞書をコピーする場合、シャローコピー（参照のコピー）とディープコピー（再帰的に値をコピーし、新たなインスタンスを作成）に注意しましょう。
@@ -170,34 +198,6 @@ print(copy2) # => {"name": "bob", "age": 20, "nest": {"name": "mary", "age": 0}}
 値を変更する時、副作用に注意しましょう
 :::
 
-## キーや値を列挙する
-以下のようにキーや値を列挙することができます。
-
-``` python
-# キーを列挙する
-for value in dic1:
-  print(value)
-
-# キーを列挙する
-for key in dic1.keys():
-  print(key)
-
-# 値を列挙する
-for value in dic1.values():
-  print(value)
-
-# キーと値を列挙する
-for key, value in dic1.items():
-  print(key, value)
-
-# キーと値を列挙する
-# python2.x系ではitemsよりオーバーヘッドが少ないiteritemsが用意されている。（itemsはリストを生成しているためコストが大きい）
-# python3系ではitemsの実装が改善され、dict_items（キーバリューペア列挙機能を実装したイテラブルなオブジェクト）を返すようになったため、iteritemsは廃止された。
-for key, value in dic1.iteritems():
-  print(key, value)
-
-```
-
 # マージ編
 ２つ以上の辞書をマージする方法はいくつもあります。それらは、同じ挙動であったり、異なる挙動であったり注意点があるため、状況に応じて使い分けてください。
 
@@ -212,17 +212,13 @@ dic2 = {"name": "mary"}
 [^2]: pep448 [リンク](https://www.python.org/dev/peps/pep-0448/)
 
 ``` python
-# 方法１（python3.5から辞書作成時に展開記法が使用可能）
+# 方法１（python3.5から辞書作成時に展開記法が使用可能） 性能的にも優れたマージ方法です
 {**dic1, **dic2}
 # => {"name": "mary", "age": 20}
 
 # リテラル表記と組み合わせて使用することも可能
-{"key1": "val1", "key2": "val2", **dic1}
-# => {"key1": "val1", "key2": "val2", "name": "bob", "age": 20}
-
-# なお、波括弧での辞書宣言時はキーが衝突してようとおかまいなしなので注意
-{"name": "bob", "name": "mary"}
-# => {"name": "mary"}
+{"name": "bob", "age": 20, **dic2}
+# => {"name": "mary", "age": 20}
 
 # 方法2
 dict(dic1, **dic2)
@@ -427,7 +423,7 @@ python3.9を軸にルールを設けていますので、バージョン毎に�
 | 列挙 | dic.keys() | キーを列挙する | |
 | 列挙 | dic.values() | 値を列挙する | |
 | 列挙 | dic.items() | キーと値のタプルを列挙する | |
-| 列挙 | dic.iteritems() | python3で`items`に統合された | <=2.* |
+| 列挙 | dic.iteritems() | python3で`items`に統合された[^3] | <=2.* |
 | コピー | dict(\**dic) | `copy`メソッドを使おう | |
 | コピー | dict(dic) | `copy`メソッドを使おう | |
 | コピー | dic.copy() | シャローコピーする | |
@@ -457,4 +453,6 @@ python3.9を軸にルールを設けていますので、バージョン毎に�
 | ユニオン | 複数の辞書のキーとバリューを辞書の要素として展開し結合する。キーが衝突する場合は、エラーとなる。[^1] |
 
 
-[^1]: [pep584](https://www.python.org/dev/peps/pep-0584/)にて、ユニオンオペレーターはマージのことを指していますが、本記事におけるユニオンとはpep584のユニオンと関係ないものとしてください。（適切な単語が思い浮かびませんでした。）
+[^1]: [pep-584](https://www.python.org/dev/peps/pep-0584/)にて、ユニオンオペレーターはマージのことを指していますが、本記事におけるユニオンとはpep584のユニオンと関係ないものとしてください。（適切な単語が思い浮かびませんでした。）
+
+[^3]: [pep-3106](https://www.python.org/dev/peps/pep-3106/)iteritemsはpython3で`items`に統合されました
