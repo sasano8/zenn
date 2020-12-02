@@ -10,30 +10,36 @@ published: false
 https://gist.github.com/kemsakurai/3f2c5ad0638391e01fd687bd5fa8bd88
 
 
-# はじめに
-pythonにおける辞書操作は基礎的なことですが、ケースによって操作の使い分けが必要です。しかし、人により様々な方法を用いていたり、著者も毎回やり方がブレるという状況でしたので、自分なりのプラクティスをを整理するために本記事を執筆しました。
-
-特に今回は、２つの辞書をマージする方法は分かった。でも、「キーの衝突を許可しないマージを行いたい」というケースに遭遇し、それが大きな検証動機になっています。
-そのついでに一通り基礎操作をまとめたので、誰かのガイドラインとして役に立てば幸いです。
+# この記事を書いた動機
+pythonで辞書を操作する際に、適切なメソッドやメソッドの挙動が分からず、また、検索結果によって実現方法が異なり混乱していたため、自分なりに検証・整理するために本記事を執筆しました。
+本記事まとめの章で、検証結果をコンパクトにまとめましたので、実装する際のガイドラインとして活用いただければ幸いです。
 
 # 検証環境
 - python3.9.0
 
-本記事では、python3.5以降から利用可能な構文を多く利用するため、python3.5未満のユーザーはあまり参考にならないと思います。
-
-# 用語
-本記事では以下の操作を区別し執筆しています。（これらの概念の正式名称があれば教えていただけると幸いです。）
-
-| 用語 | 概要 |
-| :---- | :---- |
-| 結合 | 複数の辞書を１つにまとめる。 |
-| マージ | 複数の辞書を結合し、かつ、衝突するキーに対しては後勝ちで値を上書きする。 |
-| ユニオン | 複数の辞書のキーとバリューを辞書の要素として展開し結合する。キーが衝突する場合は、エラーとなる。[^1] |
-
-
-[^1]: [pep584](https://www.python.org/dev/peps/pep-0584/)にて、ユニオンオペレーターはマージのことを指していますが、本記事におけるユニオンとはpep584のユニオンと関係ないものとしてください。（適切な単語が思い浮かびませんでした。）
+メインの読者ターゲットは、python3.5以降のユーザーです。一応、python2の歴史も軽く追っています。
 
 # 基礎編
+
+## 辞書を追加したい
+辞書リテラル(`{}`)かdict関数を用いて、辞書を作成することができます。
+
+``` python
+# 方法１
+dic = {"key": "test"}
+
+# 方法２
+dic = dict(key="test")
+
+# 例外(fromは予約語のため、キーワード引数で用いることができません)
+dic = dict(from=0)
+# => SyntaxError: invalid syntax
+```
+
+:::message
+- 辞書リテラルで文字列キーを定義する場合、キーは文字リテラルを用いる必要があります
+- dict関数で文字列キーを定義する場合、キーワード引数がそのままキーとして定義されます。ただし、キーが予約語の場合、SyntaxErrorとなります
+:::
 
 ## 値を追加したい
 
@@ -53,73 +59,25 @@ val = dic1.setdefault('new_key', 0)
 # => 0
 ```
 
-## 初期値を持つ辞書を作成したい
-リストを初期値とする辞書を作成したい場合など、いちいち初期値とするリストを渡すのは億劫です。
-そのような場合、defaultdictを利用することができます。
-
-``` python
-from collections import defaultdict
-
-# 方法１
-# 引数無しで実行可能なコンストラクタを持つ型を渡せば、初期値としてインスタンスを渡してくれます
-dic = defaultdict(list)
-
-dic["family"].append("father")
-print(dic)
-# => defaultdict(<class 'list'>, {'family': ['father']})
-
-# 方法２
-# 引数無しで実行可能な関数を渡せば、戻り値を初期値としてくれます
-def create_default():
-    return ["mather"]
-
-dic = defaultdict(create_default)
-# もしくは
-dic = defaultdict(lambda: ["mather"])
-
-dic["family"].append("father")
-print(dic)
-# => defaultdict(<function <lambda> at 0xXXXXXXXXX>, {'family': ['mather', 'father']})
-```
-
-なお、getを利用して同様のことができそうですが、ソースの辞書に初期値を登録するわけではないので、以下の例では元の辞書は空っぽのままです。
-``` python
-dic = {}
-dic.get("family", []).append("father")
-# => {}
-```
-
-
-## 再代入禁止の辞書を作成したい
-
-
-``` python
-class OnceDict(dict):
-    def __setitem__(self, key, value):
-        if key in self:
-            raise KeyError(f"{key} is already exists.")
-        super().__setitem__(key, value)
-
-
-dic = OnceDict({"a": 1})
-dic["a"] = 3
-# => KeyError: 'a is already exists.'
-```
-
-
 ## 辞書からキーに対応する値を取得したい
 ``` python
 # 方法１
 # キーが存在しない場合は、KeyErrorが発生します
-val = dic1["name"]
+val = dic["name"]
 
 # 方法２
 # キーが存在しない場合は、Noneが返ります
-val = dic1.get("name")
+val = dic.get("name")
 
 # 方法３
 # キーが存在しない場合は、第２引数の値をデフォルト値として受け取ります
-val = dic1.get("name", 0)
+val = dic.get("name", 0)
+```
+
+## キーを変更したい
+popを用いることで簡潔に実現することができます。
+``` python
+dic["new"] = dic.pop("old")
 ```
 
 
@@ -147,13 +105,14 @@ key_value = dic1.popitem()
 ```
 
 ## 辞書から複数のキーと値を削除したい
-複数のキーを削除したい場合は以下のように。delはリスト内包表記で利用することはできません。
+複数のキーを削除したい場合は以下のように。なお、delはリスト内包表記で利用することはできません。
+
 ``` python
 # 方法１
 for key in some_keys:
   del dic1[key]
 
-# 方法２
+# 方法２(パフォーマンス的に方法1を推奨)
 [dic1.pop(key, None) for key in some_keys]
 ```
 
@@ -237,7 +196,7 @@ for key, value in dic1.iteritems():
 
 ```
 
-# 結合操作編
+# マージ編
 
 ## ソース辞書
 結合対象の辞書として、以下２つ辞書をソースとして利用します。
@@ -382,14 +341,63 @@ func(**dic1, **dic2)
 dict(\**dic1, \**dic2)と{\**dic1, \**dic2}は挙動が違うため、キーの衝突を許容しない場合は必ずdict関数を使うように意識しましょう
 :::
 
-# 応用編
+# 特殊な辞書編
 
-## キーを変更したい
+## 初期値を保持した辞書を作成したい
+リストを初期値とする辞書を作成したい場合など、いちいち初期値とするリストを渡すのは億劫です。
+そのような場合、defaultdictを利用することができます。
+
 ``` python
-dic1["new_key"] = dic1.pop("old_key")
+from collections import defaultdict
+
+# 方法１
+# 引数無しで実行可能なコンストラクタを持つ型を渡せば、初期値としてインスタンスを渡してくれます
+dic = defaultdict(list)
+
+dic["family"].append("father")
+print(dic)
+# => defaultdict(<class 'list'>, {'family': ['father']})
+
+# 方法２
+# 引数無しで実行可能な関数を渡せば、戻り値を初期値としてくれます
+def create_default():
+    return ["mather"]
+
+dic = defaultdict(create_default)
+# もしくは
+dic = defaultdict(lambda: ["mather"])
+
+dic["family"].append("father")
+print(dic)
+# => defaultdict(<function <lambda> at 0xXXXXXXXXX>, {'family': ['mather', 'father']})
+```
+
+なお、getを利用して同様のことができそうですが、ソースの辞書に初期値を登録するわけではないので、以下の例では元の辞書は空っぽのままです。
+``` python
+dic = {}
+dic.get("family", []).append("father")
+# => {}
 ```
 
 
+## 順序性を保持した辞書を作成したい
+
+## 再登録禁止の辞書を作成したい
+意図せず値が上書きされることを防ぐため、再登録不可な辞書を作成したい場合があるかもしれません。
+標準では機能が用意されていませんが、以下のように`__setitem__`をオーバーライドすることで実現可能です。
+
+``` python
+class OnceDict(dict):
+    def __setitem__(self, key, value):
+        if key in self:
+            raise KeyError(f"{key} is already exists.")
+        super().__setitem__(key, value)
+
+
+dic = OnceDict({"a": 1})
+dic["a"] = 3
+# => KeyError: 'a is already exists.'
+```
 
 
 # まとめ
@@ -400,6 +408,8 @@ python3.9を軸にルールを設けていますので、バージョン毎に�
 
 | バージョン | コード例 | 要求 | 備考 |
 | ---- | ---- | ---- | ---- |
+| | dic = {"key": "value"} | 作成 | |
+| | dic = dict(key="value") | 作成| keyに予約語を渡した場合、SyntaxErrorが発生 |
 | | dic["name"] = val | 登録 | |
 | | dic.setdefault("key", 0) | 登録/取得 | キーが存在しない場合、第２引数の値を登録した上で、キーの値を返す |
 | | dic["name"] | 取得 | キーが存在しない場合、KeyErrorが発生 |
@@ -408,9 +418,8 @@ python3.9を軸にルールを設けていますので、バージョン毎に�
 | | del dic["name"] | 削除 | キーが存在しない場合、KeyErrorが発生 |
 | | dic.pop("name") | 削除/取得 | キーが存在しない場合、KeyErrorが発生 |
 | | dic.pop("a", None) | 削除/取得 | キーが存在しない場合、第２引数の値を返す |
-| | dic["new"] = dic.pop("a") | キー変更 | |
-| | dic.clear() | 全削除 | |
 | | dic["new"] = dic.pop("old") | キー変更 | |
+| | dic.clear() | 全削除 | |
 | | for value in dic: | 列挙 | keysを使おう |
 | | dic.keys() | 列挙 | キーを列挙する |
 | | dic.values() | 列挙 | 値を列挙する |
@@ -426,11 +435,23 @@ python3.9を軸にルールを設けていますので、バージョン毎に�
 | ^3.9 | func(\**(dic1 \| dic2)) | 作成/マージ | キーが衝突する場合、右辺の値で上書き  |
 |  | dic1.update(dic2) | 更新/マージ | 累算代入演算子（\|=）を使おう |
 | ^3.9 | dic1 \|= dic2 | 更新/マージ | キーが衝突する場合、右辺の値で上書き  |
-| | | ディープマージ | 自作かライブラリを用いる |
+| | | ディープマージ | ディープコピーしたい場合は、deepcopyや自作・ライブラリを用いる必要あり |
 | ^3.5 | dict(\**dic1, \**dic2) | 作成/マージ | キーが衝突する場合、TypeErrorが発生 |
 |  | dict(key1=1, \**dic2) | 作成/マージ | キーが衝突する場合、TypeErrorが発生 |
 | ^3.5  | func(\**dic1, \**dic2) | 作成/マージ | キーが衝突する場合、TypeErrorが発生 |
-| | | 更新/マージ | 対応する操作は存在しない |
 | | defaultdict(list) | 初期値保持 | コンストラクタに渡したファクトリ関数の戻り値を初期値とする辞書を作成 |
 | <=3.6 | OrderedDict | 順序性保持 | python3.7以降はdictがOrderedDict相当の順序を保持するようになったため不要 |
-| | | 再代入禁止 | 自作する（__setitem__等をオーバーライド） |
+| | | 再登録禁止 | 自作する（__setitem__等をオーバーライド） |
+
+
+# 用語
+本記事では以下の操作を区別し執筆しています。（これらの概念の正式名称があれば教えていただけると幸いです。）
+
+| 用語 | 概要 |
+| :---- | :---- |
+| 結合 | 複数の辞書を１つにまとめる。 |
+| マージ | 複数の辞書を結合し、かつ、衝突するキーに対しては後勝ちで値を上書きする。 |
+| ユニオン | 複数の辞書のキーとバリューを辞書の要素として展開し結合する。キーが衝突する場合は、エラーとなる。[^1] |
+
+
+[^1]: [pep584](https://www.python.org/dev/peps/pep-0584/)にて、ユニオンオペレーターはマージのことを指していますが、本記事におけるユニオンとはpep584のユニオンと関係ないものとしてください。（適切な単語が思い浮かびませんでした。）
