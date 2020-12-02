@@ -174,6 +174,9 @@ for key, value in dic.iteritems():
   print(key, value)
 ```
 
+`for key in dic:`と`for key in dic.keys():`で実現することは一緒ですが、筆者は`for key in dic:`が何を列挙するのかいつも忘れてしまうため、`dic.keys()`を用いています。
+
+
 ## シャローコピーする
 辞書をコピーする方法を紹介します。いくつか実現方法がありますが、`copy`メソッドだけ覚えればよいでしょう。
 
