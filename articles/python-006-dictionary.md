@@ -12,10 +12,6 @@ https://gist.github.com/kemsakurai/3f2c5ad0638391e01fd687bd5fa8bd88
 # 本記事で伝えたいこと
 本記事では、**一般的な辞書操作とそれらの細かい挙動に応じた使い分け**を紹介しています。
 
-pythonで辞書を操作する際に、状況別の特定操作の実現方法が様々で混乱していたため、自分なりに検証・整理するために本記事を執筆しました。
-
-特に、標準的な機能の説明を網羅したドキュメントは存在するものの、一般的によくある実現したいことにフォーカスし、網羅したドキュメントが見つからなかったことが大きな動機です。
-
 本記事で紹介する辞書操作や挙動は、本記事[まとめ](#まとめ)の章でコンパクトにまとめましたので、本記事を一通りお読みいただいた後は、ガイドラインとしてまとめを活用いただければ幸いです。
 
 
@@ -25,11 +21,12 @@ pythonで辞書を操作する際に、状況別の特定操作の実現方法�
 読者のメインターゲットは、python3.5以上のユーザーです。
 検証環境は3.9ですが、python3.5系以上の互換性は調査・考慮しています。
 
-辞書操作について大体分かっているユーザーは、目次とまとめを見て気になった章だけお読みいただければと思います。
+python中級者以上の方は、目次とまとめを見て気になった章だけお読みいただければと思います。
 
 # 基礎編
 
 ## 辞書作成する
+辞書を作成する方法を紹介します。
 辞書リテラル`{}`か`dict`関数を用いて、辞書を作成することができます。
 
 ``` python
@@ -41,7 +38,7 @@ dic = {"key": "test"}
 dic = dict(key="test")
 
 # 例外
-dic = dict(from=0)  # fromは予約語のため、キーワード引数で用ことができない
+dic = dict(from=0)  # fromは予約語のため、キーワード引数で用いることができない
 dic = dict(1=0)  # 整数はキーワード引数で用いることができない
 # => SyntaxError: invalid syntax
 ```
@@ -52,26 +49,35 @@ dic = dict(1=0)  # 整数はキーワード引数で用いることができな�
 :::
 
 ## 要素（キーと値）を登録する
-要素を登録する際は、キーの有無に応じて、いくつか登録方法を使い分けることができます。
+辞書に要素を登録する方法を紹介します。
+同じキーに対して複数回値を登録しようとした場合は、上書きとなります。
 
 ``` python
-# 方法１
-# キーが存在する場合、新たな値で上書きされる
-dic1['key'] = "val"
+dic = {}
+dic['key'] = "val"
+```
 
-# 方法２
-# キーに対応する値を返す。キーが存在しない場合、値をにNoneを登録した上で、登録されている値を返す
-val = dic.setdefault('new')
-# => None
+要素を登録するために、`setdefault`を利用することもできます。
+`setdefault`は、第１引数でキーを指定し、そのキーが登録されていない場合は、第２引数の値を登録した上でその値を返します。（省略した場合は、Noneが登録されます）
 
-# 方法３
-# キーに対応する値を返す。キーが存在しない場合、値をに第２引数の値を登録した上で、登録されている値を返す
+``` python
+dic = {}
+# キーが存在していないので、新たなキーと値が登録されます
 val = dic.setdefault('new', 0)
 # => 0
+
+# すでにキーが存在しているので第２引数は無視されます
+val = dic.setdefault('new', 1)
+# => 0
+
+# 第２引数を省略するとNoneが登録されます
+dic = {}
+val = dic.setdefault('new')
+# => None
 ```
 
 ## キーに対応する値を取得する
-キーに対応する値を取得する際は、キーの有無に応じて、いくつか取得方法を使い分けることができます。
+キーに対応する値の取得方法を紹介します。
 
 ``` python
 # 方法１
@@ -85,18 +91,14 @@ val = dic.get("name")
 # 方法３
 # キーが存在しない場合は、第２引数の値が返る
 val = dic.get("name", None)
+
+# 方法４
+# キーが存在しない場合は、第２引数の値を登録した上で、その値を返す
+val = dic.setdefault("name", None)
 ```
-
-## キーを変更する
-専用のメソッドは用意されていませんが、`pop`を用いることで簡潔に実現することができます。
-
-``` python
-dic["new"] = dic.pop("old")
-```
-
 
 ## 要素を削除する
-要素を削除する際は、キーの有無に応じて、いくつか削除方法を使い分けることができます。
+要素を削除する方法を紹介します。
 
 ``` python
 # 方法１
@@ -121,11 +123,12 @@ key_value = dic.popitem()
 ```
 
 :::message
-- 多少でも性能を気にしたい場合は、delを用いましょう
+- 性能を気にする場合は、delを用いましょう
 :::
 
 
-複数の要素を削除したい場合の例を紹介します。なお、delはリスト内包表記で利用することはできません。
+複数の要素を削除したい場合の例を紹介します。
+なお、delはリスト内包表記で利用することはできません。
 
 ``` python
 some_keys = ["key1", "key2"]
@@ -147,8 +150,17 @@ dic.clear()
 # => {}
 ```
 
+## キーを変更する
+キーを変更する方法を紹介します。
+専用のメソッドは用意されていませんが、`pop`を用いることで簡潔に実現することができます。
+
+``` python
+dic["new"] = dic.pop("old")
+```
+
+
 ## キーや値を列挙する
-以下のようにキーや値を列挙することができます。
+キーや値を列挙する方法を紹介します。
 
 ``` python
 # キーを列挙する
@@ -168,17 +180,16 @@ for key, value in dic.items():
   print(key, value)
 
 # 要素（キーと値のタプル）を列挙する
-# python2.x系ではitemsよりオーバーヘッドが少ないiteritemsが用意されている。（itemsはリストを生成しているためコストが大きい）
-# python3系ではitemsの実装が改善され、dict_items（キーバリューペア列挙機能を実装したイテラブルなオブジェクト）を返すようになったため、iteritemsは廃止された。
+# python2.x系ではitemsよりオーバーヘッドが少ないiteritemsが用意されています。
+# python3系ではitemsの実装が改善され、iteritemsは削除されました。
 for key, value in dic.iteritems():
   print(key, value)
 ```
 
-`for key in dic:`と`for key in dic.keys():`で実現することは一緒ですが、筆者は`for key in dic:`が何を列挙するのかいつも忘れてしまうため、`dic.keys()`を用いています。
-
 
 ## シャローコピーする
-辞書をコピーする方法を紹介します。いくつか実現方法がありますが、`copy`メソッドだけ覚えればよいでしょう。
+辞書をコピーする方法を紹介します。
+いくつか実現方法がありますが、`copy`メソッドだけ覚えればよいでしょう。
 
 ``` python
 src = {"name": "bob", "age": 20, "nest": {"name": "mary", "age": 30}}
@@ -201,42 +212,40 @@ dest3 = src.copy()
 ``` python
 print(src)   # => {"name": "bob", "age": 20, "nest": {"name": "mary", "age": 30}}
 
-dest1["age"] = 0
-dest1["nest"]["age"] = 1
+dest1["nest"]["age"] = 0
+print(src)   # => {"name": "bob", "age": 20, "nest": {"name": "mary", "age": 0}}
+print(dest1) # => {"name": "bob", "age": 20, "nest": {"name": "mary", "age": 0}}
+
+dest2["nest"]["age"] = 1
 print(src)   # => {"name": "bob", "age": 20, "nest": {"name": "mary", "age": 1}}
-print(dest1) # => {"name": "bob", "age": 0, "nest": {"name": "mary", "age": 1}}
+print(dest2) # => {"name": "bob", "age": 20, "nest": {"name": "mary", "age": 1}}
 
-dest2["age"] = 2
-dest2["nest"]["age"] = 3
-print(src)   # => {"name": "bob", "age": 20, "nest": {"name": "mary", "age": 3}}
-print(dest2) # => {"name": "bob", "age": 2, "nest": {"name": "mary", "age": 3}}
+dest3["nest"]["age"] = 2
+print(src)   # => {"name": "bob", "age": 20, "nest": {"name": "mary", "age": 2}}
+print(dest3) # => {"name": "bob", "age": 20, "nest": {"name": "mary", "age": 2}}
 
-dest3["age"] = 4
-dest3["nest"]["age"] = 5
-print(src)   # => {"name": "bob", "age": 20, "nest": {"name": "mary", "age": 5}}
-print(dest3) # => {"name": "bob", "age": 4, "nest": {"name": "mary", "age": 5}}
-
-print(src)  # => {"name": "bob", "age": 20, "nest": {"name": "mary", "age": 5}}
-print(dest1)  # => {"name": "bob", "age": 0, "nest": {"name": "mary", "age": 5}}
-print(dest2)  # => {"name": "bob", "age": 2, "nest": {"name": "mary", "age": 5}}
-print(dest3)  # => {"name": "bob", "age": 4, "nest": {"name": "mary", "age": 5}}
+print(src)  # => {"name": "bob", "age": 20, "nest": {"name": "mary", "age": 2}}
+print(dest1)  # => {"name": "bob", "age": 20, "nest": {"name": "mary", "age": 2}}
+print(dest2)  # => {"name": "bob", "age": 20, "nest": {"name": "mary", "age": 2}}
+print(dest3)  # => {"name": "bob", "age": 20, "nest": {"name": "mary", "age": 2}}
 ```
 
 `src["nest"]`に登録されている辞書の値が影響を受けていますね。
 このような挙動を嫌う場合は、次章のディープコピーを用いてください。
 
 :::message alert
-- プリミティブ型（整数や文字列）など単一の値は状態が分離されていますが、コンテナ型（辞書やリストなど）は内包している値が共有されてしまうことに注意しましょう
+- プリミティブ型（整数や文字列）など単一の値は状態が分離されますが、コンテナ型（辞書やリストなど）は内包している値が共有されてしまうことに注意しましょう
 :::
 
 ## ディープコピーする
+ディープコピーの方法を紹介します。
 ネストした値までコピーしたい場合は、`copy`モジュールの`deepcopy`で実現することができます。
 
-``` python
-src = {"name": "bob", "age": 20, "nest": {"name": "mary", "age": 30}}
+シャローコピーにおける副作用を避けたい場合に利用しましょう。
 
-# 方法１
+``` python
 import copy
+src = {"name": "bob", "age": 20, "nest": {"name": "mary", "age": 30}}
 dest = copy.deepcopy(src)
 
 # 結果確認
@@ -246,8 +255,8 @@ print(dest) # => {"name": "bob", "age": 20, "nest": {"name": "mary", "age": 5}}
 ```
 
 # マージ編
-２つ以上の辞書を結合（マージ）して、１つの辞書にしたい場合の実現方法を紹介します。
-方法はいくつかあり、同じ挙動であったり、異なる挙動であったり注意点があるため、状況に応じて使い分けてください。
+２つ以上の辞書をマージして、１つの辞書にしたい場合の実現方法を紹介します。
+方法により挙動が異なるので、状況に応じて使い分けてください。
 
 前提として、以下２つの辞書をマージ対象の辞書として利用します。
 ``` python
@@ -256,26 +265,36 @@ dic2 = {"name": "mary"}
 ```
 
 ## マージする（衝突するキーは許容しない）
-辞書をマージする際、衝突したキーの値を上書きしたくない、もしくは、キーの衝突があるか分からない場合は、以下の方法でキー衝突時にエラーを発生させつつ、１つの辞書にまとめることができます。
-Python3.5から辞書作成時に複数のアンパック記法`**`が利用可能になっているため、アンパック記法の応用力が高くなっています。[^2]
+キーが衝突した場合に例外を発生させるマージ方法を紹介します。
+以下のように、`dict`関数とアンパック記法`**`を用いることで実現することができます。(python3.5以降)
 
 ``` python
-# 方法１
-dict(**dic1, **dic2)
+dic = dict(**{}, **{"name": "test"})
+# => {"name": "test"}
+
+# キーが衝突する場合はマージ不可
+dic = dict(**dic1, **dic2)
 # => TypeError: func() got multiple values for keyword argument 'name'
 
-# リテラル表記と組み合わせて使用することも可能
-dict(key1="val1", key2="val2", **dic1}
+# キーワード引数と組み合わせることも可能
+dic = dict(key1="val1", key2="val2", **dic1}
 # => {"key1": "val1", "key2": "val2", "name": "bob", "age": 20}
+```
 
-# dict関数を用いなくとも、キーワード引数としてアンパックする際は同様の効果が得られる
+:::message
+- キーの衝突を検知したい場合は、`dict`関数とアンパック記法`**`を用いましょう
+- Python3.5から辞書作成時に複数のアンパック記法`**`が利用可能になり、マージが簡単になりました。[^2]
+:::
+
+この方法は、`dict`関数に限った話でなく、関数に応用が可能です。
+
+``` python
 def func(**kwargs):
   pass
 
-func(**dic1, **dic2)
-# => TypeError: func() got multiple values for keyword argument 'name'
+func(**{}, **{"name": "test"})
 
-# 以下のようなケースでも、重複してキーが渡ってくることはない
+# 以下のようなケースでも、重複してキーが渡ってくることはありません
 def func(name, age, **kwargs):
   pass
 
@@ -283,29 +302,25 @@ func(**dic1, **dic2)
 # => TypeError: func() got multiple values for keyword argument 'name'
 ```
 
-:::message
-- キーの衝突を検知したい場合は、この方法を用いましょう
-:::
 
 ## マージする（衝突するキーの値は上書き）
 キーが衝突した場合、値を上書きするマージ方法を紹介します。
-前章で紹介した衝突するキーは許容しないマージ方法とともに使い分けましょう。
 
 ``` python
 # 方法１（python3.5から辞書作成時に展開記法が使用可能） 性能的にも優れたマージ方法です
-{**dic1, **dic2}
+dic = {**dic1, **dic2}
 # => {"name": "mary", "age": 20}
 
 # リテラル表記と組み合わせて使用することも可能
-{"name": "bob", "age": 20, **dic2}
+dic = {"name": "bob", "age": 20, **dic2}
 # => {"name": "mary", "age": 20}
 
 # 方法2
-dict(dic1, **dic2)
+dic = dict(dic1, **dic2)
 # => {"name": "mary", "age": 20}
 
 # 方法３（python3.9から和集合演算子が使用可能）
-dic1 | dic2
+dic = dic1 | dic2
 # => {"name": "mary", "age": 20}
 
 # 方法４
@@ -317,21 +332,31 @@ dic1.update(dic2)
 # ソースの辞書が更新されるため注意
 dic1 |= dic2
 # => {"name": "mary", "age": 20}
+```
 
-# 注意
-# {}の代わりにdictを使用する場合、あるいは、その逆とする場合、挙動が異なるため混同して使用しないようにしましょう
-{**dic1, **dic2}
+:::message
+- python3.5以降は、アンパック記法`**`を積極的に利用しましょう
+- python3.9以降は、`|`と`|=`を積極的に利用しましょう
+:::
+
+前章で紹介した、衝突するキーは許容しないマージ方法と混同しないように注意しましょう。
+
+``` python
+dic = {**dic1, **dic2}
 # => {"name": "mary", "age": 20}
 
-dict(**dic1, **dic2)
+dic = dict(**dic1, **dic2)
 # => TypeError: func() got multiple values for keyword argument 'name'
 ```
 
 :::message alert
-- `{**dic1, **dic2}`と`dict(**dic1, **dic2)`は挙動が違うため、うかつに置き換えないように注意しましょう
+- `{}`と`dict`関数は、挙動が異なるので注意が必要です。
 :::
 
+
 ## ディープマージ（ネストした辞書をマージ）する
+ディープマージの方法を紹介します。
+
 前章で紹介したマージは、ネストされた辞書同士のマージは行ってくれません。
 例を見てみましょう。
 
@@ -360,21 +385,19 @@ dic1 |= dic2
 # => {'nest': {'name': 'mary'}}
 ```
 
-ネストした辞書は、参照を共有しているだけです。
+ネストした辞書は、辞書ごと置き換えられています。
 場合によっては、以下のような結果が欲しいかもしれません。
 
 ``` python
 a = {"nest": {"name": "bob", "age": 20}}
 b = {"nest": {"name": "mary"}}
 
-deep_merge(a, b)
+dic = deep_merge(a, b)
 # => {'nest': {"name": "mary", "age": 20}}
 
 ```
 
-ディープマージするための機能は標準では提供されていないようです。
-リストの場合のマージ仕様など、考慮事項が多く挙動の定義が難しいのでしょう。
-
+ディープマージは、標準機能としては提供されていないため、関数を自作したり、ライブラリを使用する必要があります。
 参考までに、ディープマージするためのコード例を載せておきます。
 
 ``` python
@@ -395,14 +418,17 @@ def deep_merge_sub(dic1, dic2):
 a = {"nest": {"name": "bob", "age": 20}}
 b = {"nest": {"name": "mary"}}
 
-deep_merge(a, b)
+dic = deep_merge(a, b)
 # => {'nest': {"name": "mary", "age": 20}}
 ```
 
+上記コードは、ネストした辞書をマージしますが、リストのマージなどは未考慮です。
 
 # 特殊な辞書編
 
 ## 初期値を保持した辞書を作成する
+初期値保持した辞書を作成する方法を紹介します。
+
 例えば、履歴書を模した辞書に家族構成と学歴を登録するとしましょう。
 家族構成と学歴は、リストにいくつか値を登録することを想定しています。
 
@@ -448,9 +474,23 @@ dic2["new"]
 
 
 ## 順序性を保持した辞書を作成する
+要素の順序性を保持した辞書を作成する方法を紹介します。
+
 ``` python
 from collections import OrderedDict
+dic = OrderedDict()
+for key, value in dic.items():
+  print(f"{key} : {value}")
+
 ```
+
+python3.7以降は、標準の辞書も順序を保持するようになったので、使わないでいいでしょう。
+ただし、3.7では`OrderedDictで`サポートしている`__reversed__`が標準辞書でサポートされておらず、`reversed`関数などによる逆順操作ができません。（python3.8からサポート）
+
+:::message
+- python3.7以降は、標準の辞書も順序を保持するようになったので、使う場面が減った [stackoverflow](https://stackoverflow.com/questions/50872498/will-ordereddict-become-redundant-in-python-3-7)
+- python3.8以降は、標準の辞書も__reverse__をサポートするようになった  [issue33462](https://bugs.python.org/issue33462)
+:::
 
 ## 要素をカウントする辞書（カウンター）を作成する
 ``` python
@@ -526,5 +566,6 @@ python3.9を軸にルールを設けていますので、バージョン毎に�
 [^3]: [pep-3106](https://www.python.org/dev/peps/pep-3106/)にて、`iteritems`はpython3で`items`に統合されました
 [^4]: [pep-0468](https://www.python.org/dev/peps/pep-0468/)にて、辞書の要素は順序を保持するようになったが、過去との互換性やpopitemへの挙動は言及されていないため、削除順を期待すべきでない
 
-# まとめ
+# さいごに
 
+あああああｓｄふぁｓ
