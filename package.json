@@ -1,0 +1,27 @@
+{
+  "name": "zenn",
+  "version": "1.0.0",
+  "description": "zenn cliでローカル上でプレビューを行いながら記事を執筆することができます。 以下リンクを参考にzenn cliを導入してください。",
+  "main": "index.js",
+  "dependencies": {
+    "textlint": "^11.7.6",
+    "textlint-rule-preset-ja-spacing": "^2.0.2",
+    "textlint-rule-preset-ja-technical-writing": "^4.0.1",
+    "textlint-rule-spellcheck-tech-word": "^5.0.0",
+    "zenn-cli": "^0.1.59"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sasano8/zenn.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sasano8/zenn/issues"
+  },
+  "homepage": "https://github.com/sasano8/zenn#readme"
+}
