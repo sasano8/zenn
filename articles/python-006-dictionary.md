@@ -170,7 +170,6 @@ dic.clear()
 dic["new"] = dic.pop("old")
 ```
 
-
 ## 要素（キーや値）を列挙する
 要素（キーや値）を列挙する方法を紹介します。
 
@@ -198,96 +197,13 @@ for key, value in dic.iteritems():
   print(key, value)
 ```
 
-## ソートする
-辞書をソートする方法を紹介します。
-
-### デフォルトの列挙順序について
-Python3.7からは、辞書が返す要素の順序は挿入順序（更新時は順序に影響はありません）であることが保証されています。
-Python3.7未満は、辞書のデフォルト列挙順序は仕様に定義されていないので、どんな順序で返るかは分かりません。
-
-Python3.7未満で挿入順序を取り扱う場合は、[`OrderedDict`](#順序性を保持した辞書を作成する)を利用してください。
-
-### 数値をソートする
-`sorted`関数は、任意のキーでソートされたリストを返します。
-keyにソート用の関数を渡すと、その関数の戻り値の大小が昇順でソートされます。
-
-``` Python
-# 数値でをソートする
-dic = {"a": 1, "b": 0, "c": -1}
-
-# 値を昇順にソートし、値をリスト化する
-sorted(dic.values(), key=lambda x: x)
-# => [-1, ,0 ,2]
-
-# 値を昇順にソートし、値をリスト化する（keyを省略した場合は、暗黙的に列挙された値の大小が評価されます）
-sorted(dic.values())
-# => [-1, ,0 ,2]
-
-# 値を昇順にソートし、要素をリスト化する
-sorted(dic.items(), key=lambda x: x[1])
-# => [('c', -1), ('b', 0), ('a', 1)]
-
-# 値を降順にソートし、要素をリスト化する
-sorted(dic.items(), key=lambda x: -1 * x[1])
-# => [('a', 1), ('b', 0), ('c', -1)]
-
-# 値を絶対値を昇順順にソートし、要素をリスト化する
-sorted(dic.items(), key=lambda x: abs(x[1]))
-# => [('b', 0), ('a', 1), ('c', -1)]
-
-# このようにソートされたキーと値を処理することができます
-for key, value in sorted(dic.items()):
-    print(key, value)
-```
-
-### 文字列をソートする
-文字列も`sorted`関数を利用し、同様にソートできます。
-文字列にはそれぞれ文字コードが割り当てられており、文字コードに基づいた辞書順となります。
-
-辞書順は、先頭の文字順で並び、２文字目以降も同様に繰り返し並び替えられるイメージになります。
-なお、文字コードは、`ord`関数で確認できます。
-
-``` Python
-dic = {"a": "a", "b": "12", "c": "A", "d": "AA", "e": "2", "f": "1"}
-
-# 単純に値でソート
-sorted(dic.items(), key=lambda x: x[1])
-# => [('f', '1'), ('b', '12'), ('e', '2'), ('c', 'A'), ('d', 'AA'), ('a', 'a')]
-
-# 大小文字区別なくソート（全て小文字にして比較）
-sorted(dic.items(), key=lambda x: str.lower(x[1]))
-# => [('f', '1'), ('b', '12'), ('e', '2'), ('a', 'a'), ('c', 'A'), ('d', 'AA')]
-
-# 文字コード確認
-ord("0")
-# => 48
-
-ord("A")
-# => 65
-
-ord("a")
-# => 97
-```
-
-### 逆順にする
-`sorted`関数に`reverse=True`オプションを指定するか、`reversed`関数を利用し、列挙順序を逆にできます。
-
-ただし、Python3.8未満で辞書およびにビューオブジェクトに対して`reversed`を利用すると、`TypeError: object is not reversible`が発生します。
-Python3.8未満の場合は、`OrderedDict`を利用するか`sorted`関数を利用してください。
-
-``` Python
-dic = {"a": 0, "b": 1}
-
-for key in sorted(dic.keys(), reverse=True):
-  print(key)
-
-for key in reversed(dic.keys()):
-  print(key)
-```
-
 ## ビューオブジェクトについて
-辞書が持っている列挙用メソッド`keys``values``items`が返すオブジェクトについて紹介します。
-これらのメソッドはビューオブジェクトと呼ばれる列挙用のオブジェクトを返します。
+辞書が持っている列挙用メソッド`keys` `values` `items`が返すオブジェクトについて紹介します。
+
+これらのメソッドはビューオブジェクトと呼ばれるオブジェクトを返します。
+
+ビューオブジェクトは、辞書のように要素を追加できず、主に列挙に関する機能だけ提供します。
+ビューオブジェクトはソース辞書を参照しているため、ソース辞書に要素を追加した場合は同期的に動作します。
 
 ``` Python
 dic = {"a": 0}
@@ -299,6 +215,10 @@ values = dic.values()
 
 items = dic.items()
 # => dict_items([('a', 0)])
+
+# このように列挙処理が可能
+for key, value in items:
+  print(key, value)
 ```
 
 ## 要素数を調べる
@@ -449,15 +369,97 @@ print(src)   # => {"name": "bob", "age": 20, "nest": {"name": "mary", "age": 30}
 print(dest) # => {"name": "bob", "age": 20, "nest": {"name": "mary", "age": 5}}
 ```
 
+# ソート編
+辞書をソートする方法を紹介します。
+
+## デフォルトの列挙順序について
+Python3.7からは、辞書が返す要素の順序は挿入順序（更新時は順序に影響はありません）になりました。
+Python3.7未満では、順序に取り決めはありません（環境依存）。
+
+Python3.7未満で挿入順序を取り扱う場合は、[`OrderedDict`](#順序性を保持した辞書を作成する)を利用してください。
+
+## 数値をソートする
+`sorted`関数は、任意のキーでソートされたリストを返します。
+keyにソート用の関数を渡すと、その関数の戻り値の大小が昇順でソートされます。
+
+``` Python
+# 数値でをソートする
+dic = {"a": 1, "b": 0, "c": -1}
+
+# 値を昇順にソートし、値をリスト化する
+sorted(dic.values(), key=lambda x: x)
+# => [-1, ,0 ,2]
+
+# 値を昇順にソートし、値をリスト化する（keyを省略した場合は、暗黙的に列挙された値の大小が評価されます）
+sorted(dic.values())
+# => [-1, ,0 ,2]
+
+# 値を昇順にソートし、要素をリスト化する
+sorted(dic.items(), key=lambda x: x[1])
+# => [('c', -1), ('b', 0), ('a', 1)]
+
+# 値を降順にソートし、要素をリスト化する
+sorted(dic.items(), key=lambda x: -1 * x[1])
+# => [('a', 1), ('b', 0), ('c', -1)]
+
+# 値を絶対値を昇順順にソートし、要素をリスト化する
+sorted(dic.items(), key=lambda x: abs(x[1]))
+# => [('b', 0), ('a', 1), ('c', -1)]
+
+# このようにソートされたキーと値を処理することができます
+for key, value in sorted(dic.items()):
+    print(key, value)
+```
+
+## 文字列をソートする
+文字列も`sorted`関数を利用し、同様にソートできます。
+
+文字列にはそれぞれ文字コードが割り当てられており、文字コードに基づいた辞書順となります。
+辞書順は、先頭の文字順で並び、２文字目以降も同様に繰り返し並び替えられるイメージになります。
+
+なお、文字コードは、`ord`関数で確認できます。
+
+``` Python
+dic = {"a": "a", "b": "12", "c": "A", "d": "AA", "e": "2", "f": "1"}
+
+# 単純に値でソート
+sorted(dic.items(), key=lambda x: x[1])
+# => [('f', '1'), ('b', '12'), ('e', '2'), ('c', 'A'), ('d', 'AA'), ('a', 'a')]
+
+# 大小文字区別なくソート（全て小文字にして比較）
+sorted(dic.items(), key=lambda x: str.lower(x[1]))
+# => [('f', '1'), ('b', '12'), ('e', '2'), ('a', 'a'), ('c', 'A'), ('d', 'AA')]
+
+# 文字コード確認
+ord("0")
+# => 48
+
+ord("A")
+# => 65
+
+ord("a")
+# => 97
+```
+
+## 逆順にする
+`sorted`関数に`reverse=True`を指定するか、`reversed`関数を利用し、列挙順序を逆にできます。
+
+ただし、Python3.8未満で辞書およびにビューオブジェクトに対して`reversed`を利用すると、`TypeError: object is not reversible`が発生します。
+Python3.8未満の場合は、`OrderedDict`を利用するか`sorted`関数を利用してください。
+
+``` Python
+dic = {"a": 0, "b": 1}
+
+for key in sorted(dic.keys(), reverse=True):
+  print(key)
+
+for key in reversed(dic.keys()):
+  print(key)
+```
+
 # マージ編
 ２つ以上の辞書をマージして、１つの辞書にしたい場合の実現方法を紹介します。
 方法により挙動が異なるので、状況に応じて使い分けてください。
-
-前提として、以下２つの辞書をマージ対象の辞書として利用します。
-``` Python
-dic1 = {"name": "bob", "age": 20}
-dic2 = {"name": "mary"}
-```
 
 ## マージする（衝突するキーは許容しない）
 キーが衝突した場合に例外を発生させるマージ方法を紹介します。
@@ -466,6 +468,9 @@ dic2 = {"name": "mary"}
 ``` Python
 dic = dict(**{}, **{"name": "test"})
 # => {"name": "test"}
+
+dic1 = {"name": "bob", "age": 20}
+dic2 = {"name": "mary"}
 
 # キーが衝突する場合はマージ不可
 dic = dict(**dic1, **dic2)
@@ -502,6 +507,9 @@ func(**dic1, **dic2)
 キーが衝突した場合、値を上書きするマージ方法を紹介します。
 
 ``` Python
+dic1 = {"name": "bob", "age": 20}
+dic2 = {"name": "mary"}
+
 # 方法１（Python3.5から辞書作成時に展開記法が使用可能）
 dic = {**dic1, **dic2}
 # => {"name": "mary", "age": 20}
@@ -556,23 +564,23 @@ dic = dict(**dic1, **dic2)
 例を見てみましょう。
 
 ``` Python
-a = {"nest": {"name": "bob", "age": 20}}
-b = {"nest": {"name": "mary"}}
+dic1 = {"nest": {"name": "bob", "age": 20}}
+dic2 = {"nest": {"name": "mary"}}
 
 # 方法１
-{**a, **b}
+{**dic1, **dic2}
 # => {'nest': {'name': 'mary'}}
 
 # 方法２
-dict(a, **b)
+dict(dic1, **dic2)
 # => {'nest': {'name': 'mary'}}
 
 # 方法３
-a | b
+dic1 | dic2
 # => {'nest': {'name': 'mary'}}
 
 # 方法４
-a.update(b)
+dic1.update(dic2)
 # => {'nest': {'name': 'mary'}}
 
 # 方法５
