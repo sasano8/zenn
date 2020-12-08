@@ -204,9 +204,10 @@ for key, value in dic.iteritems():
 Python3.7からは、辞書が返す要素の順序は挿入順序（更新時は順序に影響はありません）であることが保証（3.6から実装され、3.7から正式に仕様として認定）されています。
 Python3.7以前で挿入順序を取り扱う場合は、[`OrderedDict`](#順序性を保持した辞書を作成する)を利用して上で本章を参考にしてください。
 
-### 任意のソートを実装する
+任意のソートを実装する
+-----
 `sorted`は、任意のキーでソートされたリストを返します。
-keyにソート用の関数を渡すと、その関数の戻り値の大小でソートが行われます。
+keyにソート用の関数を渡すと、その関数の戻り値の大小が昇順でソートされます。
 
 ``` Python
 # 数値でをソートする
@@ -233,6 +234,16 @@ sorted(dic.items(), key=lambda x: abs(x[1]))
 # => [('b', 0), ('a', 1), ('c', -1)]
 ```
 
+文字列をソートする
+-----
+
+```
+dic = {"a": "a", "b": "b", "c": "c"}
+
+sorted(reverse=True)
+sorted(dic.items(), key=lambda x: x[1])
+```
+
 ### 逆順にする
 列挙用メソッドと`reversed`を組み合わせることで、列挙順序を逆にできます。
 ただし、Python3.8未満で辞書およびにビューオブジェクトに対して`reversed`を利用すると、`TypeError: object is not reversible`が発生します。
@@ -242,16 +253,6 @@ Python3.8未満の場合は、`OrderedDict`を利用してください。
 dic = {"a": 0, "b": 1}
 for key in reversed(dic.keys()):
   print(key)
-```
-
-
-# 文字列でソートする
-
-```
-dic = {"a": "a", "b": "b", "c": "c"}
-
-sorted(reverse=True)
-sorted(dic.items(), key=lambda x: x[1])
 ```
 
 
