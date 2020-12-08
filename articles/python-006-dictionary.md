@@ -6,8 +6,11 @@ topics: ["markdown", "Python"]
 published: false
 ---
 
-# 本記事で伝えたいこと
+# 概要
 本記事では、**一般的な辞書操作とそれらの細かい挙動に応じた使い分け**を紹介しています。
+
+Python3.9がリリースされ、辞書に関する機能も新たにリリースされました。
+この機会に、辞書に関するノウハウをアップデートしましょう。
 
 本記事で紹介する辞書操作や挙動は、本記事[まとめ](#まとめ)の章でコンパクトにまとめました。本記事を一通りお読みいただいた後は、ガイドラインとしてまとめを活用いただければ幸いです。
 
@@ -75,6 +78,9 @@ dic = {}
 val = dic.setdefault('new')
 # => None
 ```
+
+なお、Python3.7から、辞書の順序は挿入順序であることが保証されています。
+https://docs.python.org/3/library/stdtypes.html#dict-views
 
 :::message
 `setdefault`は、キーが登録されていない場合はデフォルト値を登録した上で、キーに対応する値を返します。
@@ -165,8 +171,8 @@ dic["new"] = dic.pop("old")
 ```
 
 
-## キーや値を列挙する
-キーや値を列挙する方法を紹介します。
+## 要素（キーや値）を列挙する
+要素（キーや値）を列挙する方法を紹介します。
 
 ``` Python
 # キーを列挙する
@@ -186,10 +192,84 @@ for key, value in dic.items():
   print(key, value)
 
 # 要素（キーと値のタプル）を列挙する
-# Python2.x系ではitemsよりオーバーヘッドが少ないiteritemsが用意されています。
-# Python3系ではitemsの実装が改善され、iteritemsは削除されました。
+# Python2系のみ
+# Python3系ではiteritemsはitemsに統合されました。（2系ではiteritemsの性能はitemsより優れていました。）
 for key, value in dic.iteritems():
   print(key, value)
+```
+
+## ソートする
+辞書をソートする方法を紹介します。
+
+Python3.7からは、辞書が返す要素の順序は挿入順序（更新時は順序に影響はありません）であることが保証（3.6から実装され、3.7から正式に仕様として認定）されています。
+Python3.7以前で挿入順序を取り扱う場合は、[`OrderedDict`](#順序性を保持した辞書を作成する)を利用して上で本章を参考にしてください。
+
+### 任意のソートを実装する
+`sorted`は、任意のキーでソートされたリストを返します。
+keyにソート用の関数を渡すと、その関数の戻り値の大小でソートが行われます。
+
+``` Python
+# 数値でをソートする
+dic = {"a": 1, "b": 0, "c": -1}
+
+# 値を昇順にソートし、値をリスト化する
+sorted(dic.values(), key=lambda x: x)
+# => [-1, ,0 ,2]
+
+# 値を昇順にソートし、値をリスト化する（keyを省略した場合は、暗黙的に列挙された値の大小が評価されます）
+sorted(dic.values())
+# => [-1, ,0 ,2]
+
+# 値を昇順にソートし、要素をリスト化する
+sorted(dic.items(), key=lambda x: x[1])
+# => [('c', -1), ('b', 0), ('a', 1)]
+
+# 値を降順にソートし、要素をリスト化する
+sorted(dic.items(), key=lambda x: -1 * x[1])
+# => [('a', 1), ('b', 0), ('c', -1)]
+
+# 値を絶対値を昇順順にソートし、要素をリスト化する
+sorted(dic.items(), key=lambda x: abs(x[1]))
+# => [('b', 0), ('a', 1), ('c', -1)]
+```
+
+### 逆順にする
+列挙用メソッドと`reversed`を組み合わせることで、列挙順序を逆にできます。
+ただし、Python3.8未満で辞書およびにビューオブジェクトに対して`reversed`を利用すると、`TypeError: object is not reversible`が発生します。
+Python3.8未満の場合は、`OrderedDict`を利用してください。
+
+``` Python
+dic = {"a": 0, "b": 1}
+for key in reversed(dic.keys()):
+  print(key)
+```
+
+
+# 文字列でソートする
+
+```
+dic = {"a": "a", "b": "b", "c": "c"}
+
+sorted(reverse=True)
+sorted(dic.items(), key=lambda x: x[1])
+```
+
+
+
+## ビューオブジェクトについて
+辞書が持っている列挙用メソッド`keys``values``items`が返すオブジェクトについて紹介します。
+これらのメソッドはビューオブジェクトと呼ばれる列挙用のオブジェクトを返します。
+
+``` Python
+dic = {"a": 0}
+keys = dic.keys()
+# => dict_keys(['a'])
+
+values = dic.values()
+# => dict_values([0])
+
+items = dic.items()
+# => dict_items([('a', 0)])
 ```
 
 ## 要素数を調べる
@@ -201,7 +281,7 @@ len(dic)
 # => 0
 ```
 
-## 辞書に指定したキーが存在するか確認する
+## キーの存在を確認する
 辞書に指定したキーが登録されているか調べる方法を紹介します。
 
 `in`を使うことで、キーが存在するか調べることができます。
@@ -218,8 +298,6 @@ dic = {"a": 0}
 not "b" in dic
 # => True
 ```
-
-複数のキーを調べる方法を紹介します。
 
 複数のキーを調べるには、`all`(すべての要素がTrueであるか判定)や`any`(いずれかの要素がTrueであるか判定)と、for文やリスト内包表記などと組み合わせて実現します。
 
@@ -248,6 +326,32 @@ if "a" in dic:
 if all(key in dic for key in {"a", "b"}):
   ...
 ```
+
+## 要素をフィルターする
+辞書から任意の要素を抽出する方法を紹介します。
+辞書内包表記は書き方が独特ですが、最も性能に優れた方法ですので、コードが長いなど可読性に問題がない場合は積極的に使いましょう。
+
+``` Python
+dic = {"a": 0, "b": 0}
+
+# for文
+result = {}
+for key, value in dic.items():
+  if key in {"a"}:
+    result[key] = dic[key]
+# => {"a": 0}
+
+# フィルター関数
+# キーと値が格納されたtuppleを評価する。インデックスでキー(0)と値(1)を取得できる。
+result = dict(filter(lambda key_value: key_value[0] in {"a"}, dic.items()))
+# => {"a": 0}
+
+# 辞書内包表記
+result = {key:value for key, value in dic.items() if key in {"a"}}
+# => {"a": 0}
+```
+
+
 
 ## シャローコピーする
 辞書をコピーする方法を紹介します。
