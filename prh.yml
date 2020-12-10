@@ -1,0 +1,35 @@
+# Rules for TechBooster
+meta:
+  reviewer:
+    - vvakame
+    - mhidaka
+  related: http://techbooster.org/
+  rules:   https://github.com/prh/rules
+
+# techbooster editor lint!!
+# C89 冬コミ開始前時点で利用している版だよ！
+version: 1
+rules:
+  - expected: アンパック記法
+    pattern:  /(アンパック表記|展開表記)/
+    prh: アンパック記法の間違いと思われます。
+
+  - expected: Python
+    pattern:  python
+    prh: Pythonの間違いと思われます。
+
+  - expected: 性能
+    pattern:  パフォーマンス
+    prh: 横文字は日本語に直しましょう
+
+  # TODO: https://github.com/prh/rulesを導入したら削除する
+  - expected: （$1）
+    pattern:  /\((.+?)\)/
+    specs:
+      - from: そうですね(笑)
+        to:   そうですね（笑）
+      - from: (@<fn>{test})
+        to:   （@<fn>{test}）
+      - from: "(ほげ)ほげ)"
+        to:   "（ほげ）ほげ)"
+    prh: 半角カッコの代わりに全角カッコを使うこと。文字のバランスが崩れるためです
