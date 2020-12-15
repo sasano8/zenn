@@ -22,6 +22,18 @@ rules:
     pattern:  パフォーマンス
     prh: 横文字は日本語に直しましょう
 
+  - expected: ください
+    pattern:  下さい
+    prh: 補助動詞のときは、くださいに直しましょう（下さいは本動詞のときのみ用います）
+
+  - expected: 者
+    pattern:  者の方
+    prh: 「○○者の方」は冗長な書き方です
+
+#   - expected: 辞書内包表記
+#     pattern: 辞書内包表記
+#     prh: 辞書内包表記に統一しましょう
+
   # TODO: https://github.com/prh/rulesを導入したら削除する
   - expected: （$1）
     pattern:  /\((.+?)\)/
