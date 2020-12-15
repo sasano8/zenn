@@ -1,0 +1,3 @@
+[submodule "prh-my-rules"]
+	path = prh-my-rules
+	url = https://github.com/sasano8/prh-my-rules

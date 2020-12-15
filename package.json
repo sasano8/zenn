@@ -2,7 +2,6 @@
   "name": "zenn",
   "version": "1.0.0",
   "description": "zenn cliでローカル上でプレビューを行いながら記事を執筆することができます。 以下リンクを参考にzenn cliを導入してください。",
-  "main": "index.js",
   "dependencies": {
     "prh": "^5.4.4",
     "textlint": "^11.7.6",

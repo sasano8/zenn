@@ -945,3 +945,4 @@ Python3.9を軸にルールを設けていますので、バージョン毎に�
 [^3]: [pep-3106](https://www.python.org/dev/peps/pep-3106/)にて、`iteritems`はPython3で`items`に統合されました。
 [^4]: [pep-0468](https://www.python.org/dev/peps/pep-0468/)にて、辞書の要素は順序を保持するようになったが、過去との互換性やpopitemへの挙動は言及されていないため、削除順を期待すべきでない。
 
+
