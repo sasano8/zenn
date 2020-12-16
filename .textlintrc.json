@@ -1,6 +1,7 @@
 {
   "filters": {},
   "rules": {
+    "preset-jtf-style": true,
     "preset-ja-spacing": true,
     "spellcheck-tech-word": true,
     "preset-ja-technical-writing": true,
@@ -14,15 +15,13 @@
     "ja-technical-writing/max-comma": {
         "max": 4
     },
-    /*
-        // ですますを精査する
-        "ja-technical-writing/no-mix-dearu-desumasu": {
-        "preferInHeader": "",
+    // である（常体）orですます（敬体）を指定。空白で多く使われている表記を自動的に優先。
+    "ja-technical-writing/no-mix-dearu-desumasu": {
+        "preferInHeader": "ですます",
         "preferInBody": "ですます",
         "preferInList": "である",
-        "strict": true
-    }
-    */
+        "strict": true  //文中のチェックを厳しくする
+    },
     "prh": {
         "rulePaths": ["./prh-my-rules/prh-rules.yml"]
     }
