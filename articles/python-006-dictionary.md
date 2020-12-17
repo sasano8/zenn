@@ -33,14 +33,14 @@ Python中級者以上の方は、目次と[チートシート](#チートシー�
 ## 辞書を作成する
 
 ### `{}`で辞書を作成する
-辞書リテラル`{}`で辞書を作成できます。
+辞書リテラル`{}`で辞書（以後、`dict`とする）を作成できます。
 
 性能面でも優れているもっともポピュラーな方法ですので、基本的にこの方法を使用しましょう。
 ``` Python
 dic = {"key": "test"}
 ```
 
-### キーワード引数から辞書を作成する
+### キーワード引数から`dict`を作成する
 `dict`関数でキーワード引数に値を渡すと、そのままキーと値として定義できます。
 
 ただし、`dict`関数を使用する場合、次の言語仕様上の制約があります。
@@ -57,16 +57,16 @@ dic = dict(1=0)
 # => SyntaxError: invalid syntax
 ```
 
-### キーと値のタプルリストから辞書を作成する
-`dict`関数に、キーと値のタプルを要素とするリストを渡すと、辞書を作成できます。
+### キーと値のタプルリストから`dict`を作成する
+`dict`関数に、キーと値のタプルを要素とするリストを渡すと、`dict`を作成できます。
 
 ``` Python
 dic = dict([("key1", 1), ("key2", 2)])
 # => {'key1': '1', 'key2': '2'}
 ```
 
-### 辞書内包表記で辞書を作成する
-辞書内包表記を用いると、イテラブル（繰り返し可能なオブジェクト）の処理結果から辞書を作成できます。
+### 辞書内包表記で`dict`を作成する
+辞書内包表記を用いると、イテラブル（繰り返し可能なオブジェクト）の処理結果から`dict`を作成できます。
 `{キー:値 for 変数名 in イテラブル}`のように記述します。
 
 ``` Python
@@ -282,7 +282,7 @@ for key, value in dic.iteritems():
 ```
 
 ## ビューオブジェクトについて
-辞書が持っている列挙用メソッド`keys` `values` `items`は、ビューオブジェクトを返します。
+`dict`が持っている列挙用メソッド`keys` `values` `items`は、ビューオブジェクトを返します。
 ビューオブジェクトは、主に列挙に関する機能だけ提供するオブジェクトを返します。
 
 ``` Python
@@ -301,155 +301,16 @@ for key, value in items:
   print(key, value)
 ```
 
-ビューオブジェクトは、ソース辞書に要素を追加した場合、同期的に動作します。
+ビューオブジェクトは、ソースに要素を追加した場合、同期的に動作します。
 
 ``` Python
 dic = {"a": 0}
 items = dic.items()
 
-# ソース辞書に要素を追加・更新した場合は同期的に動作
+# ソースに要素を追加・更新した場合は同期的に動作
 dic["b"] = 0
 items
 # => dict_items([('a', 0), ('b', 0)])
-```
-
-# 問い合わせ編
-
-## キーの存在を調べる
-`in`を使うことで、キーが存在するか調べることができます。
-`not`を組み合わせることで、キーが存在していないことも調べることができます。
-
-``` Python
-dic = {"a": 0}
-"a" in dic
-# => True
-
-"b" not in dic
-# => True
-
-not "b" in dic
-# => True
-```
-
-## 値の存在を調べる
-値の存在を調べる場合は、`in`と`values`メソッドを併用します。
-
-``` Python
-dic = {"a": 0}
-0 in dic.values()
-# => True
-```
-
-キーに対する`in`はハッシュ探索のためコストが少ないですが、値に対する`in`は線形探索となるためコストが大きいです。
-何度も走査する場合は、`set`型などのハッシュ探索を実装したオブジェクトを使用しましょう。
-
-``` Python
-dic = {"a": 0}
-values = set(dic.values())
-0 in values
-```
-
-## 複数のキーの存在を調べる
-複数のキーを調べるには、`all`（すべての要素がTrueか判定）や`any`（いずれかの要素がTrueか判定）と、for文やリスト内包表記などと組み合わせて実現します。
-
-``` Python
-dic = {"a": 0, "b": 0}
-
-all(key in dic for key in {"a", "b"})
-# => True
-
-all(key in dic for key in {"a", "c"})
-# => False
-
-any(key in dic for key in {"a", "c"})
-# => True
-
-any(key in dic for key in {"c", "d"})
-# => False
-```
-
-紹介したコードは、if文などと組み合わせて使用ください。
-
-``` Python
-if "a" in dic:
-  ...
-
-if all(key in dic for key in {"a", "b"}):
-  ...
-```
-
-## 要素をフィルタする
-辞書から任意の要素を抽出するには、次のようにします。
-
-``` Python
-dic = {"a": 0, "b": 0}
-condition = {"a"}
-
-result = {}
-for key, value in dic.items():
-  if key in condition:
-    result[key] = dic[key]
-# => {"a": 0}
-```
-
-### 辞書内包表記
-上記のコードは、やや冗長です。辞書内包表記を用いることでより簡潔にできます。
-書き方が独特ですが、性能面でも優遇されているので、積極的に使いましょう。
-
-``` Python
-dic = {"a": 0, "b": 0}
-condition = {"a"}
-
-result = {key:value for key, value in dic.items() if key in condition}
-# => {"a": 0}
-```
-
-### `filter`
-`filter`関数は、第1引数に評価関数、第2引数にイテラブルを取ります。
-各要素を評価関数で評価し、`True`と判定される要素のみを抽出するイテレータを生成します。
-
-評価関数は1つの引数を取り、キーと値のタプルを受け取ります。
-
-``` Python
-dic = {"a": 0, "b": 0}
-condition = {"a"}
-
-# キーが"a"のみ抽出する
-result = dict(filter(lambda key_value: key_value[0] in condition, dic.items()))
-# => {"a": 0}
-
-# 値が"a"のみ抽出する
-result = dict(filter(lambda key_value: key_value[1] in condition, dic.items()))
-# => {}
-```
-
-## 要素数を調べる
-要素数を調べる場合は、`len`を使用します。
-
-``` Python
-dic = {}
-len(dic)
-# => 0
-```
-
-## 集計する
-要素を集計したい場合は、`Counter`を利用できます。
-詳しい使い方については、[要素を集計した辞書](#要素を集計した辞書を作成する)を参照ください。
-
-``` Python
-from collections import Counter
-
-dic = {
-    "Google": "America",
-    "Amazon": "America",
-    "Facebook": "America",
-    "Apple": "America",
-    "Toyota": "Japan"
-}
-
-countries = dic.values()
-Counter(countries)
-# => Counter({'America': 4, 'Japan': 1})
 ```
 
 # コピー編
@@ -472,7 +333,7 @@ dest2 = dict(src)
 dest3 = src.copy()
 ```
 
-シャローは浅いを意味し、ネストした辞書等の値はコピーされず、ただ同じ実体を参照するだけです。
+シャローは浅いを意味し、ネストした`dict`等の値はコピーされず、ただ同じ実体を参照するだけです。
 そのため、次のような副作用が生じます。
 
 ``` Python
@@ -482,7 +343,7 @@ dest1 = dict(**src)
 dest2 = dict(src)
 dest3 = src.copy()
 
-# コピーした辞書を変更したつもりが、ソース辞書まで影響を受けてしまう
+# コピーしたdictを変更したつもりが、ソースまで影響を受けてしまう
 dest1["nest"]["age"] = 0
 print(src)   # => {"name": "bob", "age": 20, "nest": {"name": "mary", "age": 0}}
 print(dest1) # => {"name": "bob", "age": 20, "nest": {"name": "mary", "age": 0}}
@@ -502,14 +363,14 @@ print(dest3)  # => {"name": "bob", "age": 20, "nest": {"name": "mary", "age": 2}
 ```
 
 :::message alert
-- プリミティブ型（整数や文字列）など単一の値は状態が分離されるが、コンテナ型（辞書やリストなど）は内包している値が共有されてしまうことに注意
+- プリミティブ型（整数や文字列）など単一の値は状態が分離されるが、コンテナ型（`dict`や`list`など）は内包している値が共有されてしまうことに注意
 :::
 
 ## ディープコピーする
 ディープコピーの方法を紹介します。
 
 `copy`モジュールの`deepcopy`で実現できます。
-ディープコピーは、ネストされた辞書も再帰的にコピーします。
+ディープコピーは、ネストされた`dict`も再帰的にコピーします。
 
 ``` Python
 import copy
@@ -535,121 +396,28 @@ class MyDict(dict):
     ...
 ```
 
-
-# ソート編
-辞書をソートする方法を紹介します。
-
-## デフォルトの順序について
-Python3.7からは、辞書が返す要素の順序は次のようになりました。
-
-- 挿入順で要素を返す[^1]
-- 要素の更新は順序に影響を与えない
-
-Python3.7未満は順序不定ですので、挿入順序を管理する場合は[`OrderedDict`](#挿入順を保持した辞書を作成する)を利用ください。
-
-## 数値をソートする
-`sorted`関数は、任意のキーでソートされたリストを返します。
-keyにソート用の関数を渡すと、その関数の戻り値の大小が昇順でソートされます。
-
-``` Python
-# 数値でをソートする
-dic = {"a": 1, "b": 0, "c": -1}
-
-# 値を昇順にソートし、値をリスト化する
-sorted(dic.values(), key=lambda x: x)
-# => [-1, ,0 ,2]
-
-# 値を昇順にソートし、値をリスト化する（keyを省略した場合は、暗黙的に列挙された値の大小が評価されます）
-sorted(dic.values())
-# => [-1, ,0 ,2]
-
-# 値を昇順にソートし、要素をリスト化する
-sorted(dic.items(), key=lambda x: x[1])
-# => [('c', -1), ('b', 0), ('a', 1)]
-
-# 値を降順にソートし、要素をリスト化する
-sorted(dic.items(), key=lambda x: -1 * x[1])
-# => [('a', 1), ('b', 0), ('c', -1)]
-
-# 値を絶対値を昇順順にソートし、要素をリスト化する
-sorted(dic.items(), key=lambda x: abs(x[1]))
-# => [('b', 0), ('a', 1), ('c', -1)]
-
-# このようにソートされたキーと値を処理することができます
-for key, value in sorted(dic.items()):
-    print(key, value)
-```
-
-## 文字列をソートする
-文字列も`sorted`関数を利用し、同様にソートできます。
-
-文字列にはそれぞれ文字コードが割り当てられており、文字コードに基づいた辞書順となります。
-辞書順は、先頭の文字順で並び、2文字目以降も同様に繰り返し並び替えられるイメージになります。
-
-なお、文字コードは、`ord`関数で確認できます。
-
-``` Python
-dic = {"a": "a", "b": "12", "c": "A", "d": "AA", "e": "2", "f": "1"}
-
-# 単純に値でソート
-sorted(dic.items(), key=lambda x: x[1])
-# => [('f', '1'), ('b', '12'), ('e', '2'), ('c', 'A'), ('d', 'AA'), ('a', 'a')]
-
-# 大小文字区別なくソート（全て小文字にして比較）
-sorted(dic.items(), key=lambda x: str.lower(x[1]))
-# => [('f', '1'), ('b', '12'), ('e', '2'), ('a', 'a'), ('c', 'A'), ('d', 'AA')]
-
-# 文字コード確認
-ord("0")
-# => 48
-
-ord("A")
-# => 65
-
-ord("a")
-# => 97
-```
-
-## 逆順にする
-`sorted`関数に`reverse=True`を指定するか、`reversed`関数を利用し、列挙順序を逆にできます。ただし、辞書に対して`reversed`はPython3.8未満で使用できません[^4]。
-
-Python3.8未満の場合は、`OrderedDict`を利用するか`sorted`関数を利用してください。
-
-``` Python
-dic = {"a": 0, "b": 1}
-
-# 方法１
-for key in sorted(dic.keys(), reverse=True):
-  print(key)
-
-# 方法２
-for key in reversed(dic.keys()):
-  print(key)
-```
-
 # マージ編
-2つ以上の辞書をマージして、1つの辞書にしたい場合の実現方法を紹介します。
+2つ以上の`dict`をマージして、1つの`dict`にしたい場合の実現方法を紹介します。
 方法により挙動が異なるので、状況に応じて使い分けてください。
 
 ## マージする（衝突するキーの値は上書き）
 キーが衝突した場合、値を上書きするマージ方法を紹介します。
 
 バージョン毎にプラクティスが異なるため、バージョンごとに紹介します。
-互換性があるので、上位バージョンで下位バージョンのプラクティスも使用可能です。
 
 ### Python3.5未満
-`dict`関数の第1位置引数にソース辞書を渡し、アンパック記法を併用することでマージされた辞書を作成できます。
-ソース辞書を直接更新する場合は、`update`メソッドが使用できます。
+`dict`関数の第1位置引数にソース`dict`を渡し、アンパック記法を併用することでマージされた`dict`を作成できます。
+ソース`dict`を直接更新する場合は、`update`メソッドが使用できます。
 
 ``` Python
 dic1 = {"name": "bob", "age": 20}
 dic2 = {"name": "mary"}
 
-# 新たに辞書を作成
+# 新たにdictを作成
 dic = dict(dic1, **dic2)
 # => {"name": "mary", "age": 20}
 
-# ソース辞書を更新
+# ソースdictを更新
 dic1.update(dic2)
 # => {"name": "mary", "age": 20}
 ```
@@ -662,11 +430,11 @@ dic1.update(dic2)
 dic1 = {"name": "bob", "age": 20}
 dic2 = {"name": "mary"}
 
-# 新たに辞書を作成
+# 新たにdictを作成
 dic = {**dic1, **dic2}
 # => {"name": "mary", "age": 20}
 
-# ソース辞書を更新
+# ソースdictを更新
 dic1.update(dic2)
 # => {"name": "mary", "age": 20}
 ```
@@ -678,11 +446,11 @@ Python3.9からは、和集合演算子`|`と累算代入演算子`|=`が導入�
 dic1 = {"name": "bob", "age": 20}
 dic2 = {"name": "mary"}
 
-# 新たに辞書を作成
+# 新たにdictを作成
 dic = dic1 | dic2
 # => {"name": "mary", "age": 20}
 
-# ソース辞書を更新
+# ソースdictを更新
 dic1 |= dic2
 # => {"name": "mary", "age": 20}
 ```
@@ -764,7 +532,7 @@ dict(**dic)
 
 :::message
 - キーの衝突を検知したい場合は、`dict`関数とアンパック記法`**`を使用する
-- Python3.5から辞書作成時に複数のアンパック記法`**`が利用可能になり、マージが簡単になった
+- Python3.5から`dict`作成時に複数のアンパック記法`**`が利用可能になり、マージが簡単になった
 - この方法で使用できるキーは、文字列に限定される
 :::
 
@@ -787,9 +555,8 @@ dic = dict(**dic1, **dic2)
 :::
 
 
-
-## ディープマージ（ネストした辞書をマージ）する
-前章で紹介したマージは、ネストされた辞書どうしのマージは行ってくれません。
+## ディープマージ（ネストした`dict`をマージ）する
+前章で紹介したマージは、ネストされた`dict`どうしのマージは行ってくれません。
 例を見てみましょう。
 
 ``` Python
@@ -817,8 +584,8 @@ dic1 |= dic2
 # => {'nest': {'name': 'mary'}}
 ```
 
-ネストした辞書は、辞書ごと置き換えられています。
-ここでは、次のようにネストした辞書を再帰的にマージする方法を紹介します。
+ネストした`dict`は、`dict`ごと置き換えられています。
+ここでは、次のようにネストした`dict`を再帰的にマージする方法を紹介します。
 
 ``` Python
 a = {"nest": {"name": "bob", "age": 20}}
@@ -853,13 +620,252 @@ dic = deep_merge(a, b)
 # => {'nest': {"name": "mary", "age": 20}}
 ```
 
+# 問い合わせ編
+
+## キーの存在を調べる
+`in`を使うことで、キーが存在するか調べることができます。
+`not`を組み合わせることで、キーが存在していないことも調べることができます。
+
+``` Python
+dic = {"a": 0}
+"a" in dic
+# => True
+
+"b" not in dic
+# => True
+
+not "b" in dic
+# => True
+```
+
+## 値の存在を調べる
+値の存在を調べる場合は、`in`と`values`メソッドを併用します。
+
+``` Python
+dic = {"a": 0}
+0 in dic.values()
+# => True
+```
+
+キーに対する`in`はハッシュ探索のためコストが少ないですが、値に対する`in`は線形探索となるためコストが大きいです。
+何度も走査する場合は、`set`型などのハッシュ探索を実装したオブジェクトを使用しましょう。
+
+``` Python
+dic = {"a": 0}
+values = set(dic.values())
+0 in values
+```
+
+## 複数のキーの存在を調べる
+複数のキーを調べるには、`all`（すべての要素がTrueか判定）や`any`（いずれかの要素がTrueか判定）と、for文やリスト内包表記などと組み合わせて実現します。
+
+``` Python
+dic = {"a": 0, "b": 0}
+
+all(key in dic for key in {"a", "b"})
+# => True
+
+all(key in dic for key in {"a", "c"})
+# => False
+
+any(key in dic for key in {"a", "c"})
+# => True
+
+any(key in dic for key in {"c", "d"})
+# => False
+```
+
+紹介したコードは、if文などと組み合わせて使用ください。
+
+``` Python
+if "a" in dic:
+  ...
+
+if all(key in dic for key in {"a", "b"}):
+  ...
+```
+
+## 要素をフィルタする
+`dict`から任意の要素を抽出するには、次のようにします。
+
+``` Python
+dic = {"a": 0, "b": 0}
+condition = {"a"}
+
+result = {}
+for key, value in dic.items():
+  if key in condition:
+    result[key] = dic[key]
+# => {"a": 0}
+```
+
+### 辞書内包表記
+上記のコードは、やや冗長です。辞書内包表記を用いることでより簡潔にできます。
+書き方が独特ですが、性能面でも優遇されているので、積極的に使いましょう。
+
+``` Python
+dic = {"a": 0, "b": 0}
+condition = {"a"}
+
+result = {key:value for key, value in dic.items() if key in condition}
+# => {"a": 0}
+```
+
+### `filter`
+`filter`関数は、第1引数に評価関数、第2引数にイテラブルを取ります。
+各要素を評価関数で評価し、`True`と判定される要素のみを抽出するイテレータを生成します。
+
+評価関数は1つの引数を取り、キーと値のタプルを受け取ります。
+
+``` Python
+dic = {"a": 0, "b": 0}
+condition = {"a"}
+
+# キーが"a"のみ抽出する
+result = dict(filter(lambda key_value: key_value[0] in condition, dic.items()))
+# => {"a": 0}
+
+# 値が"a"のみ抽出する
+result = dict(filter(lambda key_value: key_value[1] in condition, dic.items()))
+# => {}
+```
+
+## 要素数を調べる
+要素数を調べる場合は、`len`を使用します。
+
+``` Python
+dic = {}
+len(dic)
+# => 0
+```
+
+## 集計する
+要素を集計したい場合は、`Counter`を利用できます。
+詳しい使い方については、[要素を集計した辞書](#要素を集計した辞書を作成する)を参照ください。
+
+``` Python
+from collections import Counter
+
+dic = {
+    "Google": "America",
+    "Amazon": "America",
+    "Facebook": "America",
+    "Apple": "America",
+    "Toyota": "Japan"
+}
+
+countries = dic.values()
+Counter(countries)
+# => Counter({'America': 4, 'Japan': 1})
+```
+
+# ソート編
+`dict`をソートする方法を紹介します。
+
+## デフォルトの順序について
+Python3.7からは、`dict`が返す要素の順序は次のようになりました。
+
+- 挿入順で要素を返す[^1]
+- 要素の更新は順序に影響を与えない
+
+Python3.7未満は順序不定ですので、挿入順序を管理する場合は[`OrderedDict`](#挿入順を保持した辞書を作成する)を利用ください。
+
+## 数値をソートする
+`sorted`関数は、任意のキーでソートされたリストを返します。
+keyにソート用の関数を渡すと、その関数の戻り値の大小が昇順でソートされます。
+
+``` Python
+# 数値でをソートする
+dic = {"a": 1, "b": 0, "c": -1}
+
+# 値を昇順にソートし、値をリスト化する
+sorted(dic.values(), key=lambda x: x)
+# => [-1, ,0 ,2]
+
+# 値を昇順にソートし、値をリスト化する（keyを省略した場合は、暗黙的に列挙された値の大小が評価されます）
+sorted(dic.values())
+# => [-1, ,0 ,2]
+
+# 値を昇順にソートし、要素をリスト化する
+sorted(dic.items(), key=lambda x: x[1])
+# => [('c', -1), ('b', 0), ('a', 1)]
+
+# 値を降順にソートし、要素をリスト化する
+sorted(dic.items(), key=lambda x: -1 * x[1])
+# => [('a', 1), ('b', 0), ('c', -1)]
+
+# 値を絶対値を昇順順にソートし、要素をリスト化する
+sorted(dic.items(), key=lambda x: abs(x[1]))
+# => [('b', 0), ('a', 1), ('c', -1)]
+
+# このようにソートされたキーと値を処理することができます
+for key, value in sorted(dic.items()):
+    print(key, value)
+```
+
+## 文字列をソートする
+文字列も`sorted`関数を利用し、同様にソートできます。
+
+文字列にはそれぞれ文字コードが割り当てられており、文字コードに基づいた辞書順となります。
+辞書順は、先頭の文字順で並び、2文字目以降も同様に繰り返し並び替えられるイメージになります。
+
+なお、文字コードは、`ord`関数で確認できます。
+
+``` Python
+dic = {"a": "a", "b": "12", "c": "A", "d": "AA", "e": "2", "f": "1"}
+
+# 単純に値でソート
+sorted(dic.items(), key=lambda x: x[1])
+# => [('f', '1'), ('b', '12'), ('e', '2'), ('c', 'A'), ('d', 'AA'), ('a', 'a')]
+
+# 大小文字区別なくソート（全て小文字にして比較）
+sorted(dic.items(), key=lambda x: str.lower(x[1]))
+# => [('f', '1'), ('b', '12'), ('e', '2'), ('a', 'a'), ('c', 'A'), ('d', 'AA')]
+
+# 文字コード確認
+ord("0")
+# => 48
+
+ord("A")
+# => 65
+
+ord("a")
+# => 97
+```
+
+## 逆順にする
+
+### `sorted`
+`sorted`関数に`reverse=True`を指定し、イテラブルを渡すと、列挙順序を逆にした`list`を返します。
+
+``` Python
+dic = {"a": 0, "b": 1}
+
+sorted(dic.keys(), reverse=True)
+# => ['b', 'a']
+```
+
+### `reversed`
+`reversed`関数に、リバーシブル（`__reversed__`をもつオブジェクト）を渡すと、列挙順序を逆にしたイテレータを返します。
+
+ただし、Python3.8未満では`dict`およびにビューオブジェクトに対して`reversed`を使用できません[^4]。
+その場合は、`sorted`関数か`OrderedDict`を利用してください。
+
+``` Python
+dic = {"a": 0, "b": 1}
+
+list(reversed(dic.keys()))
+# => ['b', 'a']
+```
+
+`reversed`はイテレータを返すため、実体化するには`list`等にイテレータを渡す必要があります。
 
 # 特殊な辞書編
 
 ## 初期値を保持した辞書を作成する
-初期値保持した辞書を作成する方法を紹介します。
+初期値保持した`dict`を作成する方法を紹介します。
 
-たとえば、履歴書を模した辞書に家族構成と学歴を登録するとしましょう。
+たとえば、履歴書を模した`dict`に家族構成と学歴を登録するとしましょう。
 家族構成と学歴は、リストにいくつか値を登録することを想定しています。
 
 ``` Python
@@ -870,7 +876,7 @@ person["background"].append("2003/4/1 Python大学入学")
 ```
 
 上記のコードは、2行目でエラーとなりました。
-辞書初期化時に、リストを要素として登録していないので当然の結果ですね。
+`dict`初期化時に、リストを要素として登録していないので当然の結果ですね。
 
 このような場合、`defaultdict`を用いることが可能です。
 
@@ -918,9 +924,9 @@ dic1["new"]
 ## 挿入順を保持した辞書を作成する
 
 ### `OrderedDict`
-要素の挿入順を保持した辞書を作成するには、`OrderedDict`を使用します。
+要素の挿入順を保持した`dict`を作成するには、`OrderedDict`を使用します。
 
-ただし、Python3.7以降は標準の辞書も挿入順を保持するようになったので、`OrderedDict`は使わないでいいでしょう[^1]。
+ただし、Python3.7以降は標準の`dict`も挿入順を保持するようになったので、`OrderedDict`は使わないでいいでしょう[^1]。
 ``` Python
 from collections import OrderedDict
 dic = OrderedDict()
@@ -963,7 +969,7 @@ dic = Counter(data)
 # => Counter({'も': 8, 'す': 1, 'の': 1, 'う': 1, 'ち': 1})
 ```
 
-辞書の初期化と同じように、`Counter`インスタンスを生成できます。
+`dict`の初期化と同じように、`Counter`インスタンスを生成できます。
 
 ``` Python
 from collections import Counter
@@ -993,7 +999,7 @@ dic["chiba"]
 ```
 
 ### `update`
-`dict.update`と同じように、複数の辞書をマージできます。
+`dict.update`と同じように、複数の`dict`をマージできます。
 `dict`では、衝突したキーの値を上書きしますが、`Counter`においては値を加算します。
 
 ``` Python
@@ -1007,7 +1013,7 @@ dic.update({"tokyo": 2})
 ```
 
 ### `subtract`
-複数の辞書をマージし、衝突したキーの値は減算します。
+複数の`dict`をマージし、衝突したキーの値は減算します。
 `update`の逆の挙動になります。
 
 ``` Python
@@ -1050,7 +1056,7 @@ sorted(c.elements())
 ```
 
 ## 要素の上書きを禁止した辞書を作成する
-意図しない値の上書きを防ぐため、要素の上書きを禁止した辞書を作成したい場合は、次のように`__setitem__`をオーバーライドすることで実現可能です。
+意図しない値の上書きを防ぐため、要素の上書きを禁止した`dict`を作成したい場合は、次のように`__setitem__`をオーバーライドすることで実現可能です。
 
 ``` Python
 class OnceDict(dict):
@@ -1076,8 +1082,8 @@ dic["a"] = 3
 | ---- | ---- | ---- | ---- |
 | 作成 | `dic = {"key": "value"}` | `dict`関数に比べ性能が2倍以上優れる | |
 | 作成 | `dic = dict(key="value")` | 言語仕様上、キーワード引数に予約語や数値リテラルは使用できない | |
-| 作成 | `dic = dict([("key", "value")])` | キーと値のタプルから辞書を作成 | |
-| 作成 | `dic = {key:value for key, value in [("key", "value")]}` | キーと値のタプルから辞書を作成 | |
+| 作成 | `dic = dict([("key", "value")])` | キーと値のタプルから`dict`を作成 | |
+| 作成 | `dic = {key:value for key, value in [("key", "value")]}` | キーと値のタプルから`dict`を作成 | |
 | 登録 | `dic["name"] = val` | キーが存在しない場合、`KeyError`が発生。`__setitem__`の糖衣構文 | |
 | 登録/取得 | `dic.setdefault("key")` | キーが存在しない場合、`None`を登録したうえで、キーの値を返す | |
 | 登録/取得 | `dic.setdefault("key", None)` | キーが存在しない場合、第2引数の値を登録したうえで、キーの値を返す | |
@@ -1095,8 +1101,6 @@ dic["a"] = 3
 | 列挙 | `dic.values()` | 値を列挙する | |
 | 列挙 | `dic.items()` | キーと値のタプルを列挙する | |
 | 列挙 | `dic.iteritems()` | Python3で`items`に統合された[^3] | <=2.* |
-| 要素数 | `len(dic)` |  |  |
-| 要素数 | `len(dic)` |  |  |
 | コピー | `dict(**dic)` | `copy`メソッドを使おう | |
 | コピー | `dict(dic)` | `copy`メソッドを使おう | |
 | コピー | `dic.copy()` | シャローコピーする | |
@@ -1109,15 +1113,15 @@ dic["a"] = 3
 | マージ/更新 | `dic1 |= dic2` | キーが衝突する場合、右辺の値で上書き  | ^3.9 |
 | マージ/作成 | `dict(**dic1, **dic2)` | キーが衝突する場合、`TypeError`が発生 | ^3.5 |
 | マージ/作成 | `dict(key1=1, **dic2)` | キーが衝突する場合、`TypeError`が発生 |  |
-| 初期値保持 | `defaultdict(list)` | コンストラクタに渡したファクトリ関数の戻り値を初期値とする辞書を作成 | |
+| 問い合わせ | `len(dic)` |  |  |
+| 初期値保持 | `defaultdict(list)` | コンストラクタに渡したファクトリ関数の戻り値を初期値とする`dict`を作成 | |
 | 挿入順保持 | `OrderedDict()` | Python3.7以降はdictが`OrderedDict`相当の順序を保持するようになったため不要 | <=3.6.* |
 | カウンタ | `Counter()` | | |
 | 上書禁止 | | `__setitem__`等をオーバーライドし、自作する必要がある | |
 
-[^1]: [pep-0468](https://www.python.org/dev/peps/pep-0468/)にて、Python3.7より辞書の要素は順序を保持するようになった。
-[^4]: [issue33462](https://bugs.python.org/issue33462)にて、Python3.8より辞書はリバーシブルになった。
+[^1]: [pep-0468](https://www.python.org/dev/peps/pep-0468/)にて、Python3.7より`dict`の要素は順序を保持するようになった。
+[^4]: [issue33462](https://bugs.python.org/issue33462)にて、Python3.8より`dict`はリバーシブルになった。
 [^2]: [pep-0448](https://www.python.org/dev/peps/pep-0448/)にて、Python3.5よりアンパック記法がより汎用的となった。
 [^3]: [pep-3106](https://www.python.org/dev/peps/pep-3106/)にて、Python3より`iteritems`は`items`に統合された。
 [^5]: [pep-0584](https://www.python.org/dev/peps/pep-0584/)にて、Python3.9よりマージ用の演算子が実装された。
 
-# TODO: 辞書 => dict
