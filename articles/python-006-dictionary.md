@@ -14,7 +14,7 @@ Python3.9がリリースされ、辞書に関する機能も新たにリリー�
 
 筆者も自分なりのノウハウをメモしているうちに、全部まとめてしまえと執筆したのが本記事です。
 
-本記事で紹介する辞書操作や挙動は、本記事[まとめ](#まとめ)の章でコンパクトにまとめました。
+本記事で紹介する辞書操作や挙動は、本記事[チートシート](#チートシート)の章でコンパクトにまとめました。
 本記事をひととおりお読みいただいた後は、ガイドラインとしてまとめを活用いただければ幸いです。
 
 # 検証環境
@@ -26,12 +26,11 @@ Python3.9がリリースされ、辞書に関する機能も新たにリリー�
 
 辞書にフォーカスした解説のため、基礎的な知識・単語については、その他の記事等で補完ください。
 
-Python中級者以上の方は、目次とまとめを見て気になった章だけお読みください。
+Python中級者以上の方は、目次と[チートシート](#チートシート)を見て気になった章だけお読みください。
 
 # 基礎編
 
-## 辞書作成する
-辞書を作成する方法を紹介します。
+## 辞書を作成する
 
 ### `{}`で辞書を作成する
 辞書リテラル`{}`で辞書を作成できます。
@@ -321,20 +320,6 @@ items
 
 # 問い合わせ編
 
-## 要素数を調べる
-辞書に登録された要素数を調べる方法を紹介します。
-
-`len`を使い要素数を調べることができます。
-``` Python
-dic = {}
-len(dic)
-# => 0
-```
-
-## キーと値の存在を調べる
-辞書に指定したキーが登録されているか調べる方法を紹介します。
-
-
 ## キーの存在を調べる
 `in`を使うことで、キーが存在するか調べることができます。
 `not`を組み合わせることで、キーが存在していないことも調べることができます。
@@ -390,8 +375,7 @@ any(key in dic for key in {"c", "d"})
 # => False
 ```
 
-## if文でキーの存在を条件にする
-紹介したコードは、if文などと組み合わせることができます。
+紹介したコードは、if文などと組み合わせて使用ください。
 
 ``` Python
 if "a" in dic:
@@ -426,8 +410,17 @@ result = {key:value for key, value in dic.items() if key in {"a"}}
 # => {"a": 0}
 ```
 
+## 要素数を調べる
+辞書に登録された要素数を調べる方法を紹介します。
+
+`len`を使い要素数を調べることができます。
+``` Python
+dic = {}
+len(dic)
+# => 0
+```
+
 # コピー編
-辞書をコピーする方法を紹介します。
 
 ## シャローコピーする
 シャローコピーの方法を紹介します。
@@ -891,10 +884,103 @@ dic = OrderedDict()
 - Python3.7未満では、辞書の挿入順序を取り扱うために`OrderedDict`を使用する
 :::
 
-## 要素をカウントする辞書（カウンタ）を作成する
+## 要素をカウントした辞書（カウンタ）を作成する
+要素を集計するには`Counter`というクラスが利用できます。
+
+コンストラクタに、イテラブルを渡すと要素数を集計できます。
+
 ``` Python
 from collections import Counter
+
+data = ["tokyo", "osaka", "osaka"]
+dic = Counter(data)
+# => Counter({'tokyo': 2, 'osaka': 1})
 ```
+
+文字列もイテラブルなため集計可能です。
+
+``` Python
+from collections import Counter
+
+data = "すもももももももものうち"
+dic = Counter(data)
+# => Counter({'も': 8, 'す': 1, 'の': 1, 'う': 1, 'ち': 1})
+```
+
+辞書の初期化と同じように、`Counter`インスタンスを生成できます。
+
+``` Python
+from collections import Counter
+
+data = {"osaka": 1, "tokyo": 2}
+dic = Counter(data)
+# => Counter({'tokyo': 2, 'osaka': 1})
+
+dic = Counter(osaka=1, tokyo=2))
+# => Counter({'tokyo': 2, 'osaka': 1})
+```
+
+Python3.7から、列挙時に挿入順を保持するようになりました[^1]。
+
+``` Python
+from collections import Counter
+
+data = {"osaka": 1, "tokyo": 2}
+dic = Counter(data)
+for item in dic.items():
+    print(item)
+# => ('osaka', 1)
+# => ('tokyo', 2)
+```
+
+`Counter`は、`dict`のサブクラスのため`dict`と同じように扱うことができます。
+ただし、いくつか集計用に拡張されたメソッドや異なる挙動が存在するので紹介します。
+
+`dict`と同じようにキーを指定し値にアクセスできますが、キーが存在しない場合は0を返します。
+
+``` Python
+from collections import Counter
+
+data = ["tokyo", "osaka", "osaka"]
+dic = Counter(data)
+dic["chiba"]
+# => 0
+```
+
+### `most_common`
+値の降順で要素を返します。
+引数`n`を指定でき、n個の要素を返すか、省略または`None`の場合はすべての要素が返されます。
+
+``` Python
+from collections import Counter
+
+data = ["tokyo", "osaka", "osaka"]
+dic = Counter(data)
+
+for x in dic.most_common(1):
+  print(x)
+# => ('osaka', 2)
+
+for x in dic.most_common():
+  print(x)
+# => ('osaka', 2)
+# => ('tokyo', 1)
+```
+
+`update`メソッドは、衝突したキーの値を上書きするのでなく、個数を加算します。
+
+``` Python
+from collections import Counter
+
+data = ["tokyo", "osaka", "osaka"]
+dic = Counter(data)
+
+dic.update({"tokyo": 2})
+# => Counter({'tokyo': 3, 'osaka': 2})
+```
+
+
+
 
 ## 要素の上書きを禁止した辞書を作成する
 意図しない値の上書きを防ぐため、要素の上書きを禁止した辞書を作成したい場合は、次のように`__setitem__`をオーバーライドすることで実現可能です。
@@ -913,7 +999,7 @@ dic["a"] = 3
 ```
 
 
-# まとめ
+# チートシート
 これまでの検証結果をまとめました。
 Python3.9を軸にルールを設けていますので、バージョン毎にカスタマイズしてご利用ください。
 
@@ -935,7 +1021,7 @@ Python3.9を軸にルールを設けていますので、バージョン毎に�
 | 削除 | `del dic["name"]` | キーが存在しない場合、`KeyError`が発生 | |
 | 削除/取得 | `dic.pop("name")` | キーが存在しない場合、`KeyError`が発生 | |
 | 削除/取得 | `dic.pop("a", None)` | キーが存在しない場合、第2引数の値を返す | |
-| 削除/取得 | `dic.popitem()` | 要素を無作為に1つ削除し、その値を返す。[^1] | |
+| 削除/取得 | `dic.popitem()` | 要素を無作為に1つ削除し、その値を返す[^1] | |
 | キー変更 | `dic["new"] = dic.pop("old")` | | |
 | 全削除 | `dic.clear()` | | |
 | 列挙 | `for key in dic:` | `keys`を使おう | |
@@ -957,16 +1043,15 @@ Python3.9を軸にルールを設けていますので、バージョン毎に�
 | マージ/更新 | `dic1 |= dic2` | キーが衝突する場合、右辺の値で上書き  | ^3.9 |
 | マージ/作成 | `dict(**dic1, **dic2)` | キーが衝突する場合、`TypeError`が発生 | ^3.5 |
 | マージ/作成 | `dict(key1=1, **dic2)` | キーが衝突する場合、`TypeError`が発生 |  |
-| マージ/作成 | `func(**dic1, **dic2)` | キーが衝突する場合、`TypeError`が発生 | ^3.5 |
 | 初期値保持 | `defaultdict(list)` | コンストラクタに渡したファクトリ関数の戻り値を初期値とする辞書を作成 | |
 | 挿入順保持 | `OrderedDict()` | Python3.7以降はdictが`OrderedDict`相当の順序を保持するようになったため不要 | <=3.6.* |
 | カウンタ | `Counter()` | | |
-| 上書禁止 | | 自作する（`__setitem__`等をオーバーライド） | |
+| 上書禁止 | | `__setitem__`等をオーバーライドし、自作する必要がある | |
 
+[^1]: [pep-0468](https://www.python.org/dev/peps/pep-0468/)にて、Python3.7より辞書の要素は順序を保持するようになった。
+[^4]: [issue33462](https://bugs.python.org/issue33462)にて、Python3.8より辞書はリバーシブルになった。
+[^2]: [pep-0448](https://www.python.org/dev/peps/pep-0448/)にて、Python3.5よりアンパック記法がより汎用的となった。
+[^3]: [pep-3106](https://www.python.org/dev/peps/pep-3106/)にて、Python3より`iteritems`は`items`に統合された。
+[^5]: [pep-0584](https://www.python.org/dev/peps/pep-0584/)にて、Python3.9よりマージ用の演算子が実装された。
 
-- [^1]: [pep-0468](https://www.python.org/dev/peps/pep-0468/)にて、Python3.7より辞書の要素は順序を保持するようになった。
-- [^4]: [issue33462](https://bugs.python.org/issue33462)にて、Python3.8より辞書はリバーシブルになった。
-- [^2]: [pep-0448](https://www.python.org/dev/peps/pep-0448/)にて、Python3.5よりアンパック記法がより汎用的となった。
-- [^3]: [pep-3106](https://www.python.org/dev/peps/pep-3106/)にて、Python3より`iteritems`は`items`に統合された。
-- [^5]: [pep-0584](https://www.python.org/dev/peps/pep-0584/)にて、Python3.9よりマージ用の演算子が実装された。
-
+# TODO: 辞書 => dict
