@@ -40,7 +40,7 @@ Python中級者以上の方は、目次と[チートシート](#チートシー�
 dic = {"key": "test"}
 ```
 
-### `dict`関数（キーワード引数）で辞書を作成する
+### キーワード引数から辞書を作成する
 `dict`関数でキーワード引数に値を渡すと、そのままキーと値として定義できます。
 
 ただし、`dict`関数を使用する場合、次の言語仕様上の制約があります。
@@ -57,7 +57,7 @@ dic = dict(1=0)
 # => SyntaxError: invalid syntax
 ```
 
-### `dict`関数（キーと値のタプルリスト）で辞書を作成する
+### キーと値のタプルリストから辞書を作成する
 `dict`関数に、キーと値のタプルを要素とするリストを渡すと、辞書を作成できます。
 
 ``` Python
@@ -65,7 +65,7 @@ dic = dict([("key1", 1), ("key2", 2)])
 # => {'key1': '1', 'key2': '2'}
 ```
 
-### 辞書内包表記
+### 辞書内包表記で辞書を作成する
 辞書内包表記を用いると、イテラブル（繰り返し可能なオブジェクト）の処理結果から辞書を作成できます。
 `{キー:値 for 変数名 in イテラブル}`のように記述します。
 
@@ -88,25 +88,23 @@ dic = dict(arr)
 :::
 
 ## 要素（キーと値）を登録する
-辞書に要素を登録する方法を紹介します。
-
-### `__setitem__`で登録する
 キーを指定し、値を渡すことで要素を登録できます。
-すでに対象のキーが存在する場合は、値が上書きされます。
+すでに対象キーが存在する場合は、値が上書きされます。
 
 ``` Python
 dic = {}
 dic["key"] = "val"
 ```
 
-上記コードは、`__setitem__`の糖衣構文になります。
+### `__setitem__`
+`dic[key] = value`は、`dic.__setitem__(key, value)`と等価です。
 
 ``` Python
 dic = {}
 dic.__setitem__("key", "val")
 ```
 
-### `setdefault`で登録する
+### `setdefault`
 要素を登録するために、`setdefault`も利用できます。
 
 :::message
@@ -132,10 +130,7 @@ val = dic.setdefault('new')
 ```
 
 ## キーに対応する値を取得する
-キーに対応する値の取得方法を紹介します。
-
-### `__getitem__`で値を取得する
-辞書のキーにアクセスし、キーに対する値を取得できます。
+キーに対応する値を取得には、次のようにします。
 キーが存在しない場合は、`KeyError`が発生します。
 
 ``` Python
@@ -143,14 +138,15 @@ dic = {"name": "test"}
 val = dic["name"]
 ```
 
-上記コードは、`__getitem__`の糖衣構文になります。
+### `__getitem__`
+`dic[key]`は、`dic.__getitem__(key)`と等価です。
 
 ``` Python
 dic = {"name": "test"}
 val = dic.__getitem__("name")
 ```
 
-### `get`メソッドで値を取得する
+### `get`
 `KeyError`を無視したい場合は、`get`メソッドを使用できます。
 
 :::message
@@ -168,9 +164,8 @@ val = dic.get("name")
 val = dic.get("name", None)
 ```
 
-### `setdefault`メソッドで値を取得する
-前章で紹介した`setdefault`メソッドも値の取得に利用できます。
-デフォルト値の登録と値の取得を同時に行いたいケースで利用しましょう。
+### `setdefault`
+デフォルト値の登録と値の取得を同時に行いたい場合は、`setdefault`メソッドを利用しましょう。
 
 ``` Python
 # キーが存在しない場合は、第２引数の値を登録した上で、その値を返す
@@ -178,15 +173,14 @@ val = dic.setdefault("name", None)
 ```
 
 ## 要素を削除する
-要素を削除する方法を紹介します。
 
-### delを使用して削除する
+### `del`
 要素は、`del`で削除できます。
 
 :::message
 `del`は、指定したキーを削除します。
-- 指定したキーが存在しない場合は、`KeyError`が発生する。
-- 削除以外の余計な処理を行わないので性能がもっとも優れる。
+- 指定したキーが存在しない場合は、`KeyError`が発生する
+- 削除以外の余計な処理を行わないので性能がもっとも優れる
 
 :::
 
@@ -194,7 +188,7 @@ val = dic.setdefault("name", None)
 del dic["name"]
 ```
 
-### `pop`を使用して削除する
+### `pop`
 `del`の代わりに、`pop`メソッドでも要素を削除できます。
 
 `pop`メソッドは、削除された値を受け取りたい時や`KeyError`を無視したい場合に使用しましょう。
@@ -213,7 +207,7 @@ val = dic.pop("name")
 val = dic.pop("a", None)
 ```
 
-### `popitem`を使用して削除する
+### `popitem`
 `popitem`メソッドは、要素を1つ無作為に削除します[^1]。
 キーを指定できず、何が削除されるか分からないため、使う機会はほぼないでしょう。
 
@@ -227,11 +221,11 @@ key_value = dic.popitem()
 ```
 
 ### 複数の要素を削除する
-複数の要素を削除したい場合の例を紹介します。
-
+複数の要素を削除したい場合は、次のようにします。
 なお、`del`はリスト内包表記とともに利用できません。
 
 ``` Python
+dic = {"key1": 1, "key2": 2, "key3": 3}
 some_keys = ["key1", "key2"]
 
 # 方法１
@@ -243,12 +237,9 @@ for key in some_keys:
 ```
 
 ### すべての要素を削除する
-すべての要素を削除する場合は、`clear`メソッドを用います。
 
-:::message
-`clear`メソッドは、すべての要素を削除します。
-
-:::
+### `clear`
+すべての要素を削除します。
 
 ``` Python
 dic.clear()
@@ -256,7 +247,6 @@ dic.clear()
 ```
 
 ## キーを変更する
-キーを変更する方法を紹介します。
 `pop`を用いることで簡潔に実現できます。
 
 ``` Python
@@ -265,7 +255,7 @@ dic["new"] = dic.pop("old")
 ```
 
 ## 要素（キーや値）を列挙する
-要素（キーや値）を列挙する方法を紹介します。
+要素（キーや値）を列挙するには、次のようにします。
 
 ``` Python
 # キーを列挙する
@@ -292,10 +282,8 @@ for key, value in dic.iteritems():
 ```
 
 ## ビューオブジェクトについて
-辞書が持っている列挙用メソッド`keys` `values` `items`が返すオブジェクトについて紹介します。
-
-これらのメソッドはビューオブジェクトと呼ばれる主に列挙に関する機能だけ提供するオブジェクトを返します。
-ビューオブジェクトはソース辞書を参照しているため、ソース辞書に要素を追加した場合は同期的に動作します。
+辞書が持っている列挙用メソッド`keys` `values` `items`は、ビューオブジェクトを返します。
+ビューオブジェクトは、主に列挙に関する機能だけ提供するオブジェクトを返します。
 
 ``` Python
 dic = {"a": 0}
@@ -311,6 +299,13 @@ items = dic.items()
 # このように列挙処理が可能
 for key, value in items:
   print(key, value)
+```
+
+ビューオブジェクトは、ソース辞書に要素を追加した場合、同期的に動作します。
+
+``` Python
+dic = {"a": 0}
+items = dic.items()
 
 # ソース辞書に要素を追加・更新した場合は同期的に動作
 dic["b"] = 0
@@ -323,8 +318,6 @@ items
 ## キーの存在を調べる
 `in`を使うことで、キーが存在するか調べることができます。
 `not`を組み合わせることで、キーが存在していないことも調べることができます。
-
-コストは、`O(1)`です。
 
 ``` Python
 dic = {"a": 0}
@@ -347,7 +340,7 @@ dic = {"a": 0}
 # => True
 ```
 
-ただし、キーに対する`in`はハッシュ探索のためコストが少ないですが、値に対する`in`は線形探索となるためコストが大きいです。
+キーに対する`in`はハッシュ探索のためコストが少ないですが、値に対する`in`は線形探索となるためコストが大きいです。
 何度も走査する場合は、`set`型などのハッシュ探索を実装したオブジェクトを使用しましょう。
 
 ``` Python
@@ -386,38 +379,77 @@ if all(key in dic for key in {"a", "b"}):
 ```
 
 ## 要素をフィルタする
-辞書から任意の要素を抽出する方法を紹介します。
-
-辞書内包表記は書き方が独特ですが、もっとも性能に優れた方法ですので、コードが長いなど可読性に問題がない場合は積極的に使いましょう。
+辞書から任意の要素を抽出するには、次のようにします。
 
 ``` Python
 dic = {"a": 0, "b": 0}
+condition = {"a"}
 
-# for文
 result = {}
 for key, value in dic.items():
-  if key in {"a"}:
+  if key in condition:
     result[key] = dic[key]
-# => {"a": 0}
-
-# フィルター関数
-# キーと値が格納されたtuppleを評価する。インデックスでキー(0)と値(1)を取得できる。
-result = dict(filter(lambda key_value: key_value[0] in {"a"}, dic.items()))
-# => {"a": 0}
-
-# 辞書内包表記
-result = {key:value for key, value in dic.items() if key in {"a"}}
 # => {"a": 0}
 ```
 
-## 要素数を調べる
-辞書に登録された要素数を調べる方法を紹介します。
+### 辞書内包表記
+上記のコードは、やや冗長です。辞書内包表記を用いることでより簡潔にできます。
+書き方が独特ですが、性能面でも優遇されているので、積極的に使いましょう。
 
-`len`を使い要素数を調べることができます。
+``` Python
+dic = {"a": 0, "b": 0}
+condition = {"a"}
+
+result = {key:value for key, value in dic.items() if key in condition}
+# => {"a": 0}
+```
+
+### `filter`
+`filter`関数は、第1引数に評価関数、第2引数にイテラブルを取ります。
+各要素を評価関数で評価し、`True`と判定される要素のみを抽出するイテレータを生成します。
+
+評価関数は1つの引数を取り、キーと値のタプルを受け取ります。
+
+``` Python
+dic = {"a": 0, "b": 0}
+condition = {"a"}
+
+# キーが"a"のみ抽出する
+result = dict(filter(lambda key_value: key_value[0] in condition, dic.items()))
+# => {"a": 0}
+
+# 値が"a"のみ抽出する
+result = dict(filter(lambda key_value: key_value[1] in condition, dic.items()))
+# => {}
+```
+
+## 要素数を調べる
+要素数を調べる場合は、`len`を使用します。
+
 ``` Python
 dic = {}
 len(dic)
 # => 0
+```
+
+## 集計する
+要素を集計したい場合は、`Counter`を利用できます。
+詳しい使い方については、[要素を集計した辞書](#要素を集計した辞書を作成する)を参照ください。
+
+``` Python
+from collections import Counter
+
+dic = {
+    "Google": "America",
+    "Amazon": "America",
+    "Facebook": "America",
+    "Apple": "America",
+    "Toyota": "Japan"
+}
+
+countries = dic.values()
+Counter(countries)
+# => Counter({'America': 4, 'Japan': 1})
 ```
 
 # コピー編
@@ -663,7 +695,7 @@ dic1 |= dic2
 ## マージする（衝突するキーは許容しない）
 キーが衝突した場合に例外を発生させるマージ方法を紹介します。
 
-この方法は、Python3.5以上で利用可能です。
+この方法（複数のアンパック記法の利用）は、Python3.5以上で利用可能です。
 
 ``` Python
 dic1 = {}
@@ -736,6 +768,7 @@ dict(**dic)
 - この方法で使用できるキーは、文字列に限定される
 :::
 
+### `{}`と`dict`の混同に注意
 `{}`によるマージと`dict`関数によるマージの挙動は異なるため、混同しないように注意しましょう。
 
 ``` Python
@@ -831,7 +864,7 @@ dic = deep_merge(a, b)
 
 ``` Python
 person = {}
-person["familiy"].append("father")  # => KeyError: 'familiy'
+person["family"].append("father")  # => KeyError: 'family'
 person["background"].append("2000/4/1 Python高校入学")
 person["background"].append("2003/4/1 Python大学入学")
 ```
@@ -839,8 +872,12 @@ person["background"].append("2003/4/1 Python大学入学")
 上記のコードは、2行目でエラーとなりました。
 辞書初期化時に、リストを要素として登録していないので当然の結果ですね。
 
-このような場合、初期化時にキーに対してリストを登録しておくのは1つの解決手段ですが、`defaultdict`を用いることも可能です。
+このような場合、`defaultdict`を用いることが可能です。
+
+### `defaultdict`
 `defaultdict`は、コンストラクタにインスタンスを生成する引数なしで実行できる関数を渡すことで、その関数が返したインスタンスを初期値とします。
+
+次の例は、`list()`で生成されるインスタンスを初期値としています。
 
 ``` Python
 from collections import defaultdict
@@ -854,10 +891,7 @@ person["background"].append("2003/4/1 Python大学入学")
 # => defaultdict(<class 'list'>, {'family': ['father'], 'background': ['2000/4/1 Python高校入学', '2003/4/1 Python大学入学']})
 ```
 
-思惑通りにいきました。
-コンストラクタに渡す関数は、当然list以外でもインスタンスを返す関数なら何でも大丈夫です。
-
-intやstrを普段呼び出すことはほぼないですが、引数なしで呼び出すとデフォルト値が返るため、intやstrを渡すこともできます。
+intやstrを渡すこともできます。
 
 ``` Python
 dic1 = defaultdict(int)
@@ -869,22 +903,44 @@ dic2["new"]
 # => ""
 ```
 
+もちろん、関数を渡すこともできます。
+
+``` Python
+def create_list():
+    return ["hello"]
+
+dic1 = defaultdict(create_list)
+dic1["new"]
+# => ["hello"]
+```
+
 
 ## 挿入順を保持した辞書を作成する
+
+### `OrderedDict`
 要素の挿入順を保持した辞書を作成するには、`OrderedDict`を使用します。
 
+ただし、Python3.7以降は標準の辞書も挿入順を保持するようになったので、`OrderedDict`は使わないでいいでしょう[^1]。
 ``` Python
 from collections import OrderedDict
 dic = OrderedDict()
-```
 
-ただし、Python3.7以降は標準の辞書も挿入順を保持するようになったので、`OrderedDict`は使わないでいいでしょう[^1]。
+dic["key1"] = 0
+dic["key2"] = 0
+
+for item in dic.items():
+  print(item)
+# => ("key1", 0)
+# => ("key2", 0)
+```
 
 :::message
 - Python3.7未満では、辞書の挿入順序を取り扱うために`OrderedDict`を使用する
 :::
 
-## 要素をカウントした辞書（カウンタ）を作成する
+## 要素を集計した辞書を作成する
+
+### `Counter`
 要素を集計するには`Counter`というクラスが利用できます。
 
 コンストラクタに、イテラブルを渡すと要素数を集計できます。
@@ -920,23 +976,12 @@ dic = Counter(osaka=1, tokyo=2))
 # => Counter({'tokyo': 2, 'osaka': 1})
 ```
 
-Python3.7から、列挙時に挿入順を保持するようになりました[^1]。
-
-``` Python
-from collections import Counter
-
-data = {"osaka": 1, "tokyo": 2}
-dic = Counter(data)
-for item in dic.items():
-    print(item)
-# => ('osaka', 1)
-# => ('tokyo', 2)
-```
-
 `Counter`は、`dict`のサブクラスのため`dict`と同じように扱うことができます。
 ただし、いくつか集計用に拡張されたメソッドや異なる挙動が存在するので紹介します。
 
-`dict`と同じようにキーを指定し値にアクセスできますが、キーが存在しない場合は0を返します。
+### 値を取得する
+`dict`と同じようにキーを指定し、値にアクセスできます。
+キーが存在しない場合は、`dict`と挙動が異なり`0`を返します。
 
 ``` Python
 from collections import Counter
@@ -945,6 +990,34 @@ data = ["tokyo", "osaka", "osaka"]
 dic = Counter(data)
 dic["chiba"]
 # => 0
+```
+
+### `update`
+`dict.update`と同じように、複数の辞書をマージできます。
+`dict`では、衝突したキーの値を上書きしますが、`Counter`においては値を加算します。
+
+``` Python
+from collections import Counter
+
+data = ["tokyo", "osaka", "osaka"]
+dic = Counter(data)
+
+dic.update({"tokyo": 2})
+# => Counter({'tokyo': 3, 'osaka': 2})
+```
+
+### `subtract`
+複数の辞書をマージし、衝突したキーの値は減算します。
+`update`の逆の挙動になります。
+
+``` Python
+from collections import Counter
+
+data = ["tokyo", "osaka", "osaka"]
+dic = Counter(data)
+
+dic.subtract({"tokyo": 2})
+# => Counter({'osaka': 2, 'tokyo': -1})
 ```
 
 ### `most_common`
@@ -967,20 +1040,14 @@ for x in dic.most_common():
 # => ('tokyo', 1)
 ```
 
-`update`メソッドは、衝突したキーの値を上書きするのでなく、個数を加算します。
+### `elements`
+それぞれの値と同じ回数キーを繰り返すイテレータを返します。要素が1未満の場合は、キーは返されません。
 
 ``` Python
-from collections import Counter
-
-data = ["tokyo", "osaka", "osaka"]
-dic = Counter(data)
-
-dic.update({"tokyo": 2})
-# => Counter({'tokyo': 3, 'osaka': 2})
+c = Counter(a=4, b=2, c=0, d=-2)
+sorted(c.elements())
+# => ['a', 'a', 'a', 'a', 'b', 'b']
 ```
-
-
-
 
 ## 要素の上書きを禁止した辞書を作成する
 意図しない値の上書きを防ぐため、要素の上書きを禁止した辞書を作成したい場合は、次のように`__setitem__`をオーバーライドすることで実現可能です。
@@ -1000,8 +1067,7 @@ dic["a"] = 3
 
 
 # チートシート
-これまでの検証結果をまとめました。
-Python3.9を軸にルールを設けていますので、バージョン毎にカスタマイズしてご利用ください。
+これまでの検証結果をまとめました。俯瞰的に挙動を理解するためにご活用ください。
 
 同じ結果を返す複数の実現方法がある場合は、ニュアンスが伝わりやすい方法を用いましょう。
 
