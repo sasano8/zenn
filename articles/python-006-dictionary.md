@@ -1127,8 +1127,8 @@ dic["a"] = 3
 | 列挙 | `for key in dic:` | `keys`を使おう | |
 | 列挙 | `for key in dic.keys():` | キーを列挙する | |
 | 列挙 | `for value in dic.values():` | 値を列挙する | |
-| 列挙 | `for key, value in dic.items():` | キーと値のタプルを列挙する | |
-| 列挙 | `for key, value in dic.iteritems():` | Python3で`items`に統合された[^3] | <=2.* |
+| 列挙 | `for k, v in dic.items():` | キーと値のタプルを列挙する | |
+| 列挙 | `for k, v in dic.iteritems():` | Python3で`items`に統合された[^3] | <=2.* |
 | コピー | `dict(**dic)` | `copy`メソッドを使おう | |
 | コピー | `dict(dic)` | `copy`メソッドを使おう | |
 | コピー | `dic.copy()` | シャローコピーする | |
