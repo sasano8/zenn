@@ -976,7 +976,7 @@ for item in dic.items():
 ### `Counter`
 要素を集計するには`Counter`というクラスが利用できます。
 
-コンストラクタに、イテラブルを渡すと要素数を集計できます。
+コンストラクタに、イテラブルを渡すと同じ要素の個数を集計できます。
 
 ``` Python
 from collections import Counter
@@ -1145,14 +1145,14 @@ dic["a"] = 3
 | 問合 | `dict(filter(lambda key_value: key_value[0] in cond, dic.items()))` | 評価関数に一致する要素を抽出する。なるべく辞書内包表記を使おう |  |
 | 問合 | `{key:value for key, value in dic.items() if key in cond}` |  |  |
 | 問合 | `len(dic)` | 要素数を取得する |  |
-| 問合 | `Counter(dic.values())` | イテラブルからキーと個数を集計した`dict`を生成する |  |
+| 問合 | `Counter(dic.values())` | イテラブルの集計結果（同じ要素の個数）を`dict`互換オブジェクトにまとめる |  |
 | ソート | `sorted(dic.items())` | 昇順でソートする |  |
 | ソート | `sorted(dic.items(), key=lambda x: x)` | 任意の評価関数でソートする |  |
 | ソート | `sorted(dic.items(), reverse=True)` | 逆順にソートする |  |
 | ソート | `list(reversed(dic.items()))` | 逆順にソートする | ^3.7[^4] |
 | 初期値保持 | `defaultdict(list)` | コンストラクタに渡したファクトリ関数の戻り値を初期値とする`dict`を作成 | |
 | 挿入順保持 | `OrderedDict()` | Python3.7以降はdictが`OrderedDict`相当の順序を保持するようになったため不要 | <=3.6.* |
-| 集計 | `Counter(data)` | イテラブルからキーと個数を集計した`dict`を生成する | |
+| 集計 | `Counter(data)` | イテラブルの集計結果（同じ要素の個数）を`dict`互換オブジェクトにまとめる | |
 | 上書禁止 | | `__setitem__`等をオーバーライドし、自作する必要がある | |
 
 # 最後に
