@@ -1203,7 +1203,7 @@ dic["date"] = datetime.datetime.strptime(dic["date"], "%Y-%m-%dT%H:%M:%S")
 # => {'date': datetime.datetime(2000, 1, 1, 0, 0)}
 ```
 
-## JSONに未対応データ型を含んだ辞書とJSON文字列を相互変換する
+## JSON未対応データ型を含んだ辞書とJSON文字列を相互変換する
 `json`モジュールは便利ですが、取り扱える型が少ないと感じたのではないでしょうか。
 
 ここでは、1つの対処法として、Pydanticというライブラリを紹介します。
@@ -1348,7 +1348,7 @@ normal_dic = obj.dict()
 | 集計 | `Counter(data)` | イテラブルの集計結果（同じ要素の個数）を`dict`互換オブジェクトにまとめる | |
 | 上書禁止 | | `__setitem__`等をオーバーライドし、自作する必要がある | |
 | シリアル化 | `json.dumps(dic)` | `dict`インスタンスからJSON文字列を出力する | |
-| 逆シリアル化 | `json.loads(json_str)` | JSON文字列から辞書を生成する | |
+| 逆シリアル化 | `json.loads(json_str)` | JSON文字列から`dict`インスタンスを生成する | |
 
 # 最後に
 自分でまとめているうちに、なんとなく使っていた機能や知らなかった機能を発見できました。
