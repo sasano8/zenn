@@ -624,6 +624,7 @@ dic = deep_merge(a, b)
 
 ``` Python
 def deep_merge(dic1, dic2):
+  "2つの辞書の同一キーが互いに辞書の場合、再帰的にマージする。それ以外は上書き"
   import copy
   src1 = copy.deepcopy(dic1)
   src2 = copy.deepcopy(dic2)
@@ -631,7 +632,9 @@ def deep_merge(dic1, dic2):
 
 def deep_merge_sub(dic1, dic2):
   for key in dic2.keys():
-    if isinstance(dic2[key], dict):
+    if isinstance(dic2[key], dict) \
+    and key in dic1 \
+    and isinstance(dic1[key], dict):
       deep_merge_sub(dic1[key], dic2[key])
     else:
       dic1[key] = dic2[key]
@@ -675,8 +678,10 @@ dic = {"a": 0}
 何度も走査する場合は、`set`型などのハッシュ探索を実装したオブジェクトを使用しましょう。
 
 ``` Python
-dic = {"a": 0}
+dic = {"a": 0, "b": 1, "c": 0}
 values = set(dic.values())
+# => {0, 1}
+
 0 in values
 ```
 
@@ -983,7 +988,7 @@ from collections import Counter
 
 data = ["tokyo", "osaka", "osaka"]
 dic = Counter(data)
-# => Counter({'tokyo': 2, 'osaka': 1})
+# => Counter({'osaka': 2, 'tokyo': 1})
 ```
 
 文字列もイテラブルなため集計可能です。
@@ -1098,6 +1103,194 @@ dic["a"] = 3
 # => KeyError: 'a is already exists.'
 ```
 
+# シリアル化編
+辞書データをシリアライズ（ある環境のオブジェクトをバイト列や特定のフォーマットに変換。シリアル化ともいう）したり、デシリアライズ（外部データをある環境のオブジェクトとして復元。逆シリアル化ともいう）する方法を紹介します。
+
+## 辞書とJSON文字列を相互変換する
+
+### `json`モジュール
+Python標準ライブラリの`json`モジュールを利用すると、辞書とJSON文字列の相互変換が可能です。
+
+辞書データをJSON文字列にシリアライズしてみましょう。
+
+``` Python
+import json
+
+dic = {"name": "test"}
+json_str = json.dumps(dic)
+# => '{"name": "test"}'
+```
+
+辞書をJSON文字列にシリアライズしたら、次のようにファイルへ書き出してみましょう。
+
+``` Python
+json_str = '{"name": "test"}'
+
+# ファイルへ書き込む
+with open("sample.json", mode="w") as f:
+  f.write(json_str)
+```
+
+書き出したJSONファイルを読み込み、辞書にデシリアライズしてみましょう。
+
+``` Python
+import json
+
+# ファイルを読み込む
+with open("sample.json") as f:
+  json_str = f.read(json_str)
+  # => '{"name": "test"}'
+
+dic = json.loads(json_str)
+# => {"name": "test"}
+```
+
+これで、辞書とJSONを相互変換できるようになりました。
+便利な`json`モジュールですが、すべての型をJSON文字列として出力できるわけではありません。
+
+次の例を見てみましょう。
+
+``` Python
+import datetime
+import json
+json.dumps({"date": datetime.datetime(2000,1,1)})
+# => TypeError: Object of type 'datetime' is not JSON serializable
+```
+
+シリアライズに失敗してしまいました。
+なぜなら、JSONで利用可能な型に日付型は含まれないためです。
+
+JSONにシリアライズ可能なPythonの型は次になります。
+
+- 文字列型
+- 数値型
+- `None`
+- bool型
+- 辞書型
+- リスト型
+
+上記の型以外を利用する場合は、独自にシリアライズ処理とデシリアライズ処理を実装する必要があります。
+
+日付型のシリアライズ処理とデシリアライズ処理を行ってみましょう。
+
+``` Python
+import datetime
+import json
+
+dic = {"date": datetime.datetime(2000,1,1)}
+
+# 日付型を文字列にしてからJSON文字列にシリアライズする
+dic["date"] = datetime.datetime.isoformat(dic["date"])
+json_str = json.dumps(dic)
+# => '{"date": "2000-01-01T00:00:00"}'
+
+# JSON文字列を辞書にデシリアライズし、文字列を日付型に戻す
+dic = json.loads(json_str)
+dic["date"] = datetime.datetime.fromisoformat(dic["date"])
+# => {'date': datetime.datetime(2000, 1, 1, 0, 0)}
+```
+
+`datetime`オブジェクトは`isoformat`メソッドで、日付型をISO 8601形式の文字列に変換でき、`fromisoformat`メソッドでISO 8601形式の文字列を日付型に復元できます。
+
+ただし、`fromisoformat`が利用できるのは、Python3.7からです。
+Python3.7未満は、別の方法で処理する必要があります。
+
+``` Python
+import datetime
+
+dic = {"date": "2000-01-01T00:00:00"}
+dic["date"] = datetime.datetime.strptime(dic["date"], "%Y-%m-%dT%H:%M:%S")
+# => {'date': datetime.datetime(2000, 1, 1, 0, 0)}
+```
+
+## JSONに対応していないデータ型を含んだ辞書とJSON文字列を相互変換する
+`json`モジュールは便利ですが、取り扱える型が少ないと感じたのではないでしょうか。
+
+ここでは、1つの対処法として、Pydanticというライブラリを紹介します。
+Pydanticは、Python標準ライブラリではありませんが、非常に便利なので導入をオススメします。
+
+### Pydantic
+もう少し詳しい説明は次の章（執筆予定）で行いますので、ここでは簡単な使い方をご覧ください。
+
+基本的な使い方は、`BaseModel`を継承したクラスにフィールドと、その型を定義することで、シリアライズ・デシリアライズ、およびに初期化時の検証などさまざまな場面で恩恵にあやかることができます。
+
+``` Python
+import json
+from datetime import datetime
+from pydantic import BaseModel
+
+class Person(BaseModel):
+  name: str
+  birth_date: datetime
+
+obj = Person(name="bob", birth_date=datetime(2000,1,1))
+# => Person(name='bob', birth_date=datetime.datetime(2000, 1, 1, 0, 0))
+```
+
+次の例は、Pydanticの`BaseModel`オブジェクトの`json`メソッドで、JSONにシリアライズ可能な辞書を出力し、`json.dumps`でJSON文字列を出力しています。
+
+``` Python
+import json
+from datetime import datetime
+from pydantic import BaseModel
+
+class Person(BaseModel):
+  name: str
+  birth_date: datetime
+
+obj = Person(name="bob", birth_date=datetime(2000,1,1))
+# => Person(name='bob', birth_date=datetime.datetime(2000, 1, 1, 0, 0))
+
+dic = obj.json()
+# => {"name": "bob", "birth_date": "2000-01-01T00:00:00"}
+
+json_str = json.dumps(dic)
+# => '{"name": "bob", "birth_date": "2000-01-01T00:00:00"}'
+```
+
+デシリアライズは、次のようにできます。
+
+``` Python
+import json
+from datetime import datetime
+from pydantic import BaseModel
+
+class Person(BaseModel):
+  name: str
+  birth_date: datetime
+
+json_str = '{"name": "bob", "birth_date": "2000-01-01T00:00:00"}'
+
+dic = json.loads(json_str)
+obj = Person(**dic)
+# => Person(name='bob', birth_date=datetime.datetime(2000, 1, 1, 0, 0))
+
+# または
+obj = Person.parse_raw(json_str)
+# => Person(name='bob', birth_date=datetime.datetime(2000, 1, 1, 0, 0))
+```
+
+文字列`"2000-01-01T00:00:00"`は日付型`datetime.datetime(2000, 1, 1, 0, 0)`としてデシリアライズされていますね。
+
+`Person`クラスの`birth_date`は`datetime`と定義されていたので、Pydanticがよしなにデータ解釈をしてくれました。
+
+後は、必要に応じて`BaseModel`の`dict`メソッドで、内部データを辞書として取り出すだけです。
+
+``` Python
+from datetime import datetime
+from pydantic import BaseModel
+
+class Person(BaseModel):
+  name: str
+  birth_date: datetime
+
+obj = Person(name="bob", birth_date=datetime(2000,1,1))
+
+normal_dic = obj.dict()
+# => {'name': 'bob', 'birth_date': datetime.datetime(2000, 1, 1, 0, 0)}
+```
+
+このように、Pydanticを活用することで、より高度でシンプルなシリアライズとデシリアライズを実現できます。
 
 # チートシート
 これまでの検証結果をまとめました。俯瞰的に挙動を理解するためにご活用ください。
@@ -1112,7 +1305,7 @@ dic["a"] = 3
 | 作成 | `dic = dict([("key", "value")])` | キーと値のタプルから`dict`を作成 | |
 | 作成 | `dic = {key:value for key, value in [("key", "value")]}` |  | |
 | 作成 | `dic = dict.fromkeys(["a", "b"], 0)` | キーのリストから`dict`を生成する。ミュータブルな値を初期値（第2引数）とする場合に、副作用がある。辞書内包表記を使おう | |
-| 登録 | `dic["name"] = val` | キーが存在しない場合、`KeyError`が発生。`__setitem__`の糖衣構文 | |
+| 登録 | `dic["name"] = val` | `__setitem__`の糖衣構文 | |
 | 登録/取得 | `dic.setdefault("key")` | キーが存在しない場合、`None`を登録したうえで、キーの値を返す | |
 | 登録/取得 | `dic.setdefault("key", None)` | キーが存在しない場合、第2引数の値を登録したうえで、キーの値を返す | |
 | 取得 | `dic["name"]` | キーが存在しない場合、`KeyError`が発生。`__getitem__`の糖衣構文 | |
@@ -1154,6 +1347,8 @@ dic["a"] = 3
 | 挿入順保持 | `OrderedDict()` | Python3.7以降はdictが`OrderedDict`相当の順序を保持するようになったため不要 | <=3.6.* |
 | 集計 | `Counter(data)` | イテラブルの集計結果（同じ要素の個数）を`dict`互換オブジェクトにまとめる | |
 | 上書禁止 | | `__setitem__`等をオーバーライドし、自作する必要がある | |
+| シリアル化 | `json.dumps(dic)` | `dict`インスタンスからJSON文字列を出力する | |
+| 逆シリアル化 | `json.loads(json_str)` | JSON文字列から辞書を生成する | |
 
 # 最後に
 自分でまとめているうちに、なんとなく使っていた機能や知らなかった機能を発見できました。
