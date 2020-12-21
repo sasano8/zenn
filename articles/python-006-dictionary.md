@@ -1203,7 +1203,7 @@ dic["date"] = datetime.datetime.strptime(dic["date"], "%Y-%m-%dT%H:%M:%S")
 # => {'date': datetime.datetime(2000, 1, 1, 0, 0)}
 ```
 
-## JSONに対応していないデータ型を含んだ辞書とJSON文字列を相互変換する
+## JSONに未対応データ型を含んだ辞書とJSON文字列を相互変換する
 `json`モジュールは便利ですが、取り扱える型が少ないと感じたのではないでしょうか。
 
 ここでは、1つの対処法として、Pydanticというライブラリを紹介します。
