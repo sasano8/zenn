@@ -7,7 +7,10 @@ published: true
 ---
 
 # 概要
+※本記事は、随時執筆中です。
+
 本記事では、**一般的な辞書操作とそれらの細かい挙動に応じた使い分け**を紹介しています。
+さらに、辞書という観点で関連するモジュールも横断的に紹介しており、辞書をうまく活用した移植性高い堅牢なプログラムを組むテクニックを紹介しています。
 
 本記事[チートシート](#チートシート)のような要求操作に対する実装例をコンパクトに俯瞰できるドキュメントが欲しかったのですが、画面幅の都合で詳細が伝わりきらないため、ひととおり執筆するハメになりました（汗）。
 
@@ -1564,19 +1567,8 @@ json.dumps({"date": datetime.datetime(2000,1,1)})
 # => TypeError: Object of type 'datetime' is not JSON serializable
 ```
 
-シリアライズに失敗してしまいました。
-なぜなら、JSONで利用可能な型に日付型は含まれないためです。
-
-JSONにシリアライズ可能なPythonの型は次になります。
-
-- 文字列型
-- 数値型
-- `None`
-- bool型
-- 辞書型
-- リスト型
-
-上記の型以外を利用する場合は、独自にシリアライズ処理とデシリアライズ処理を実装する必要があります。
+JSONで利用可能な型に日付型は含まれないため、シリアライズに失敗してしまいました。
+このような場合は、独自に処理を実装する必要があります。
 
 日付型のシリアライズ処理とデシリアライズ処理を行ってみましょう。
 
@@ -1610,11 +1602,10 @@ dic["date"] = datetime.datetime.strptime(dic["date"], "%Y-%m-%dT%H:%M:%S")
 # => {'date': datetime.datetime(2000, 1, 1, 0, 0)}
 ```
 
-データの型によって、毎回処理を実装するのは億劫と感じるのではないでしょうか。
-
 ### Pydanticを使ったシリアル化
-Pydanticを使うと、高度なシリアル化処理ができます。
-シリアライズは、次のようにできます。
+Pydanticを使うと、簡潔で高度なシリアル化処理ができます。
+
+シリアライズは次のようにできます。
 
 ``` Python
 import json
@@ -1632,7 +1623,7 @@ json_str = obj.json()
 # => '{"name": "bob", "birth_date": "2000-01-01T00:00:00"}'
 ```
 
-デシリアライズは、次のようにできます。
+デシリアライズは次のようにできます。
 
 ``` Python
 import json
@@ -1717,7 +1708,7 @@ obj = Person.parse_raw(json_str)
 | 不変な辞書 | `@dataclasses.dataclass(frozen=True)` | イミュータブルな`dataclass`を辞書に変換して利用できる | ^3.7 |
 | 不変な辞書 | `class Dummy(typing.NamedTuple):` | イミュータブルな`NamedTuple`を辞書に変換して利用できる |  |
 | 不変な辞書 | `class Dummy(pydantic.BaseModel):` | `allow_mutation = False`でイミュータブルに扱い、辞書に変換して利用できる | ^3.6 |
-| 検証 | `class Dummy(typing.TypedDict):` | 型ヒントが利用できる辞書。ランタイムでの検証はしない | |
+| 検証 | `class Dummy(typing.TypedDict):` | 型ヒントが利用できる辞書。ランタイムでの検証はしない | ^3.8 |
 | 変換 | `json.dumps(dic)` | PythonオブジェクトからJSON文字列を出力する | |
 | 変換 | `json.loads(json_str)` | JSON文字列からPythonオブジェクトを復元する | |
 
