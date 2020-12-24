@@ -800,10 +800,11 @@ Python3.7からは、`dict`が返す要素の順序は次のようになりま�
 - 挿入順で要素を返す[^1]
 - 要素の更新は順序に影響を与えない
 
-Python3.7未満は順序不定ですので、挿入順序を管理する場合は[`OrderedDict`](#挿入順を保持した辞書を作成する)を利用ください。
+Python3.7未満で挿入順序を管理する場合は[`OrderedDict`](#挿入順を保持した辞書を作成する)を利用ください。
 
 ## 数値をソートする
 `sorted`関数は、任意のキーでソートされたリストを返します。
+
 keyにソート用の関数を渡すと、その関数の戻り値の大小が昇順でソートされます。
 
 ``` Python
@@ -818,6 +819,7 @@ sorted(dic.values(), key=lambda x: x)
 sorted(dic.values())
 # => [-1, ,0 ,2]
 
+# itemsでタプルを受け取る場合は、0 - キー, 1 - 値　でインデックスアクセスできる
 # 値を昇順にソートし、要素をリスト化する
 sorted(dic.items(), key=lambda x: x[1])
 # => [('c', -1), ('b', 0), ('a', 1)]
@@ -826,11 +828,11 @@ sorted(dic.items(), key=lambda x: x[1])
 sorted(dic.items(), key=lambda x: -1 * x[1])
 # => [('a', 1), ('b', 0), ('c', -1)]
 
-# 値を絶対値を昇順順にソートし、要素をリスト化する
+# 値を絶対値を昇順にソートし、要素をリスト化する
 sorted(dic.items(), key=lambda x: abs(x[1]))
 # => [('b', 0), ('a', 1), ('c', -1)]
 
-# このようにソートされたキーと値を処理することができます
+# このようにソートされたキーと値を処理できる
 for key, value in sorted(dic.items()):
     print(key, value)
 ```
@@ -1087,31 +1089,434 @@ sorted(counter.elements())
 # => ['a', 'a', 'a', 'a', 'b', 'b']
 ```
 
-## 要素の上書きを禁止した辞書を作成する
-意図しない値の上書きを防ぐため、要素の上書きを禁止した`dict`を作成したい場合は、次のように`__setitem__`をオーバーライドすることで実現可能です。
+## 不変な辞書を作成する
+不変性をもつ（作成後にオブジェクトの状態を変えることができない）オブジェクトをイミュータブルなオブジェクトと呼びます。
+イミュータブルなオブジェクトをうまく活用すると、予期せぬデータ破壊の生じない堅牢なプログラミングができます。
+
+イミュータブルなコンテナ型は`tuple`や`frozenset`がありますが、辞書にイミュータブルな型はないので、別の方法で代替することになります。
+
+辞書のイミュータブル化について、次のPEPで議論されていますので、興味があればご覧ください。
+
+- [PEP0416 frozendictの否決](https://www.python.org/dev/peps/pep-0416/)
+- [PEP0603 frozenmapの提案](https://www.python.org/dev/peps/pep-0603/)
+
+### MappingProxyType
+`MappingProxyType`は、読み出し専用の動的辞書ビューを提供します。
 
 ``` Python
-class OnceDict(dict):
-    def __setitem__(self, key, value):
-        if key in self:
-            raise KeyError(f"{key} is already exists.")
-        super().__setitem__(key, value)
+from types import MappingProxyType
 
+src = {"test": 1}
+dic = MappingProxyType(src)
 
-dic = OnceDict({"a": 1})
-dic["a"] = 3
-# => KeyError: 'a is already exists.'
+dic["test"]
+# => 1
+
+dic["test"] = 2
+# => TypeError: 'mappingproxy' object does not support item assignment
 ```
 
-# シリアル化編
-辞書データをシリアライズ（ある環境のオブジェクトをバイト列や特定のフォーマットに変換。シリアル化ともいう）したり、デシリアライズ（外部データをある環境のオブジェクトとして復元。逆シリアル化ともいう）する方法を紹介します。
+ソース辞書を変更すると同期的に動作するので、本当の意味での不変は保証されませんが、多くのケースで十分に要求を満たすでしょう。
+
+``` Python
+from types import MappingProxyType
+
+src = {"test": 1}
+dic = MappingProxyType(src)
+
+src["test"] = 2
+dic["test"]
+# => 2
+```
+
+## dataclass
+Python3.7から利用できる`dataclass`に`frozen=True`オプションを指定すると、イミュータブルなインスタンスを生成できます。
+
+辞書として扱いたい場合は辞書に変換する必要があります。
+
+辞書への変換方法は、[`dataclass`を辞書に変換する](#dataclassを辞書に変換する)を参照ください。
+
+``` Python
+from dataclasses import dataclass
+
+@dataclass(frozen=True)
+class Person:
+  name: str = "test"
+  age: int = 20
+
+obj = Person()
+
+obj.name = "test"
+# => dataclasses.FrozenInstanceError: cannot assign to field 'name'
+```
+
+## NamedTuple
+`NamedTuple`は`tuple`のサブクラスのように（生成されたクラスは`NamedTuple`のサブクラスでなく、`tuple`のサブクラスとなる）振る舞い、各インデックスに属性名を付与できます。
+`tuple`はイミュータブルですので、インスタンスの変更は許可されません。
+
+辞書として扱いたい場合は辞書に変換する必要があります。
+
+辞書への変換方法は、[`NamedTuple`を辞書に変換する](#NamedTupleを辞書に変換する)を参照ください。
+
+``` Python
+from typing import NamedTuple
+
+class Person(NamedTuple):
+  name: str = "test"
+  age: int = 20
+
+obj = Person()
+
+obj.name
+# => "test"
+
+obj[0]
+# => "test"
+
+obj.name = ""
+# => AttributeError: can't set attribute
+
+obj["name"] = "test"
+# => TypeError: 'Employee' object does not support item assignment
+```
+
+辞書から動的に`NamedTuple`生成もできますが、コードが直感的でないので、あまり使うべきではありません。
+
+``` Python
+from collections import namedtuple
+dic = {"name": "test", "age": 20}
+
+Person = namedtuple('Person', dic.keys())  # クラスを生成
+obj = Person(**dic)  # インスタンスを生成
+# => Person(name='test', age=20)
+```
+
+## Pydantic
+Pydanticについては〇〇で紹介しますので、ここではイミュータブルにする例のみ紹介します。
+
+辞書として扱いたい場合は辞書に変換する必要があります。
+
+辞書への変換方法は、[`pydantic.BaseModel`を辞書に変換する](#pydantic.BaseModelを辞書に変換する)を参照ください。
+
+``` Python
+from pydantic import BaseModel
+
+class Person(BaseModel):
+  name: str = "bob"
+  age: int = 20
+  class Config:
+    allow_mutation = False  # 変更を許可するか否か。デフォルトはTrue
+
+obj = Person()
+obj.name = "test"
+# => TypeError: "Person" is immutable and does not support item assignment
+```
+
+## 不変における注意点
+紹介したどの方法も、ネストした辞書に対する書き込みは禁止できません。
+
+``` Python
+from types import MappingProxyType
+
+src = {"nest": {}}
+dic = MappingProxyType(src)
+
+dic["nest"]["new"] = 1
+dic
+# => mappingproxy({'nest': {'new': 1}})
+```
+
+`list`や`set`の場合も同様です。
+完全なイミュータブルを目指す場合は、ネストしたミュータブルなオブジェクトを`MappingProxyType`、`tuple`、`frozenset`等に置き換えましょう。
+
+``` Python
+from types import MappingProxyType
+
+src = {"dict": MappingProxyType({}), "list": tuple(), "frozenset": frozenset()}
+dic = MappingProxyType(src)
+
+dic["dict"]["new"] = 1
+# => TypeError: 'mappingproxy' object does not support item assignment
+
+dic["list"].append(1)
+# => AttributeError: 'tuple' object has no attribute 'append'
+
+dic["frozenset"].add(1)
+# => AttributeError: 'frozenset' object has no attribute 'add'
+```
+
+## どの方法を使うべきか
+基本的には、`MappingProxyType`で十分です。
+後は、ケースに応じて使い分けましょう（大量にデータを処理する必要がなければ、どれも大差ありません）。
+
+- 単に辞書を読み取り専用にしたい： `MappingProxyType`
+- IDEによるサポートと検証機能を重視したい： Pydantic
+- IDEによるサポートとデータアクセス速度を重視したい： `dataclass`
+- IDEによるサポートとメモリ省力化を重視したい：`NamedTuple`
+
+次の記事も参考にしてください。
+
+- [Data Classes vs typing.NamedTuple primary use cases](https://stackoverflow.com/questions/51671699/data-classes-vs-typing-namedtuple-primary-use-cases)
+
+# 検証編
+辞書は汎用性が高いですが、どんな構造になっているか、想定しない値が混在していないかなど、ときどきデータの信頼性に疑念をもつ時があります。
+
+ここでは、辞書の構造を定義し、堅牢なプログラミングを行う方法を紹介します。
+
+# TypedDict
+Python3.8から、TypedDict（特定のキーと型をもっていることを期待する辞書）を宣言できます。
+実行時に値の検証はされませんが、mypyなどの静的解析ツールでコーディング時の誤りに気付けます。
+
+``` Python
+from typing import TypedDict
+
+class Person(TypedDict):
+  name: str
+  age: int
+```
+
+（TODO: 執筆中）
+
+# Pydantic
+PydanticはPython3.6から対応している、堅牢なプログラミングを行うためのライブラリです。
+
+Pydanticは主に提供する機能は次のとおりです。
+
+- 検証機能
+- 親切なエラー情報
+- PythonオブジェクトとJSON互換オブジェクトの相互変換
+- OpenAPI生成
+
+Python3.7から導入された`dataclass`と似ていますが、Pydanticでは型を活用した多彩な要求に対応できます。
+
+### 公式ドキュメント
+導入方法や詳しい利用方法は公式ドキュメント等を参照ください。
+
+https://pydantic-docs.helpmanual.io/
+
+## 辞書の検証
+基本的な使い方は、`BaseModel`を継承したクラスのフィールドに型ヒントを付与すると、インスタンス生成時に値を検証します。
+
+``` Python
+from datetime import datetime
+from pydantic import BaseModel
+
+class Person(BaseModel):
+  name: str
+  age: int
+  birth_date: datetime = None
+
+obj = Person(name="bob", age=20)
+# => Person(name="bob", age=20, birth_date=None)
+
+# ageに数字以外が混入しているのでエラー
+Person(name="bob", age="20歳")
+# => ValidationError age value is not a valid integer
+
+# 型が違っていても、解釈可能なら検証に成功し、型変換を行う（日付はISO形式の文字列を解釈可能）
+obj = Person(name=1, age="20", birth_date="2020-1-1T00:00:00Z")
+# => Person(name="1", age=20, datetime.datetime(2020, 1, 1, 0, 0, tzinfo=datetime.timezone.utc))
+```
+
+辞書との相互変換は非常に簡単です。
+ネストした構造も苦になりません。
+
+``` Python
+import datetime
+from typing import List
+from pydantic import BaseModel
+
+class Child(BaseModel):
+  name: str
+  birth_date: datetime.datetime
+
+class Parent(BaseModel):
+  name: str
+  birth_date: datetime.datetime
+  children: List[Child] = []
+
+dic = {
+    "name": "bob", "birth_date": datetime.datetime(2000,1,1),
+    "children": [
+        {"name": "tom", "birth_date": datetime.datetime(2018,1,1)},
+        {"name": "mary", "birth_date": datetime.datetime(2020,1,1)}
+    ]
+}
+
+obj = Parent(**dic)
+# => Parent(name='bob', birth_date=datetime.datetime(2000, 1, 1, 0, 0), children=[Child(name='tom', birth_date=datetime.datetime(2018, 1, 1, 0, 0)), Child(name='mary', birth_date=datetime.datetime(2020, 1, 1, 0, 0))])
+
+dic = obj.dict()
+# => {'name': 'bob', 'birth_date': datetime.datetime(2000, 1, 1, 0, 0), 'children': [{'name': 'tom', 'birth_date': datetime.datetime(2018, 1, 1, 0, 0)}, {'name': 'mary', 'birth_date': datetime.datetime(2020, 1, 1, 0, 0)}]}
+```
+
+多様するのは好ましくないですが、Pydanticではこんなラフなこともできてしまいます。
+
+``` Python
+from typing import Union
+from pydantic import BaseModel, parse_obj_as
+
+class Person1(BaseModel):
+  name: str
+  age: int
+
+class Person2(BaseModel):
+  fullname: str
+  age: int
+
+data = [
+    {"fullname": "bob", "age": 20},
+    {"name": "mary", "age": 18}
+]
+
+for row in data:
+  print(parse_obj_as(Union[Person1, Person2], row))
+  # => Person2(fullname='bob', age=20)
+  # => Person1(name='mary', age=18)
+```
+
+従来なら、愚直にif文で分岐処理を書くところですが、`Union`（いずれかの型）を指定すると、いずれかの型で解釈する、という書き方ができます。
+
+雑にデータ分析したい場面や、Webアプリケーションで厳密に定義されたデータを返したい場合など、さまざまな状況に応じた使い方ができます。
+
+
+## 環境変数を検証する
+辞書的をもつ代表的なリソースの1つが環境変数です。
+
+```
+os.environ["PATH"]
+```
+
+（TODO: 執筆中）
+
+# 変換編
+あるオブジェクトを辞書に変換する方法や、辞書データを一般的なフォーマットに変換する方法を紹介します。
+
+## `dataclass`を辞書に変換する
+`dataclass`は、`asdict`関数で辞書化できます。
+
+``` Python
+from typing import List
+from dataclasses import dataclass, asdict
+
+@dataclass
+class Child:
+  name: str
+
+@dataclass
+class Parent:
+  name: str
+  children: List[Child]
+
+obj = Parent(name="bob", children=[Child(name="tom"), Child(name="mary")])
+asdict(obj)
+# => {'name': 'bob', 'children': [{'name': 'tom'}, {'name': 'mary'}]}
+```
+
+`__dict__`メソッドは、ネストした`dataclass`を再帰的に辞書化しないため利用してはいけません。
+
+``` Python
+from typing import List
+from dataclasses import dataclass, asdict
+
+@dataclass
+class Child:
+  name: str
+
+@dataclass
+class Parent:
+  name: str
+  children: List[Child]
+
+obj = Parent(name="bob", children=[Child(name="tom"), Child(name="mary")])
+obj.__dict__
+# => {'name': 'bob', 'children': [Child(name='tom'), Child(name='mary')]}
+```
+
+## `NamedTuple`を辞書に変換する
+`NamedTuple`は、`_asdict`メソッドで辞書化できます。
+
+``` Python
+from typing import NamedTuple
+
+class Person(NamedTuple):
+  name: str
+
+obj = Person(name="bob")
+obj._asdict()
+# => {'name': 'bob'}
+```
+
+なお、`_asdict`は再帰的な辞書化に対応していません。
+ネストさせないようにしましょう。
+
+``` Python
+from typing import NamedTuple
+
+class Child(NamedTuple):
+  name: str
+
+class Parent(NamedTuple):
+  name: str
+  children: List[Child]
+
+obj = Parent(name="bob", children=[Child(name="tom"), Child(name="mary")])
+obj._asdict()
+# => {'name': 'bob', 'children': [Child(name='tom'), Child(name='mary')]}
+```
+
+## `pydantic.BaseModel`を辞書に変換する
+`pydantic.BaseModel`は、`dict`メソッドで辞書化できます。
+
+``` Python
+from pydantic import BaseModel
+
+class Child(BaseModel):
+  name: str
+
+class Parent(BaseModel):
+  name: str
+  children: List[Child]
+
+obj = Parent(name="bob", children=[Child(name="tom"), Child(name="mary")])
+obj.dict()
+# => {'name': 'bob', 'children': [{'name': 'tom'}, {'name': 'mary'}]}
+```
+
+また、`include`オプションと`exclude`オプションで任意の属性のみ出力が可能です。
+
+``` Python
+from pydantic import BaseModel
+
+class Person(BaseModel):
+  name: str
+  age: int
+  sex: str
+
+obj = Person(name="bob", age=20, sex="male")
+
+obj.dict(include={"name"})
+# => {'name': 'bob'}
+
+obj.dict(exclude={"name"})
+# => {'age': 20, 'sex': 'male'}
+```
 
 ## 辞書とJSON文字列を相互変換する
 
 ### `json`モジュールを使ったシリアル化
-Python標準ライブラリの`json`モジュールを利用すると、辞書とJSON文字列の相互変換が可能です。
+Python標準ライブラリの`json`モジュールを利用すると、PythonオブジェクトとJSON文字列の相互変換が可能です。
 
-辞書データをJSON文字列にシリアライズしてみましょう。
+`json`モジュールをで利用可能なPythonオブジェクトは次になります。
+
+- 文字列型
+- 数値型
+- `None`
+- bool型
+- 辞書型
+- リスト型
+
+ここでは、辞書データをJSON文字列にシリアライズ（ある環境のオブジェクトをバイト列や特定のフォーマットに変換。シリアル化とも呼ぶ）してみましょう。
 
 ``` Python
 import json
@@ -1131,7 +1536,7 @@ with open("sample.json", mode="w") as f:
   f.write(json_str)
 ```
 
-書き出したJSONファイルを読み込み、辞書にデシリアライズしてみましょう。
+書き出したJSONファイルを読み込み、辞書にデシリアライズ（外部データをある環境のオブジェクトとして復元。逆シリアル化とも呼ぶ）してみましょう。
 
 ``` Python
 import json
@@ -1207,28 +1612,9 @@ dic["date"] = datetime.datetime.strptime(dic["date"], "%Y-%m-%dT%H:%M:%S")
 
 データの型によって、毎回処理を実装するのは億劫と感じるのではないでしょうか。
 
-ここでは、1つの対処法として、Pydanticというライブラリを紹介します。
-Pydanticは、Python標準ライブラリではありませんが、非常に便利なので導入をオススメします。
-
 ### Pydanticを使ったシリアル化
-Pydanticについてもう少し詳しい説明は次の章（執筆予定）で行いますので、ここでは簡単な使い方をご覧ください。
-
-基本的な使い方は、`BaseModel`を継承したクラスにフィールドと、その型を定義することで、シリアライズ・デシリアライズ、およびに初期化時の検証などさまざまな場面で恩恵にあやかることができます。
-
-``` Python
-import json
-from datetime import datetime
-from pydantic import BaseModel
-
-class Person(BaseModel):
-  name: str
-  birth_date: datetime
-
-obj = Person(name="bob", birth_date=datetime(2000,1,1))
-# => Person(name='bob', birth_date=datetime.datetime(2000, 1, 1, 0, 0))
-```
-
-次の例は、Pydanticの`BaseModel`オブジェクトの`json`メソッドで、JSONにシリアライズ可能な辞書を出力し、`json.dumps`でJSON文字列を出力しています。
+Pydanticを使うと、高度なシリアル化処理ができます。
+シリアライズは、次のようにできます。
 
 ``` Python
 import json
@@ -1242,10 +1628,7 @@ class Person(BaseModel):
 obj = Person(name="bob", birth_date=datetime(2000,1,1))
 # => Person(name='bob', birth_date=datetime.datetime(2000, 1, 1, 0, 0))
 
-dic = obj.json()
-# => {"name": "bob", "birth_date": "2000-01-01T00:00:00"}
-
-json_str = json.dumps(dic)
+json_str = obj.json()
 # => '{"name": "bob", "birth_date": "2000-01-01T00:00:00"}'
 ```
 
@@ -1263,6 +1646,7 @@ class Person(BaseModel):
 json_str = '{"name": "bob", "birth_date": "2000-01-01T00:00:00"}'
 
 dic = json.loads(json_str)
+# => {'name': 'bob', 'birth_date': '2000-01-01T00:00:00'}
 obj = Person(**dic)
 # => Person(name='bob', birth_date=datetime.datetime(2000, 1, 1, 0, 0))
 
@@ -1274,24 +1658,6 @@ obj = Person.parse_raw(json_str)
 文字列`"2000-01-01T00:00:00"`は日付型`datetime.datetime(2000, 1, 1, 0, 0)`としてデシリアライズされていますね。
 
 `Person`クラスの`birth_date`は`datetime`と定義されていたので、Pydanticがよしなにデータ解釈をしてくれました。
-
-後は、必要に応じて`BaseModel`の`dict`メソッドで、内部データを辞書として取り出すだけです。
-
-``` Python
-from datetime import datetime
-from pydantic import BaseModel
-
-class Person(BaseModel):
-  name: str
-  birth_date: datetime
-
-obj = Person(name="bob", birth_date=datetime(2000,1,1))
-
-normal_dic = obj.dict()
-# => {'name': 'bob', 'birth_date': datetime.datetime(2000, 1, 1, 0, 0)}
-```
-
-このようにPydanticを活用することで、より高度でシンプルなシリアライズとデシリアライズを実現できます。
 
 # チートシート
 これまでの検証結果をまとめました。俯瞰的に挙動を理解するためにご活用ください。
@@ -1339,17 +1705,21 @@ normal_dic = obj.dict()
 | 問合 | `dict(filter(lambda key_value: key_value[0] in cond, dic.items()))` | 評価関数に一致する要素を抽出する。なるべく辞書内包表記を使おう |  |
 | 問合 | `{key:value for key, value in dic.items() if key in cond}` |  |  |
 | 問合 | `len(dic)` | 要素数を取得する |  |
-| 問合 | `Counter(dic.values())` | イテラブルの集計結果（同じ要素の個数）を`dict`互換オブジェクトにまとめる |  |
-| ソート | `sorted(dic.items())` | 昇順でソートする |  |
-| ソート | `sorted(dic.items(), key=lambda x: x)` | 任意の評価関数でソートする |  |
-| ソート | `sorted(dic.items(), reverse=True)` | 逆順にソートする |  |
-| ソート | `list(reversed(dic.items()))` | 逆順にソートする | ^3.7[^4] |
+| 問合 | `Counter(dic.values())` | イテラブルの集計結果（同じ要素の個数）を`dict`サブクラスにまとめる |  |
+| ソート | `sorted(dic.items())` | 昇順でソートされたリストを返す |  |
+| ソート | `sorted(dic.items(), key=lambda x: x)` | 任意の評価関数でソートされたリストを返す |  |
+| ソート | `sorted(dic.items(), reverse=True)` | 逆順にソートされたリストを返す |  |
+| ソート | `reversed(dic.items())` | 逆順にソートするイテレータを返す | ^3.7[^4] |
 | 初期値保持 | `defaultdict(list)` | コンストラクタに渡したファクトリ関数の戻り値を初期値とする`dict`を作成 | |
 | 挿入順保持 | `OrderedDict()` | Python3.7以降はdictが`OrderedDict`相当の順序を保持するようになったため不要 | <=3.6.* |
-| 集計 | `Counter(data)` | イテラブルの集計結果（同じ要素の個数）を`dict`互換オブジェクトにまとめる | |
-| 上書禁止 | | `__setitem__`等をオーバーライドし、自作する必要がある | |
-| シリアル化 | `json.dumps(dic)` | `dict`インスタンスからJSON文字列を出力する | |
-| 逆シリアル化 | `json.loads(json_str)` | JSON文字列から`dict`インスタンスを生成する | |
+| 集計 | `Counter(data)` | イテラブルの集計結果（同じ要素の個数）を`dict`サブクラスにまとめる | |
+| 不変な辞書 | `types.MappingProxyType(dic)` | 読み出し専用の辞書ビューを提供する | ^3.3 |
+| 不変な辞書 | `@dataclasses.dataclass(frozen=True)` | イミュータブルな`dataclass`を辞書に変換して利用できる | ^3.7 |
+| 不変な辞書 | `class Dummy(typing.NamedTuple):` | イミュータブルな`NamedTuple`を辞書に変換して利用できる |  |
+| 不変な辞書 | `class Dummy(pydantic.BaseModel):` | `allow_mutation = False`でイミュータブルに扱い、辞書に変換して利用できる | ^3.6 |
+| 検証 | `class Dummy(typing.TypedDict):` | 型ヒントが利用できる辞書。ランタイムでの検証はしない | |
+| 変換 | `json.dumps(dic)` | PythonオブジェクトからJSON文字列を出力する | |
+| 変換 | `json.loads(json_str)` | JSON文字列からPythonオブジェクトを復元する | |
 
 # 最後に
 自分でまとめているうちに、なんとなく使っていた機能や知らなかった機能を発見できました。
