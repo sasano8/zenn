@@ -1103,7 +1103,7 @@ sorted(counter.elements())
 - [PEP0416 frozendictの否決](https://www.python.org/dev/peps/pep-0416/)
 - [PEP0603 frozenmapの提案](https://www.python.org/dev/peps/pep-0603/)
 
-### MappingProxyType
+### `MappingProxyType`
 `MappingProxyType`は、読み出し専用の動的辞書ビューを提供します。
 
 ``` Python
@@ -1132,7 +1132,7 @@ dic["test"]
 # => 2
 ```
 
-### dataclass
+### `dataclass`
 Python3.7から利用できる`dataclass`に`frozen=True`オプションを指定すると、イミュータブルなインスタンスを生成できます。
 
 辞書として扱いたい場合は辞書に変換する必要があります。
@@ -1153,13 +1153,13 @@ obj.name = "test"
 # => dataclasses.FrozenInstanceError: cannot assign to field 'name'
 ```
 
-### NamedTuple
+### `NamedTuple`
 `NamedTuple`は`tuple`のサブクラスのように（生成されたクラスは`NamedTuple`のサブクラスでなく、`tuple`のサブクラスとなる）振る舞い、各インデックスに属性名を付与できます。
 `tuple`はイミュータブルですので、インスタンスの変更は許可されません。
 
 辞書として扱いたい場合は辞書に変換する必要があります。
 
-辞書への変換方法は、[`NamedTuple`を辞書に変換する](#NamedTupleを辞書に変換する)を参照ください。
+辞書への変換方法は、[`NamedTuple`を辞書に変換する](#namedtupleを辞書に変換する)を参照ください。
 
 ``` Python
 from typing import NamedTuple
@@ -1199,7 +1199,7 @@ Pydanticについては〇〇で紹介しますので、ここではイミュー
 
 辞書として扱いたい場合は辞書に変換する必要があります。
 
-辞書への変換方法は、[Pydanticを辞書に変換する](#Pydanticを辞書に変換する)を参照ください。
+辞書への変換方法は、[Pydanticを辞書に変換する](#pydanticを辞書に変換する)を参照ください。
 
 ``` Python
 from pydantic import BaseModel
@@ -1730,3 +1730,6 @@ Pythonは歴史があり、いろいろな実装方法があったりするの�
 [^10000]: リバーシブル： `__reversed__`をもつオブジェクト
 [^10001]: イテレータ： `__iter__`と`__next__`をもつ反復可能なオブジェクト
 [^10002]: イテラブル： `__iter__`をもつ反復可能なオブジェクト
+
+
+<!-- リンクを貼る時、ヘッダ文字列は小文字に変換されてしまっているので、小文字で指定しなければいけない -->
