@@ -1212,7 +1212,7 @@ obj.name = "test"
 # => TypeError: "Person" is immutable and does not support item assignment
 ```
 
-## 不変における注意点
+### 不変における注意点
 紹介したどの方法も、ネストした辞書に対する書き込みは禁止できません。
 
 ``` Python
@@ -1245,7 +1245,7 @@ dic["frozenset"].add(1)
 # => AttributeError: 'frozenset' object has no attribute 'add'
 ```
 
-## どの方法を使うべきか
+### どの方法を使うべきか
 基本的には、`MappingProxyType`で十分です。
 後は、ケースに応じて使い分けましょう（大量にデータを処理する必要がなければ、どれも大差ありません）。
 
