@@ -340,6 +340,8 @@ items
 # => dict_items([('a', 0), ('b', 0)])
 ```
 
+
+
 # コピー編
 
 ## シャローコピーする
@@ -794,6 +796,9 @@ Counter(countries)
 # => Counter({'America': 4, 'Japan': 1})
 ```
 
+## フラット化する
+TODO: 執筆中
+
 # ソート編
 `dict`をソートする方法を紹介します。
 
@@ -1094,7 +1099,6 @@ sorted(counter.elements())
 
 ## 不変な辞書を作成する
 不変性をもつ（作成後にオブジェクトの状態を変えることができない）オブジェクトをイミュータブルなオブジェクトと呼びます。
-イミュータブルなオブジェクトをうまく活用すると、予期せぬデータ破壊の生じない堅牢なプログラミングができます。
 
 イミュータブルなコンテナ型は`tuple`や`frozenset`がありますが、辞書にイミュータブルな型はないので、別の方法で代替することになります。
 
@@ -1235,7 +1239,7 @@ dic
 ``` Python
 from types import MappingProxyType
 
-src = {"dict": MappingProxyType({}), "list": tuple(), "frozenset": frozenset()}
+src = {"dict": MappingProxyType({}), "list": tuple(), "set": frozenset()}
 dic = MappingProxyType(src)
 
 dic["dict"]["new"] = 1
@@ -1244,7 +1248,7 @@ dic["dict"]["new"] = 1
 dic["list"].append(1)
 # => AttributeError: 'tuple' object has no attribute 'append'
 
-dic["frozenset"].add(1)
+dic["set"].add(1)
 # => AttributeError: 'frozenset' object has no attribute 'add'
 ```
 
@@ -1705,9 +1709,9 @@ obj = Person.parse_raw(json_str)
 | 挿入順保持 | `OrderedDict()` | Python3.7以降はdictが`OrderedDict`相当の順序を保持するようになったため不要 | <=3.6.* |
 | 集計 | `Counter(data)` | イテラブルの集計結果（同じ要素の個数）を`dict`サブクラスにまとめる | |
 | 不変な辞書 | `types.MappingProxyType(dic)` | 読み出し専用の辞書ビューを提供する | ^3.3 |
-| 不変な辞書 | `@dataclasses.dataclass(frozen=True)` | イミュータブルな`dataclass`を辞書に変換して利用できる | ^3.7 |
-| 不変な辞書 | `class Dummy(typing.NamedTuple):` | イミュータブルな`NamedTuple`を辞書に変換して利用できる |  |
-| 不変な辞書 | `class Dummy(pydantic.BaseModel):` | `allow_mutation = False`でイミュータブルに扱い、辞書に変換して利用できる | ^3.6 |
+| 不変な辞書 | `@dataclasses.dataclass(frozen=True)` | イミュータブルな`dataclass`で代替する | ^3.7 |
+| 不変な辞書 | `class Dummy(typing.NamedTuple):` | イミュータブルな`NamedTuple`で代替する |  |
+| 不変な辞書 | `class Dummy(pydantic.BaseModel):` | イミュータブルなPydanticオブジェクトで代替する。`allow_mutation = False`でイミュータブルになる | ^3.6 |
 | 検証 | `class Dummy(typing.TypedDict):` | 型ヒントが利用できる辞書。ランタイムでの検証はしない | ^3.8 |
 | 変換 | `json.dumps(dic)` | PythonオブジェクトからJSON文字列を出力する | |
 | 変換 | `json.loads(json_str)` | JSON文字列からPythonオブジェクトを復元する | |
