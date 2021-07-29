@@ -308,7 +308,7 @@ for key, value in dic.iteritems():
 ```
 
 ## ビューオブジェクトについて
-`dict`が持っている列挙用メソッド`keys` `values` `items`は、ビューオブジェクトを返します。
+`dict`が持っている列挙用メソッド`keys` `values` `items`は、ビューオブジェクトと呼ばれるインスタンスを返します。
 ビューオブジェクトは、主に列挙に関する機能だけ提供します。
 
 ``` Python
@@ -339,6 +339,17 @@ items
 # => dict_items([('a', 0), ('b', 0)])
 ```
 
+## マッピング型について
+`dict`を利用していると、マッピング型と呼ばれる型に遭遇するかもしれません。
+
+Pythonにおいて`dict`とは、マッピング型（厳密にはMutableMapping）のインタフェース（値を登録・参照したり、列挙したりする機能）を実装したひとつの型といえます。
+
+インタフェースを知っていると、よりPythonの理解が深まるでしょう。
+
+https://docs.python.org/ja/3/library/collections.abc.html
+
+
+
 # コピー編
 
 ## シャローコピーする
@@ -359,7 +370,7 @@ dest2 = dict(src)
 dest3 = src.copy()
 ```
 
-シャローは浅いを意味し、ネストした`dict`等の値はコピーされず、ただ同じ実体を参照するだけです。
+シャローは浅いを意味し、ネストした`dict`等の値はコピーしません。
 そのため、次のような副作用が生じます。
 
 ``` Python
@@ -369,28 +380,15 @@ dest1 = dict(**src)
 dest2 = dict(src)
 dest3 = src.copy()
 
-# コピーしたdictを変更したつもりが、ソースまで影響を受けてしまう
+# コピーしたdictを変更したつもりが、様々な箇所に影響してしまう
 dest1["nest"]["age"] = 0
 print(src)   # => {"name": "bob", "age": 20, "nest": {"name": "mary", "age": 0}}
 print(dest1) # => {"name": "bob", "age": 20, "nest": {"name": "mary", "age": 0}}
-
-dest2["nest"]["age"] = 1
-print(src)   # => {"name": "bob", "age": 20, "nest": {"name": "mary", "age": 1}}
-print(dest2) # => {"name": "bob", "age": 20, "nest": {"name": "mary", "age": 1}}
-
-dest3["nest"]["age"] = 2
-print(src)   # => {"name": "bob", "age": 20, "nest": {"name": "mary", "age": 2}}
-print(dest3) # => {"name": "bob", "age": 20, "nest": {"name": "mary", "age": 2}}
-
-print(src)  # => {"name": "bob", "age": 20, "nest": {"name": "mary", "age": 2}}
-print(dest1)  # => {"name": "bob", "age": 20, "nest": {"name": "mary", "age": 2}}
-print(dest2)  # => {"name": "bob", "age": 20, "nest": {"name": "mary", "age": 2}}
-print(dest3)  # => {"name": "bob", "age": 20, "nest": {"name": "mary", "age": 2}}
+print(dest2) # => {"name": "bob", "age": 20, "nest": {"name": "mary", "age": 0}}
+print(dest3) # => {"name": "bob", "age": 20, "nest": {"name": "mary", "age": 0}}
 ```
 
-:::message alert
-- プリミティブ型（整数や文字列）など単一の値は状態が分離されるが、コンテナ型（`dict`や`list`など）は内包している値が共有されてしまうことに注意
-:::
+シャローコピーする際は、影響範囲を考えて利用しましょう。
 
 ## ディープコピーする
 ディープコピーの方法を紹介します。
@@ -439,11 +437,11 @@ class MyDict(dict):
 dic1 = {"name": "bob", "age": 20}
 dic2 = {"name": "mary"}
 
-# 新たにdictを作成
+# 新たに作成
 dic = dict(dic1, **dic2)
 # => {"name": "mary", "age": 20}
 
-# ソースdictを更新
+# ソースを更新
 dic1.update(dic2)
 # => {"name": "mary", "age": 20}
 ```
@@ -456,11 +454,11 @@ dic1.update(dic2)
 dic1 = {"name": "bob", "age": 20}
 dic2 = {"name": "mary"}
 
-# 新たにdictを作成
+# 新たに作成
 dic = {**dic1, **dic2}
 # => {"name": "mary", "age": 20}
 
-# ソースdictを更新
+# ソースを更新
 dic1.update(dic2)
 # => {"name": "mary", "age": 20}
 ```
@@ -472,11 +470,11 @@ Python3.9からは、和集合演算子`|`と累算代入演算子`|=`が導入�
 dic1 = {"name": "bob", "age": 20}
 dic2 = {"name": "mary"}
 
-# 新たにdictを作成
+# 新たに作成
 dic = dic1 | dic2
 # => {"name": "mary", "age": 20}
 
-# ソースdictを更新
+# ソースを更新
 dic1 |= dic2
 # => {"name": "mary", "age": 20}
 ```
@@ -611,7 +609,7 @@ dic1 |= dic2
 ```
 
 ネストした`dict`は、`dict`ごと置き換えられています。
-ここでは、次のようにネストした`dict`を再帰的にマージする方法を紹介します。
+次のように、元のソースをベースにしたままマージするにはどうすればよいでしょうか。
 
 ``` Python
 a = {"nest": {"name": "bob", "age": 20}}
@@ -621,32 +619,54 @@ dic = deep_merge(a, b)
 # => {'nest': {"name": "mary", "age": 20}}
 ```
 
-ディープマージは、標準機能としては提供されていないため、関数を自作したり、ライブラリを使用する必要があります。
+上記のような挙動でディープマージを行いたい場合、関数を自作したり、ライブラリを使用する必要があります。
 参考までに、ディープマージするためのコード例を載せておきます。
 
 ``` Python
-def deep_merge(dic1, dic2):
-  "2つの辞書の同一キーが互いに辞書の場合、再帰的にマージする。それ以外は上書き"
-  import copy
-  src1 = copy.deepcopy(dic1)
-  src2 = copy.deepcopy(dic2)
-  return deep_merge_sub(src1, src2)
+def merge_objects(obj1, obj2, *, deep: bool = True):
+    if deep:
+        import copy
 
-def deep_merge_sub(dic1, dic2):
-  for key in dic2.keys():
-    if isinstance(dic2[key], dict) \
-    and key in dic1 \
-    and isinstance(dic1[key], dict):
-      deep_merge_sub(dic1[key], dic2[key])
+        obj1 = copy.deepcopy(obj1)
+        obj2 = copy.deepcopy(obj2)
+
+    if isinstance(obj1, list):
+        if not isinstance(obj2, list):
+            raise TypeError(
+                f"cant merge for not same type. {type(obj1)} : {type(obj2)}"
+            )
+        obj1 = obj1 + obj2
+    elif isinstance(obj1, set):
+        if not isinstance(obj2, set):
+            raise TypeError(
+                f"cant merge for not same type. {type(obj1)} : {type(obj2)}"
+            )
+        obj1 = obj1.union(obj2)
+    elif isinstance(obj1, dict):
+        if not isinstance(obj2, dict):
+            raise TypeError(
+                f"cant merge for not same type. {type(obj1)} : {type(obj2)}"
+            )
+
+        for key in obj2.keys():
+            obj2_val = obj2[key]
+            if isinstance(obj2_val, (list, set, dict)) and key in obj1:
+                obj1_val = obj1[key]
+                merged = merge_objects(obj1_val, obj2_val, deep=False)
+                obj1[key] = merged
+            else:
+                obj1[key] = obj2_val
+
     else:
-      dic1[key] = dic2[key]
-  return dic1
+        raise TypeError(f"cant merge for unmergeable type: obj1 - {type(obj1)}")
 
-a = {"nest": {"name": "bob", "age": 20}}
-b = {"nest": {"name": "mary"}}
+    return obj1
 
-dic = deep_merge(a, b)
-# => {'nest': {"name": "mary", "age": 20}}
+a = {"nest": {"name": "bob", "age": 20, "list": [1, 2]}}
+b = {"nest": {"name": "mary", "list": [3, 4]}}
+
+dic = merge_objects(a, b)
+# => {'nest': {'name': 'mary', 'age': 20, 'list': [1, 2, 3, 4]}}
 ```
 
 # 問い合わせ編
