@@ -20,3 +20,16 @@ npx zenn preview --port 3333
 ```
 
 # 文書ルール
+
+
+
+# 記事の同期
+
+ドキュメントのメタデータに`published: true`とすることで記事を公開することができる。
+
+---
+published: true
+---
+
+githubにpushすると投稿データが自動的にzennにpushされる。
+
