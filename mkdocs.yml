@@ -5,7 +5,7 @@ site_name: zenn 記事管理
 site_url: https://github.com/sasano8/zenn/
 # repo_name: encode/httpx
 repo_url: https://github.com/sasano8/zenn/
-edit_uri: "edit/main/docs/"
+edit_uri: "edit/main/articles/"
 
 nav:
   - 記事00: "index.md"
