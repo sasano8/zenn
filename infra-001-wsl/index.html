@@ -1,0 +1,750 @@
+
+<!doctype html>
+<html lang="ja" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="canonical" href="https://github.com/sasano8/zenn/infra-001-wsl/">
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-7.2.2">
+    
+    
+      
+        <title>Systemd on WSL2 and KVM on WSL2 - zenn 記事管理</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.1118c9be.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ba0d045b.min.css">
+        
+      
+    
+    
+    
+      
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
+        <style>:root{--md-text-font-family:"Roboto";--md-code-font-family:"Roboto Mono"}</style>
+      
+    
+    
+    
+      <link rel="stylesheet" href="../css/print-site.css">
+    
+      <link rel="stylesheet" href="../css/print-site-material.css">
+    
+      <link rel="stylesheet" href="../overrides/css/custom.css">
+    
+    
+      
+
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="green" data-md-color-accent="deep-orange">
+  
+    
+    <script>function __prefix(e){return new URL("..",location).pathname+"."+e}function __get(e,t=localStorage){return JSON.parse(t.getItem(__prefix(e)))}</script>
+    
+      <script>var palette=__get("__palette");if(null!==palette&&"object"==typeof palette.color)for(var key in palette.color)document.body.setAttribute("data-md-color-"+key,palette.color[key])</script>
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#_1" class="md-skip">
+          コンテンツにスキップ
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="ヘッダー">
+    <a href=".." title="zenn 記事管理" class="md-header__button md-logo" aria-label="zenn 記事管理" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            zenn 記事管理
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Systemd on WSL2 and KVM on WSL2
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      <form class="md-header__option" data-md-component="palette">
+        
+          
+          
+          <input class="md-option" data-md-color-media="" data-md-color-scheme="" data-md-color-primary="green" data-md-color-accent="deep-orange"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
+          
+            <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_2" hidden>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7 10a2 2 0 0 1 2 2 2 2 0 0 1-2 2 2 2 0 0 1-2-2 2 2 0 0 1 2-2m10-3a5 5 0 0 1 5 5 5 5 0 0 1-5 5H7a5 5 0 0 1-5-5 5 5 0 0 1 5-5h10M7 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3h10a3 3 0 0 0 3-3 3 3 0 0 0-3-3H7z"/></svg>
+            </label>
+          
+        
+          
+          
+          <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="" data-md-color-accent=""  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_2">
+          
+            <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_1" hidden>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 7H7a5 5 0 0 0-5 5 5 5 0 0 0 5 5h10a5 5 0 0 0 5-5 5 5 0 0 0-5-5m0 8a3 3 0 0 1-3-3 3 3 0 0 1 3-3 3 3 0 0 1 3 3 3 3 0 0 1-3 3z"/></svg>
+            </label>
+          
+        
+      </form>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+      </label>
+      
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="検索" placeholder="検索" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" aria-label="クリア" tabindex="-1">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            検索を初期化
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        
+<a href="https://github.com/sasano8/zenn/" title="リポジトリへ" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+<nav class="md-nav md-nav--primary" aria-label="ナビゲーション" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="zenn 記事管理" class="md-nav__button md-logo" aria-label="zenn 記事管理" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    zenn 記事管理
+  </label>
+  
+    <div class="md-nav__source">
+      
+<a href="https://github.com/sasano8/zenn/" title="リポジトリへ" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        記事01
+      </a>
+      
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../python-001-fastapi/" class="md-nav__link">
+        記事02
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../python-002-tools/" class="md-nav__link">
+        記事03
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../python-003-designpattarn/" class="md-nav__link">
+        記事04
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../python-004-pycharmdocker/" class="md-nav__link">
+        記事05
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../python-005-sqlalchemy_inherit/" class="md-nav__link">
+        記事06
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../python-008-exceptions/" class="md-nav__link">
+        記事08
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../security-001-oauth2/" class="md-nav__link">
+        記事09
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../print_page/" class="md-nav__link">
+        印刷用ページ
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary" aria-label="目次">
+  
+  
+  
+    
+  
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content" data-md-component="content">
+            <article class="md-content__inner md-typeset">
+              
+
+    <a href="../print_page/" title="印刷用ページ" class="md-content__button md-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 3H6v4h12m1 5a1 1 0 0 1-1-1 1 1 0 0 1 1-1 1 1 0 0 1 1 1 1 1 0 0 1-1 1m-3 7H8v-5h8m3-6H5a3 3 0 0 0-3 3v6h4v4h12v-4h4v-6a3 3 0 0 0-3-3z"/></svg>
+    </a>
+
+
+
+
+                
+                  <a href="https://github.com/sasano8/zenn/edit/main/docs/infra-001-wsl.md" title="編集" class="md-content__button md-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25z"/></svg>
+                  </a>
+                
+                
+                <h1 id="_1">この記事が目指す目標</h1>
+<p>Windowsの開発環境において、WSL2を使用することがデファクトスタンダードになりつつある。
+しかし、WSL2を使用するにあたって、次の問題に遭遇する人は多いのではないだろうか？</p>
+<ul>
+<li>Systemdが使えない</li>
+<li>WSL2上で仮想マシンを扱いたい</li>
+</ul>
+<h1 id="_2">はじめに</h1>
+<p>WSL2はコンテナ環境なため、systemdが起動しない（将来的に、WSL2でsystemdを公式にサポートする意思はあるようだ）。
+Ubuntuのパッケージマネージャは、従来のaptからsnapに移行していくが、snapはsystemdに依存するため、systemdが起動していないと都合が悪いことが多い。</p>
+<h1 id="_3">前提環境</h1>
+<p>WSLから仮想化システム（NestedVM）を利用するため以下の環境が必要です。</p>
+<ul>
+<li>Windows 11</li>
+</ul>
+<h1 id="ubuntu-2204">Ubuntu 22.04のインストール</h1>
+<p>Windows storeからUbuntu 22.04をインストールする。</p>
+<p>https://apps.microsoft.com/store/detail/ubuntu-2204-lts/9PN20MSR04DW?hl=ja-jp&amp;gl=JP</p>
+<h1 id="ubuntu-2204_1">Ubuntu 22.04のセットアップ</h1>
+<p>Windows TerminalからUbuntu 22.04 LTSを起動し、セットアップを進める。</p>
+<p><img alt="セットアップ画面" src="./img/infra-001-wsl/img_0.png" title="セットアップ画面" /></p>
+<p>WSLにログイン時に<code>/etc/update-motd.d/50-landscape-sysinfo: 17: cannot create /var/lib/landscape/landscape-sysinfo.cache: Permission denied</code>と表示されることがある。
+影響はないようだが、気になる場合は次のコマンドを実行する。</p>
+<div class="highlight"><pre><span></span><code>sudo apt remove -y landscape-common
+sudo apt -yautoremove # Optionally, but recommended
+rm ~/.motd_shown
+</code></pre></div>
+
+<h1 id="docker">dockerのインストール</h1>
+<p>全てのシェルからログアウトしておく。</p>
+<p>Windows上のDocker Desktopを起動する。</p>
+<p>Resources -&gt; WSL Integration から Ubuntu-22.04 を有効にする。</p>
+<p>dockerが使用できることを確認する。</p>
+<div class="highlight"><pre><span></span><code>docker version
+docker run ubuntu:14.04 /bin/echo <span class="s1">&#39;Hello world&#39;</span>
+</code></pre></div>
+
+<h1 id="systemd">Systemdの有効化</h1>
+<p>WSL上でsystemdを動作させるツールを、次を参考にインストールします。</p>
+<ul>
+<li>https://github.com/arkane-systems/genie</li>
+<li>https://arkane-systems.github.io/wsl-transdebian</li>
+</ul>
+<div class="highlight"><pre><span></span><code>sudo apt install -y lsb-release
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code>sudo wget -O /etc/apt/trusted.gpg.d/wsl-transdebian.gpg https://arkane-systems.github.io/wsl-transdebian/apt/wsl-transdebian.gpg
+sudo chmod a+r /etc/apt/trusted.gpg.d/wsl-transdebian.gpg
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code><span class="err">sudo</span> <span class="err">tee</span> <span class="err">/etc/apt/sources.list.d/wsl-transdebian.list</span> <span class="err">&lt;&lt;</span> <span class="err">EOF</span>
+<span class="k">deb</span> <span class="s">https://arkane-systems.github.io/wsl-transdebian/apt/</span> <span class="kp">$(lsb_release</span> <span class="kp">-cs)</span> <span class="kp">main</span>
+<span class="k">deb-src</span> <span class="s">https://arkane-systems.github.io/wsl-transdebian/apt/</span> <span class="kp">$(lsb_release</span> <span class="kp">-cs)</span> <span class="kp">main</span>
+<span class="err">EOF</span>
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code>sudo apt update
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code>sudo apt install -y systemd-genie
+</code></pre></div>
+
+<p>Failed to retrieve available kernel versions.
+Failed to check for processor microcode upgrades.</p>
+<div class="highlight"><pre><span></span><code>apt purge needrestart
+</code></pre></div>
+
+<p>次のコマンドを実行する。</p>
+<div class="highlight"><pre><span></span><code><span class="nv">tee</span> <span class="o">-</span><span class="nv">a</span> <span class="o">~/</span>.<span class="nv">bashrc</span> <span class="o">&lt;&lt;</span> <span class="nv">EOF</span>
+# <span class="nv">PID</span> <span class="mi">1</span>が<span class="nv">systemd</span>でない場合に<span class="s2">&quot;</span><span class="s">genie -s</span><span class="s2">&quot;</span>を実行
+<span class="k">if</span> [ <span class="s2">&quot;</span><span class="s">\`ps -eo pid,cmd --sort +pid | grep systemd | awk &#39;NR==1 { print \$1 }&#39;\`</span><span class="s2">&quot;</span> <span class="o">!=</span> <span class="s2">&quot;</span><span class="s">1</span><span class="s2">&quot;</span> ]<span class="c1">; then</span>
+   <span class="nv">genie</span> <span class="o">-</span><span class="nv">s</span> <span class="o">-</span><span class="nv">v</span>
+<span class="nv">fi</span>
+<span class="nv">EOF</span>
+<span class="nv">source</span> <span class="o">~/</span>.<span class="nv">bashrc</span>
+</code></pre></div>
+
+<p>初回起動時は、<code>Waiting for systemd....!!</code>で止まるので<code>Ctrl-C</code>で一度停止し再度シェルにログインする。</p>
+<p><code>snap</code>が使用できることを確認する。</p>
+<div class="highlight"><pre><span></span><code>sudo snap version
+</code></pre></div>
+
+<p>&lt;!-- 次のコマンドを実行する。</p>
+<div class="highlight"><pre><span></span><code><span class="n">sudo</span><span class="w"> </span><span class="n">systemctl</span><span class="w"> </span><span class="n">stop</span><span class="w"> </span><span class="n">getty</span><span class="nv">@tty1</span><span class="w"></span>
+<span class="n">sudo</span><span class="w"> </span><span class="n">systemctl</span><span class="w"> </span><span class="n">disable</span><span class="w"> </span><span class="n">getty</span><span class="nv">@tty1</span><span class="w"></span>
+<span class="err">```</span><span class="w"> </span><span class="o">--&gt;</span><span class="w"></span>
+
+
+<span class="err">#</span><span class="w"> </span><span class="n">KVM仮想化の確認</span><span class="w"></span>
+
+<span class="n">次のコマンドを実行する</span><span class="err">。</span><span class="w"></span>
+
+<span class="err">```</span><span class="w"> </span><span class="n">shell</span><span class="w"></span>
+<span class="n">sudo</span><span class="w"> </span><span class="n">apt</span><span class="w"> </span><span class="n">install</span><span class="w"> </span><span class="o">-</span><span class="n">y</span><span class="w"> </span><span class="n">cpu</span><span class="o">-</span><span class="n">checker</span><span class="w"></span>
+</code></pre></div>
+
+<p>次のコマンドを実行し、システムがKVM仮想化をサポートしているかどうかを確認する。</p>
+<div class="highlight"><pre><span></span><code>sudo kvm-ok
+
+<span class="c1"># INFO: /dev/kvm exists</span>
+<span class="c1"># KVM acceleration can be used</span>
+
+egrep -c <span class="s1">&#39;(vmx|svm)&#39;</span> /proc/cpuinfo
+
+<span class="c1"># 0以上で仮想化対応</span>
+</code></pre></div>
+
+<p>後ほど導入する<code>kubevirt</code>で必要なツールをインストールする。</p>
+<div class="highlight"><pre><span></span><code>sudo apt install -y qemu-kvm qemu libvirt-clients libvirt-daemon-system
+</code></pre></div>
+
+<p>KVMの操作に必要な権限を与える。</p>
+<div class="highlight"><pre><span></span><code><span class="n">sudo</span> <span class="n">usermod</span> <span class="o">-</span><span class="n">aG</span> <span class="n">kvm</span> <span class="o">$</span><span class="n">USER</span> <span class="o">&amp;&amp;</span> <span class="n">newgrp</span> <span class="n">kvm</span>
+<span class="n">sudo</span> <span class="n">usermod</span> <span class="o">-</span><span class="n">aG</span> <span class="n">docker</span> <span class="o">$</span><span class="n">USER</span>
+
+<span class="n">ls</span> <span class="o">-</span><span class="n">l</span> <span class="o">/</span><span class="n">dev</span><span class="o">/</span><span class="n">kvm</span>
+<span class="n">ls</span> <span class="o">-</span><span class="n">l</span> <span class="o">/</span><span class="k">var</span><span class="o">/</span><span class="n">run</span><span class="o">/</span><span class="n">docker</span><span class="o">.</span><span class="n">sock</span>
+</code></pre></div>
+
+<p>仮想マシン作成能力に問題がないことを確認します。</p>
+<div class="highlight"><pre><span></span><code>virt-host-validate qemu
+virsh list
+</code></pre></div>
+
+<h1 id="multipass">multipassのインストール</h1>
+<p>次のコマンドを実行する。
+KVM仮想化の確認ができない場合は、<code>multipass</code>は使用できない。</p>
+<div class="highlight"><pre><span></span><code>sudo snap install multipass
+sudo snap info multipass
+</code></pre></div>
+
+<p>仮想マシンを起動する。</p>
+<div class="highlight"><pre><span></span><code>multipass find
+multipass launch --name=sample 22.04
+</code></pre></div>
+
+<p>仮想マシンにログインする。</p>
+<div class="highlight"><pre><span></span><code><span class="nv">mutlpass</span> <span class="nv">shell</span> <span class="nv">sample</span>
+<span class="k">exit</span> # 仮想マシン上で
+</code></pre></div>
+
+<p>仮想マシンを削除する。</p>
+<div class="highlight"><pre><span></span><code>multipass delete sample
+multipass purge
+</code></pre></div>
+
+<h2 id="multipass_1">プロキシ環境化におけるmultipass</h2>
+<p>OSイメージを取得する際に外部通信が必要となる。
+プロキシ環境化でイメージ取得に失敗する場合は、multipassの実行環境を見直す。</p>
+<p>systemdの実行空間でプロキシ設定がなされていない場合は、<code>/etc/systemd/system/snap.multipass.multipassd.service</code>を次のような構成にし、systemdを再起動すれば動作するはず。</p>
+<div class="highlight"><pre><span></span><code><span class="k">[Service]</span>
+<span class="na">EnvironmentFile</span><span class="o">=</span><span class="s">/etc/environment</span>
+<span class="na">Environment</span><span class="o">=</span><span class="s">http_proxy=http://your_proxy</span>
+<span class="na">Environment</span><span class="o">=</span><span class="s">HTTP_PROXY=http://your_proxy</span>
+<span class="na">Environment</span><span class="o">=</span><span class="s">https_proxy=http://your_proxy</span>
+<span class="na">Environment</span><span class="o">=</span><span class="s">HTTPS_PROXY=http://your_proxy</span>
+</code></pre></div>
+
+<h1 id="minikube">minikubeのインストール</h1>
+<p>https://minikube.sigs.k8s.io/docs/start/ を参考にインストールを進める。</p>
+<div class="highlight"><pre><span></span><code>curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
+sudo install minikube-linux-amd64 /usr/local/bin/minikube
+</code></pre></div>
+
+<p>必要に応じてminikubeの構成を変更します。</p>
+<div class="highlight"><pre><span></span><code>minikube version
+minikube config set driver docker
+# minikube config set driver kvm2
+minikube config set memory 4096  # デフォルトは2048
+minikube config set container-runtime cri-o  # デフォルトは2048
+</code></pre></div>
+
+<p>minikubeを起動する。</p>
+<div class="highlight"><pre><span></span><code>minikube start
+</code></pre></div>
+
+<p><code>kubectl</code>をホストにインストールする。</p>
+<div class="highlight"><pre><span></span><code>VERSION=$(minikube kubectl version | head -1 | awk -F&#39;, &#39; {&#39;print $3&#39;} | awk -F&#39;:&#39; {&#39;print $2&#39;} | sed s/\&quot;//g)
+sudo install <span class="cp">${</span><span class="n">HOME</span><span class="cp">}</span>/.minikube/cache/linux/amd64/<span class="cp">${</span><span class="n">VERSION</span><span class="cp">}</span>/kubectl /usr/local/bin
+kubectl version
+</code></pre></div>
+
+<p>サンプルアプリケーションをデプロイする。</p>
+<div class="highlight"><pre><span></span><code>kubectl create deployment hello-minikube --image=k8s.gcr.io/echoserver:1.4
+kubectl expose deployment hello-minikube --type=NodePort --port=8080
+kubectl get services hello-minikube
+minikube service hello-minikube
+kubectl port-forward service/hello-minikube 7080:8080
+curl http://localhost:7080  # 別端末で
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code>minikube dashboard --port=33400
+curl http://localhost:33400  # 別端末で
+</code></pre></div>
+
+<h1 id="krew">krewのインストール</h1>
+<p>公式手順を参考に<code>krew</code>を導入する。</p>
+<p>https://krew.sigs.k8s.io/docs/user-guide/setup/install/</p>
+<div class="highlight"><pre><span></span><code><span class="s s-Atom">echo</span> <span class="s s-Atom">&#39;export PATH=&quot;${KREW_ROOT:-$HOME/.krew}/bin:$PATH&quot;&#39;</span> <span class="s s-Atom">&gt;&gt;</span> <span class="s s-Atom">~/.bashrc</span>
+</code></pre></div>
+
+<p>krewプラグインが認識されることを確認する。</p>
+<div class="highlight"><pre><span></span><code>kubectl krew
+</code></pre></div>
+
+<h1 id="kubevirt">kubevirtのインストール</h1>
+<ul>
+<li><a href="https://kubevirt.io/quickstart_minikube/">kubevirt公式手順１</a></li>
+</ul>
+<p>次のコマンドを実行しkubevirtを導入します。</p>
+<div class="highlight"><pre><span></span><code><span class="k">export</span> <span class="n">VERSION</span><span class="o">=$</span><span class="p">(</span><span class="n">curl</span> <span class="o">-</span><span class="n">s</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">api</span><span class="o">.</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">repos</span><span class="o">/</span><span class="n">kubevirt</span><span class="o">/</span><span class="n">kubevirt</span><span class="o">/</span><span class="n">releases</span> <span class="o">|</span> <span class="n">grep</span> <span class="n">tag_name</span> <span class="o">|</span> <span class="n">grep</span> <span class="o">-</span><span class="n">v</span> <span class="o">--</span> <span class="s1">&#39;-rc&#39;</span> <span class="o">|</span> <span class="n">sort</span> <span class="o">-</span><span class="n">r</span> <span class="o">|</span> <span class="n">head</span> <span class="o">-</span><span class="mi">1</span> <span class="o">|</span> <span class="n">awk</span> <span class="o">-</span><span class="n">F</span><span class="s1">&#39;: &#39;</span> <span class="s1">&#39;{print $2}&#39;</span> <span class="o">|</span> <span class="n">sed</span> <span class="s1">&#39;s/,//&#39;</span> <span class="o">|</span> <span class="n">xargs</span><span class="p">)</span>
+<span class="n">echo</span> <span class="o">$</span><span class="n">VERSION</span>
+<span class="n">kubectl</span> <span class="n">create</span> <span class="o">-</span><span class="n">f</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">kubevirt</span><span class="o">/</span><span class="n">kubevirt</span><span class="o">/</span><span class="n">releases</span><span class="o">/</span><span class="n">download</span><span class="o">/$</span><span class="p">{</span><span class="n">VERSION</span><span class="p">}</span><span class="o">/</span><span class="n">kubevirt</span><span class="o">-</span><span class="n">operator</span><span class="o">.</span><span class="n">yaml</span>
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code><span class="n">kubectl</span> <span class="n">create</span> <span class="o">-</span><span class="n">f</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">kubevirt</span><span class="o">/</span><span class="n">kubevirt</span><span class="o">/</span><span class="n">releases</span><span class="o">/</span><span class="n">download</span><span class="o">/$</span><span class="p">{</span><span class="n">VERSION</span><span class="p">}</span><span class="o">/</span><span class="n">kubevirt</span><span class="o">-</span><span class="n">cr</span><span class="o">.</span><span class="n">yaml</span>
+</code></pre></div>
+
+<p>kubevirtが展開されるまで待ちます。</p>
+<div class="highlight"><pre><span></span><code>kubectl get all -n kubevirt
+</code></pre></div>
+
+<h1 id="virtctl">Virtctlのインストール</h1>
+<p>https://krew.sigs.k8s.io/docs/user-guide/setup/install/</p>
+<div class="highlight"><pre><span></span><code><span class="n">VERSION</span><span class="o">=$</span><span class="p">(</span><span class="n">kubectl</span> <span class="n">get</span> <span class="n">kubevirt</span><span class="o">.</span><span class="n">kubevirt</span><span class="o">.</span><span class="n">io</span><span class="o">/</span><span class="n">kubevirt</span> <span class="o">-</span><span class="n">n</span> <span class="n">kubevirt</span> <span class="o">-</span><span class="n">o</span><span class="o">=</span><span class="n">jsonpath</span><span class="o">=</span><span class="s2">&quot;{.status.observedKubeVirtVersion}&quot;</span><span class="p">)</span>
+<span class="n">ARCH</span><span class="o">=$</span><span class="p">(</span><span class="n">uname</span> <span class="o">-</span><span class="n">s</span> <span class="o">|</span> <span class="n">tr</span> <span class="n">A</span><span class="o">-</span><span class="n">Z</span> <span class="n">a</span><span class="o">-</span><span class="n">z</span><span class="p">)</span><span class="o">-$</span><span class="p">(</span><span class="n">uname</span> <span class="o">-</span><span class="n">m</span> <span class="o">|</span> <span class="n">sed</span> <span class="s1">&#39;s/x86_64/amd64/&#39;</span><span class="p">)</span> <span class="o">||</span> <span class="n">windows</span><span class="o">-</span><span class="n">amd64</span><span class="o">.</span><span class="n">exe</span>
+<span class="n">echo</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">kubevirt</span><span class="o">/</span><span class="n">kubevirt</span><span class="o">/</span><span class="n">releases</span><span class="o">/</span><span class="n">download</span><span class="o">/$</span><span class="p">{</span><span class="n">VERSION</span><span class="p">}</span><span class="o">/</span><span class="n">virtctl</span><span class="o">-$</span><span class="p">{</span><span class="n">VERSION</span><span class="p">}</span><span class="o">-$</span><span class="p">{</span><span class="n">ARCH</span><span class="p">}</span>
+<span class="n">curl</span> <span class="o">-</span><span class="n">L</span> <span class="o">-</span><span class="n">o</span> <span class="n">virtctl</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">kubevirt</span><span class="o">/</span><span class="n">kubevirt</span><span class="o">/</span><span class="n">releases</span><span class="o">/</span><span class="n">download</span><span class="o">/$</span><span class="p">{</span><span class="n">VERSION</span><span class="p">}</span><span class="o">/</span><span class="n">virtctl</span><span class="o">-$</span><span class="p">{</span><span class="n">VERSION</span><span class="p">}</span><span class="o">-$</span><span class="p">{</span><span class="n">ARCH</span><span class="p">}</span>
+<span class="n">chmod</span> <span class="o">+</span><span class="n">x</span> <span class="n">virtctl</span>
+<span class="n">sudo</span> <span class="n">install</span> <span class="n">virtctl</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">bin</span>
+<span class="n">virtctl</span> <span class="n">version</span>
+</code></pre></div>
+
+<p>サンプル仮想マシンをデプロイする。</p>
+<div class="highlight"><pre><span></span><code>kubectl apply -f https://kubevirt.io/labs/manifests/vm.yaml
+kubectl get vms
+kubectl get vms -o yaml testvm
+</code></pre></div>
+
+<p>仮想マシンを起動する。</p>
+<div class="highlight"><pre><span></span><code>virtctl start testvm
+</code></pre></div>
+
+<p>※現状は仮想マシンの起動が失敗してしまい、対策できていない。</p>
+<p>仮想マシンを停止する。</p>
+<div class="highlight"><pre><span></span><code>virtctl stop testvm
+</code></pre></div>
+
+<h1 id="_4">トラブルシューティング</h1>
+<h2 id="ubuntu-2204_2">Ubuntu 22.04を初期化したい</h2>
+<p>何らかの理由でUbuntu 22.04を初期化状態に戻したい場合は、次の手順をWindows側で実行する。</p>
+<p>Ubuntu 22.04を削除する。</p>
+<div class="highlight"><pre><span></span><code><span class="n">wsl</span> <span class="o">--</span><span class="n">shutdown</span>
+<span class="n">wsl</span> <span class="o">--</span><span class="n">unregister</span> <span class="n">Ubuntu</span><span class="o">-</span><span class="mf">22.04</span>
+</code></pre></div>
+
+<p>Docker-DesktopでWSLと統合した場合は、
+minikubeのインスタンスがWidowsと共有されている。</p>
+<p>不要な場合は、minikubeのインスタンスを削除する。</p>
+<div class="highlight"><pre><span></span><code>docker ps | grep minikube
+docker rm minikube
+</code></pre></div>
+
+<p>Ubuntu 22.04のセットアップ からやり直す。</p>
+                
+                  
+                
+              
+
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+        
+      </main>
+      
+        
+<footer class="md-footer">
+  
+    <nav class="md-footer__inner md-grid" aria-label="フッター">
+      
+      
+        
+        <a href="../python-001-fastapi/" class="md-footer__link md-footer__link--next" aria-label="次: 記事02" rel="next">
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                次
+              </span>
+              記事02
+            </div>
+          </div>
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
+          </div>
+        </a>
+      
+    </nav>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+        Made with
+        <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+          Material for MkDocs
+        </a>
+        
+      </div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    <script id="__config" type="application/json">{"base": "..", "features": [], "translations": {"clipboard.copy": "\u30af\u30ea\u30c3\u30d7\u30dc\u30fc\u30c9\u3078\u30b3\u30d4\u30fc", "clipboard.copied": "\u30b3\u30d4\u30fc\u3057\u307e\u3057\u305f", "search.config.lang": "ja", "search.config.pipeline": "trimmer, stemmer", "search.config.separator": "[\\s\\-\u3000\u3001\u3002\uff0c\uff0e]+", "search.placeholder": "\u691c\u7d22", "search.result.placeholder": "\u691c\u7d22\u30ad\u30fc\u30ef\u30fc\u30c9\u3092\u5165\u529b\u3057\u3066\u304f\u3060\u3055\u3044", "search.result.none": "\u4f55\u3082\u898b\u3064\u304b\u308a\u307e\u305b\u3093\u3067\u3057\u305f", "search.result.one": "1\u4ef6\u898b\u3064\u304b\u308a\u307e\u3057\u305f", "search.result.other": "#\u4ef6\u898b\u3064\u304b\u308a\u307e\u3057\u305f", "search.result.more.one": "\u3053\u306e\u30da\u30fc\u30b8\u5185\u306b\u3082\u30461\u4ef6\u898b\u3064\u304b\u308a\u307e\u3057\u305f", "search.result.more.other": "\u3053\u306e\u30da\u30fc\u30b8\u5185\u306b\u3042\u3068#\u4ef6\u898b\u3064\u304b\u308a\u307e\u3057\u305f", "search.result.term.missing": "\u691c\u7d22\u306b\u542b\u307e\u308c\u306a\u3044", "select.version.title": "Select version"}, "search": "../assets/javascripts/workers/search.709b4209.min.js", "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.2b46852b.min.js"></script>
+      
+        <script src="../js/print-site-instant-loading.js"></script>
+      
+        <script src="../js/print-site.js"></script>
+      
+    
+  </body>
+</html>

@@ -1,0 +1,745 @@
+
+<!doctype html>
+<html lang="ja" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="canonical" href="https://github.com/sasano8/zenn/python-004-pycharmdocker/">
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-7.2.2">
+    
+    
+      
+        <title>PyCharm　＋　docker　＋ fastapi環境上で快適な開発をしたい - zenn 記事管理</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.1118c9be.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ba0d045b.min.css">
+        
+      
+    
+    
+    
+      
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
+        <style>:root{--md-text-font-family:"Roboto";--md-code-font-family:"Roboto Mono"}</style>
+      
+    
+    
+    
+      <link rel="stylesheet" href="../css/print-site.css">
+    
+      <link rel="stylesheet" href="../css/print-site-material.css">
+    
+      <link rel="stylesheet" href="../overrides/css/custom.css">
+    
+    
+      
+
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="green" data-md-color-accent="deep-orange">
+  
+    
+    <script>function __prefix(e){return new URL("..",location).pathname+"."+e}function __get(e,t=localStorage){return JSON.parse(t.getItem(__prefix(e)))}</script>
+    
+      <script>var palette=__get("__palette");if(null!==palette&&"object"==typeof palette.color)for(var key in palette.color)document.body.setAttribute("data-md-color-"+key,palette.color[key])</script>
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#_1" class="md-skip">
+          コンテンツにスキップ
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="ヘッダー">
+    <a href=".." title="zenn 記事管理" class="md-header__button md-logo" aria-label="zenn 記事管理" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            zenn 記事管理
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              PyCharm　＋　docker　＋ fastapi環境上で快適な開発をしたい
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      <form class="md-header__option" data-md-component="palette">
+        
+          
+          
+          <input class="md-option" data-md-color-media="" data-md-color-scheme="" data-md-color-primary="green" data-md-color-accent="deep-orange"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
+          
+            <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_2" hidden>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7 10a2 2 0 0 1 2 2 2 2 0 0 1-2 2 2 2 0 0 1-2-2 2 2 0 0 1 2-2m10-3a5 5 0 0 1 5 5 5 5 0 0 1-5 5H7a5 5 0 0 1-5-5 5 5 0 0 1 5-5h10M7 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3h10a3 3 0 0 0 3-3 3 3 0 0 0-3-3H7z"/></svg>
+            </label>
+          
+        
+          
+          
+          <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="" data-md-color-accent=""  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_2">
+          
+            <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_1" hidden>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 7H7a5 5 0 0 0-5 5 5 5 0 0 0 5 5h10a5 5 0 0 0 5-5 5 5 0 0 0-5-5m0 8a3 3 0 0 1-3-3 3 3 0 0 1 3-3 3 3 0 0 1 3 3 3 3 0 0 1-3 3z"/></svg>
+            </label>
+          
+        
+      </form>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+      </label>
+      
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="検索" placeholder="検索" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" aria-label="クリア" tabindex="-1">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            検索を初期化
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        
+<a href="https://github.com/sasano8/zenn/" title="リポジトリへ" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+<nav class="md-nav md-nav--primary" aria-label="ナビゲーション" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="zenn 記事管理" class="md-nav__button md-logo" aria-label="zenn 記事管理" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    zenn 記事管理
+  </label>
+  
+    <div class="md-nav__source">
+      
+<a href="https://github.com/sasano8/zenn/" title="リポジトリへ" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../infra-001-wsl/" class="md-nav__link">
+        記事01
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../python-001-fastapi/" class="md-nav__link">
+        記事02
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../python-002-tools/" class="md-nav__link">
+        記事03
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../python-003-designpattarn/" class="md-nav__link">
+        記事04
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        記事05
+      </a>
+      
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../python-005-sqlalchemy_inherit/" class="md-nav__link">
+        記事06
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../python-008-exceptions/" class="md-nav__link">
+        記事08
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../security-001-oauth2/" class="md-nav__link">
+        記事09
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../print_page/" class="md-nav__link">
+        印刷用ページ
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary" aria-label="目次">
+  
+  
+  
+    
+  
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content" data-md-component="content">
+            <article class="md-content__inner md-typeset">
+              
+
+    <a href="../print_page/" title="印刷用ページ" class="md-content__button md-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 3H6v4h12m1 5a1 1 0 0 1-1-1 1 1 0 0 1 1-1 1 1 0 0 1 1 1 1 1 0 0 1-1 1m-3 7H8v-5h8m3-6H5a3 3 0 0 0-3 3v6h4v4h12v-4h4v-6a3 3 0 0 0-3-3z"/></svg>
+    </a>
+
+
+
+
+                
+                  <a href="https://github.com/sasano8/zenn/edit/main/docs/python-004-pycharmdocker.md" title="編集" class="md-content__button md-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25z"/></svg>
+                  </a>
+                
+                
+                <h1 id="_1">対象読者</h1>
+<ul>
+<li>PyCharm + docker　＋ fastapiで開発をしたい方</li>
+<li>Pycharm利用ユーザー（VS Codeの方がdockerの扱いは優れているようです。それでもPyCharmでdockerを使いたい方が対象です。）</li>
+<li>fastapiに関する教養がある程度ある方</li>
+<li>Dockerに関する教養がある程度ある方</li>
+</ul>
+<h1 id="_2">筆者開発環境</h1>
+<p>筆者の開発環境は以下の通りです。（Windows Mac等の動作は検証していません。）</p>
+<ul>
+<li>ubuntu 20.04</li>
+<li>PyCharm x.x.x</li>
+<li>fastapi</li>
+<li>pytest</li>
+</ul>
+<h1 id="_3">解決したい問題</h1>
+<p>PyCharmでは、dockerを利用した開発をサポートしていますが、以下のような不憫な点がいくつかあります。</p>
+<ul>
+<li>docker環境上に追加されたpackageを自動認識できない（dockerイメージの再ビルドが必要。VS Codeでは再ビルドは必要ないようです。）</li>
+<li>docker環境上でファイルを追加すると、ホスト上と異なるユーザーでファイルが作成され、ホスト上で権限が欠落する</li>
+<li>デバッグやpytest実行時、pycharmがdockerイメージを再起動するため起動時間がストレスになる</li>
+</ul>
+<p>このような問題があり、dockerを利用した開発を諦めた方もいると思います。
+本記事では、上記のような不憫な点を解決できるように努めています。</p>
+<h1 id="_4">解決していない問題</h1>
+<h2 id="dockerpackage">docker環境上で追加されたpackageを自動認識できない</h2>
+<p>ホスト上のpythonの仮想環境を参照し、dockerコンテナのディレクトリと同期すれば何とかなりそうですが、労力が大きそうなので今回は見送りしましたm(<em> </em>)m</p>
+<h2 id="pycharmjupyter-notebook">PyCharmのjupyter notebookに関する機能が利用できない</h2>
+<p>現状、PyCharmはリモートインタプリタ上でjupyter notebookを利用できないため、jupyter notebook本体の機能を利用してください。</p>
+<h1 id="_5">結局どういう開発環境が構築できるの？</h1>
+<ul>
+<li>アプリケーションコードのホットリロード</li>
+<li><a href="https://swagger.io/tools/swagger-ui/">swagger-ui</a>を利用した機能検</li>
+<li>dockerイメージを再ビルドせずにpytestを起動・デバッグ</li>
+<li>jupyterによる機能検証</li>
+<li>(おまけ)frontendで利用するapi clientの自動生成</li>
+</ul>
+<h1 id="_6">開発環境の構築</h1>
+<ul>
+<li>dockerイメージ作成・権限設定</li>
+<li>プロジェクトインタープリタの設定</li>
+<li>プロジェクトとdocker環境上のファイル同期</li>
+<li>サンプルアプリケーションの作成</li>
+<li>ホットリロードでサンプルアプリケーションを起動（シェル経由だと、pycharmがpythonコードを捕捉できないため、スクリプトから実行する）</li>
+</ul>
+<h1 id="_7">開発環境の利用方法</h1>
+<ul>
+<li>ブレークポイントの利用</li>
+<li>pytestの実行</li>
+<li>コンテナへの入り方</li>
+<li>パッケージ追加時（）</li>
+<li>jupyter環境の構築・補完有効化オプション</li>
+</ul>
+<div class="highlight"><pre><span></span><code>sudo jupyter contrib nbextension install
+sudo jupyter nbextensions_configurator enable
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code># sudo jupyter notebook --ip=0.0.0.0 --allow-root --notebook-dir jupyter
+sudo jupyter notebook --ip=0.0.0.0 --allow-root --notebook-dir=jupyter --NotebookApp.token=&#39;&#39; --NotebookApp.password=&#39;&#39;
+</code></pre></div>
+
+<p>これが最強だと思います。</p>
+<h1 id="_8">雛形作るよ</h1>
+<h2 id="_9">プロジェクト作成</h2>
+<p>次のコマンドで、任意のプロジェクト用ディレクトリを作成します。</p>
+<div class="highlight"><pre><span></span><code>mkdir fastapi_template
+<span class="nb">cd</span> fastapi_template
+</code></pre></div>
+
+<p>次のコマンドでPythonプロジェクトを作成します。</p>
+<p><code>Compatible Python versions</code>は任意のPythonのバージョンを指定ください。
+それ以外は、とりあえずそのままで大丈夫です。</p>
+<div class="highlight"><pre><span></span><code>poetry init
+
+<span class="c1"># Package name [fastapi_template]:</span>
+<span class="c1"># Version [0.1.0]:</span>
+<span class="c1"># Description []:</span>
+<span class="c1"># Author [yourname &lt;yourname@example.com&gt;, n to skip]:</span>
+<span class="c1"># License []:</span>
+<span class="c1"># Compatible Python versions [^3.8]</span>
+</code></pre></div>
+
+<h2 id="_10">パッケージ追加</h2>
+<p>まずは、fastapi関連のパッケージを追加する。</p>
+<div class="highlight"><pre><span></span><code>poetry add fastapi
+poetry add uvicorn
+</code></pre></div>
+
+<p>開発支援パッケージを追加する。</p>
+<div class="highlight"><pre><span></span><code>poetry add -D black  <span class="c1"># 自動コードフォーマッタ</span>
+poetry add -D isort  <span class="c1"># 自動インポート文フォーマッタ</span>
+poetry add -D flake8  <span class="c1"># pep8に基づくコードチェッカー</span>
+poetry add -D mypy  <span class="c1"># 型チェッカー</span>
+</code></pre></div>
+
+<p>パッケージ追加時に仮想環境が作成されるが、今回はdockerを利用するので削除する。</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># パッケージ追加時に次のようなメッセージが出力されているので、そのディレクトリを指定</span>
+<span class="c1"># Creating virtualenv &lt;project_name&gt; in /home/user_name/PycharmProjects/&lt;project_name&gt;/.venv</span>
+rm -rf xxxxx
+</code></pre></div>
+
+<p>poetry.lockで追加したパッケージをrequirements.txtとして出力する。</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># poetry.lockを、requirements.txtの形式の、requirements.txtを出力する</span>
+poetry <span class="nb">export</span> -f requirements.txt &gt; requirements.txt
+</code></pre></div>
+
+<h2 id="dockerfile">dockerfile作成</h2>
+<div class="highlight"><pre><span></span><code>cat <span class="s">&lt;&lt;EOS &gt; Dockerfile</span>
+<span class="s">FROM python:3.8</span>
+
+<span class="s">RUN apt-get update</span>
+<span class="s">RUN apt-get install -y vim</span>
+
+<span class="s">RUN pip3 install -U pip &amp;&amp; pip3 install --no-cache-dir poetry</span>
+
+<span class="s">RUN poetry config virtualenvs.create false &amp;&amp; \</span>
+<span class="s">    poetry config virtualenvs.in-project false</span>
+
+<span class="s">WORKDIR /app/</span>
+<span class="s">COPY ./pyproject.toml /</span>
+<span class="s">COPY ./poetry.lock* /</span>
+
+<span class="s">RUN poetry install</span>
+
+<span class="s">EXPOSE 8080</span>
+
+<span class="s">EOS</span>
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code>cat <span class="s">&lt;&lt;EOS &gt; docker-compose.yml</span>
+<span class="s">version: &#39;3&#39;</span>
+<span class="s">services:</span>
+<span class="s">  fastapi:</span>
+<span class="s">    build:</span>
+<span class="s">      context: .</span>
+<span class="s">      dockerfile: Dockerfile</span>
+<span class="s">    ports:</span>
+<span class="s">      - &quot;8080:8080&quot;</span>
+<span class="s">    volumes:</span>
+<span class="s">      - .:/app:rw</span>
+<span class="s">EOS</span>
+</code></pre></div>
+
+<h2 id="_11">アプリケーションコード</h2>
+<div class="highlight"><pre><span></span><code>cat <span class="s">&lt;&lt;EOS &gt; main.py</span>
+<span class="s">from fastapi import FastAPI</span>
+
+<span class="s">app = FastAPI()</span>
+
+<span class="s">if __name__ == &quot;__main__&quot;:</span>
+<span class="s">  import uvicorn</span>
+<span class="s">  uvicorn.run(&quot;main:app&quot;, host=&quot;0.0.0.0&quot;, port=8080, reload=True)</span>
+
+<span class="s">EOS</span>
+</code></pre></div>
+
+<h2 id="docker-build">docker build</h2>
+<div class="highlight"><pre><span></span><code>docker-compose up -d --build
+</code></pre></div>
+
+<h2 id="pycharm">pycharmを開く</h2>
+<ul>
+<li>projectinterpreterにdocker-composeを指定</li>
+<li>configurationでデバッグ設定を行う</li>
+</ul>
+<p>Services -&gt; Log でコンテナのログを見れるぞ</p>
+<h2 id="_12">起動</h2>
+<p>mainをデバッグ実行</p>
+<ul>
+<li><a href="http://0.0.0.0:8080/docs#/">http://0.0.0.0:8080/docs#/</a></li>
+</ul>
+<h2 id="_13">リロードをためそう</h2>
+<p>ローカルのターミナルでソースコードを修正すると、変更を検知してサーバが再起動するのでF5で画面を更新してみよう。</p>
+<div class="highlight"><pre><span></span><code>cat <span class="s">&lt;&lt;EOS &gt; main.py</span>
+<span class="s">from fastapi import FastAPI</span>
+
+<span class="s">app = FastAPI()</span>
+
+<span class="s">@app.get(&quot;/hello&quot;)</span>
+<span class="s">def get_hello():</span>
+<span class="s">    return &quot;hello&quot;</span>
+
+<span class="s">if __name__ == &quot;__main__&quot;:</span>
+<span class="s">  import uvicorn</span>
+<span class="s">  uvicorn.run(&quot;main:app&quot;, host=&quot;0.0.0.0&quot;, port=8080, reload=True)</span>
+
+<span class="s">EOS</span>
+</code></pre></div>
+
+<p>コンテナに入って、コンテナのターミナルからソースを修正してみよう。
+サーバが再起動した上に、ストレージがマウントされているのでローカル側のファイルも修正されるはずです。</p>
+<div class="highlight"><pre><span></span><code>cat <span class="s">&lt;&lt;EOS &gt; main.py</span>
+<span class="s">from fastapi import FastAPI</span>
+
+<span class="s">app = FastAPI()</span>
+
+<span class="s">@app.get(&quot;/hello&quot;)</span>
+<span class="s">def get_hello():</span>
+<span class="s">    return &quot;hello&quot;</span>
+
+<span class="s">if __name__ == &quot;__main__&quot;:</span>
+<span class="s">  import uvicorn</span>
+<span class="s">  uvicorn.run(&quot;main:app&quot;, host=&quot;0.0.0.0&quot;, port=8080, reload=True)</span>
+
+<span class="s">EOS</span>
+</code></pre></div>
+
+<h2 id="_14">デバッグしてみよう</h2>
+<p>ブレークポイントを貼って、止まることを確認する。</p>
+<h1 id="vscode">VSCodeによる開発</h1>
+<ul>
+<li>仮想環境</li>
+<li>docker</li>
+</ul>
+<h1 id="_15">概要</h1>
+<ul>
+<li>拡張機能のインストール</li>
+<li>コードの実行</li>
+<li>アプリ実行</li>
+<li>デバッグ（ブレークポイント）</li>
+<li>docker実行</li>
+</ul>
+<h1 id="_16">参考サイト</h1>
+<ul>
+<li><a href="https://code.visualstudio.com/docs/python/python-tutorial"></a></li>
+</ul>
+<h1 id="_17">必要な拡張機能</h1>
+<ul>
+<li>Python</li>
+<li>Python for VSCode</li>
+<li>Remote-Containers</li>
+</ul>
+<h2 id="python-for-vscode">Python for VSCode</h2>
+<p>Pythonのシンタックスハイライトを支援します。</p>
+<p>Supports syntax highlighting, snippets and linting (see requirements below). Linting can be customised with a .pylintrc(pyLint) or setup.cfg(flake8) file in the root of the current working directory</p>
+<h2 id="djangoflask">DjangoまたはFlaskアプリでホットリロードを有効にする方法</h2>
+<p>https://code.visualstudio.com/docs/containers/debug-python#_how-to-enable-hot-reloading-in-django-or-flask-apps</p>
+<h2 id="_18">デバッグするには</h2>
+<p>画面左にデバッグアイコンがある。
+実行とデバッグから任意の実行方式を選択する。</p>
+<h3 id="launchjson">launch.jsonとは</h3>
+<p>実行を方法を詳しく定義するには、launch.jsonを作成する。
+.vscodeフォルダ内に作成される。</p>
+<h2 id="pytest">Pytestするには</h2>
+                
+                  
+                
+              
+
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+        
+      </main>
+      
+        
+<footer class="md-footer">
+  
+    <nav class="md-footer__inner md-grid" aria-label="フッター">
+      
+        
+        <a href="../python-003-designpattarn/" class="md-footer__link md-footer__link--prev" aria-label="前: 記事04" rel="prev">
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+          </div>
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                前
+              </span>
+              記事04
+            </div>
+          </div>
+        </a>
+      
+      
+        
+        <a href="../python-005-sqlalchemy_inherit/" class="md-footer__link md-footer__link--next" aria-label="次: 記事06" rel="next">
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                次
+              </span>
+              記事06
+            </div>
+          </div>
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
+          </div>
+        </a>
+      
+    </nav>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+        Made with
+        <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+          Material for MkDocs
+        </a>
+        
+      </div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    <script id="__config" type="application/json">{"base": "..", "features": [], "translations": {"clipboard.copy": "\u30af\u30ea\u30c3\u30d7\u30dc\u30fc\u30c9\u3078\u30b3\u30d4\u30fc", "clipboard.copied": "\u30b3\u30d4\u30fc\u3057\u307e\u3057\u305f", "search.config.lang": "ja", "search.config.pipeline": "trimmer, stemmer", "search.config.separator": "[\\s\\-\u3000\u3001\u3002\uff0c\uff0e]+", "search.placeholder": "\u691c\u7d22", "search.result.placeholder": "\u691c\u7d22\u30ad\u30fc\u30ef\u30fc\u30c9\u3092\u5165\u529b\u3057\u3066\u304f\u3060\u3055\u3044", "search.result.none": "\u4f55\u3082\u898b\u3064\u304b\u308a\u307e\u305b\u3093\u3067\u3057\u305f", "search.result.one": "1\u4ef6\u898b\u3064\u304b\u308a\u307e\u3057\u305f", "search.result.other": "#\u4ef6\u898b\u3064\u304b\u308a\u307e\u3057\u305f", "search.result.more.one": "\u3053\u306e\u30da\u30fc\u30b8\u5185\u306b\u3082\u30461\u4ef6\u898b\u3064\u304b\u308a\u307e\u3057\u305f", "search.result.more.other": "\u3053\u306e\u30da\u30fc\u30b8\u5185\u306b\u3042\u3068#\u4ef6\u898b\u3064\u304b\u308a\u307e\u3057\u305f", "search.result.term.missing": "\u691c\u7d22\u306b\u542b\u307e\u308c\u306a\u3044", "select.version.title": "Select version"}, "search": "../assets/javascripts/workers/search.709b4209.min.js", "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.2b46852b.min.js"></script>
+      
+        <script src="../js/print-site-instant-loading.js"></script>
+      
+        <script src="../js/print-site.js"></script>
+      
+    
+  </body>
+</html>
