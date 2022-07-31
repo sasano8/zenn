@@ -7,7 +7,6 @@ site_url: https://github.com/sasano8/zenn/
 repo_url: https://github.com/sasano8/zenn/
 edit_uri: "edit/main/docs/"
 
-docs_dir: ./articles
 nav:
   - 記事01: "infra-001-wsl.md"
   - 記事02: "python-001-fastapi.md"
