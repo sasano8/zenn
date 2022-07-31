@@ -1,2 +1,6 @@
 node_modules
 .idea
+.venv
+.python-version
+docs
+site

@@ -33,3 +33,6 @@ published: true
 
 githubにpushすると投稿データが自動的にzennにpushされる。
 
+# 画像管理
+
+zennの制約で`images`ディレクトリに配置する必要があります

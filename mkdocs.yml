@@ -1,0 +1,20 @@
+INHERIT: ./mkdocs_base.yml
+
+site_name: zenn 記事管理
+# site_description: sasano8's portfolio
+site_url: https://github.com/sasano8/zenn/
+# repo_name: encode/httpx
+repo_url: https://github.com/sasano8/zenn/
+edit_uri: "edit/main/docs/"
+
+docs_dir: ./articles
+nav:
+  - 記事01: "infra-001-wsl.md"
+  - 記事02: "python-001-fastapi.md"
+  - 記事03: "python-002-tools.md"
+  - 記事04: "python-003-designpattarn.md"
+  - 記事05: "python-004-pycharmdocker.md"
+  - 記事06: "python-005-sqlalchemy_inherit.md"
+  # - 記事07: "python-006-dictionary.md"
+  - 記事08: "python-008-exceptions.md"
+  - 記事09: "security-001-oauth2.md"
