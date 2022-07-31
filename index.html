@@ -9,21 +9,21 @@
       
       
       
-        <link rel="canonical" href="https://github.com/sasano8/zenn/security-001-oauth2/">
+        <link rel="canonical" href="https://github.com/sasano8/zenn/">
       
-      <link rel="icon" href="../assets/images/favicon.png">
+      <link rel="icon" href="assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-7.2.2">
     
     
       
-        <title>OAuth2 - zenn 記事管理</title>
+        <title>zenn 記事管理</title>
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.1118c9be.min.css">
+      <link rel="stylesheet" href="assets/stylesheets/main.1118c9be.min.css">
       
         
-        <link rel="stylesheet" href="../assets/stylesheets/palette.ba0d045b.min.css">
+        <link rel="stylesheet" href="assets/stylesheets/palette.ba0d045b.min.css">
         
       
     
@@ -38,11 +38,11 @@
     
     
     
-      <link rel="stylesheet" href="../css/print-site.css">
+      <link rel="stylesheet" href="css/print-site.css">
     
-      <link rel="stylesheet" href="../css/print-site-material.css">
+      <link rel="stylesheet" href="css/print-site-material.css">
     
-      <link rel="stylesheet" href="../overrides/css/custom.css">
+      <link rel="stylesheet" href="overrides/css/custom.css">
     
     
       
@@ -63,7 +63,7 @@
     <body dir="ltr" data-md-color-scheme="" data-md-color-primary="green" data-md-color-accent="deep-orange">
   
     
-    <script>function __prefix(e){return new URL("..",location).pathname+"."+e}function __get(e,t=localStorage){return JSON.parse(t.getItem(__prefix(e)))}</script>
+    <script>function __prefix(e){return new URL(".",location).pathname+"."+e}function __get(e,t=localStorage){return JSON.parse(t.getItem(__prefix(e)))}</script>
     
       <script>var palette=__get("__palette");if(null!==palette&&"object"==typeof palette.color)for(var key in palette.color)document.body.setAttribute("data-md-color-"+key,palette.color[key])</script>
     
@@ -72,11 +72,6 @@
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
       
-        
-        <a href="#oauth2" class="md-skip">
-          コンテンツにスキップ
-        </a>
-      
     </div>
     <div data-md-component="announce">
       
@@ -84,7 +79,7 @@
     
       <header class="md-header" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="ヘッダー">
-    <a href=".." title="zenn 記事管理" class="md-header__button md-logo" aria-label="zenn 記事管理" data-md-component="logo">
+    <a href="." title="zenn 記事管理" class="md-header__button md-logo" aria-label="zenn 記事管理" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
@@ -103,7 +98,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              OAuth2
+              記事00
             
           </span>
         </div>
@@ -203,7 +198,7 @@
 
 <nav class="md-nav md-nav--primary" aria-label="ナビゲーション" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href=".." title="zenn 記事管理" class="md-nav__button md-logo" aria-label="zenn 記事管理" data-md-component="logo">
+    <a href="." title="zenn 記事管理" class="md-nav__button md-logo" aria-label="zenn 記事管理" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
@@ -233,11 +228,19 @@
 
   
   
+    
   
-    <li class="md-nav__item">
-      <a href=".." class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+      
+      <a href="." class="md-nav__link md-nav__link--active">
         記事00
       </a>
+      
     </li>
   
 
@@ -250,7 +253,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../infra-001-wsl/" class="md-nav__link">
+      <a href="infra-001-wsl/" class="md-nav__link">
         記事01
       </a>
     </li>
@@ -265,7 +268,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../python-001-fastapi/" class="md-nav__link">
+      <a href="python-001-fastapi/" class="md-nav__link">
         記事02
       </a>
     </li>
@@ -280,7 +283,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../python-002-tools/" class="md-nav__link">
+      <a href="python-002-tools/" class="md-nav__link">
         記事03
       </a>
     </li>
@@ -295,7 +298,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../python-003-designpattarn/" class="md-nav__link">
+      <a href="python-003-designpattarn/" class="md-nav__link">
         記事04
       </a>
     </li>
@@ -310,7 +313,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../python-004-pycharmdocker/" class="md-nav__link">
+      <a href="python-004-pycharmdocker/" class="md-nav__link">
         記事05
       </a>
     </li>
@@ -325,7 +328,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../python-005-sqlalchemy_inherit/" class="md-nav__link">
+      <a href="python-005-sqlalchemy_inherit/" class="md-nav__link">
         記事06
       </a>
     </li>
@@ -340,7 +343,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../python-008-exceptions/" class="md-nav__link">
+      <a href="python-008-exceptions/" class="md-nav__link">
         記事08
       </a>
     </li>
@@ -353,51 +356,11 @@
 
   
   
-    
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          記事09
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="security-001-oauth2/" class="md-nav__link">
         記事09
       </a>
-      
-        
-<nav class="md-nav md-nav--secondary" aria-label="目次">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      目次
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#_1" class="md-nav__link">
-    キーワード
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -410,7 +373,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../print_page/" class="md-nav__link">
+      <a href="print_page/" class="md-nav__link">
         印刷用ページ
       </a>
     </li>
@@ -424,44 +387,12 @@
               </div>
             
             
-              
-              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
-                <div class="md-sidebar__scrollwrap">
-                  <div class="md-sidebar__inner">
-                    
-<nav class="md-nav md-nav--secondary" aria-label="目次">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      目次
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#_1" class="md-nav__link">
-    キーワード
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-                  </div>
-                </div>
-              </div>
-            
           
           <div class="md-content" data-md-component="content">
             <article class="md-content__inner md-typeset">
               
 
-    <a href="../print_page/" title="印刷用ページ" class="md-content__button md-icon">
+    <a href="print_page/" title="印刷用ページ" class="md-content__button md-icon">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 3H6v4h12m1 5a1 1 0 0 1-1-1 1 1 0 0 1 1-1 1 1 0 0 1 1 1 1 1 0 0 1-1 1m-3 7H8v-5h8m3-6H5a3 3 0 0 0-3 3v6h4v4h12v-4h4v-6a3 3 0 0 0-3-3z"/></svg>
     </a>
 
@@ -469,68 +400,14 @@
 
 
                 
-                  <a href="https://github.com/sasano8/zenn/edit/main/docs/security-001-oauth2.md" title="編集" class="md-content__button md-icon">
+                  <a href="https://github.com/sasano8/zenn/edit/main/docs/index.md" title="編集" class="md-content__button md-icon">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25z"/></svg>
                   </a>
                 
                 
-                <h1 id="oauth2">OAuth2</h1>
-<p>RFF6750に登録されている認証スキームである。
-OAuthは、認可サーバがクライアントに対し発行するアクセストークン（アクセス認可の文字列）を用いることで、保護リソースへのアクセスを許可する。アクセストークンは、リソース所有者の直接的なクレデンシャルを共有するものではない。</p>
-<ul>
-<li><a href="https://tools.ietf.org/html/rfc6750">英語</a></li>
-<li><a href="http://openid-foundation-japan.github.io/rfc6750.ja.html">日本語</a></li>
-</ul>
-<h2 id="_1">キーワード</h2>
-<ul>
-<li>access token</li>
-<li>認証</li>
-<li>認可</li>
-<li>Bearer token</li>
-<li>jwt</li>
-<li>token68</li>
-</ul>
-<h1 id="_2">認証</h1>
-<p>サービス利用者は、リソースオーナーにIDやパスワードを伝え、リソースオーナーはIDやパスワードなどから利用者を特定する。</p>
-<h1 id="_3">認可</h1>
-<p>リソースオーナーは認証の結果として、サービスの利用許可とアクセス可能なリソース範囲を示すトークンを返す。
-認証・認可とは、いわゆるログインのことである。</p>
-<h1 id="access-token">access token</h1>
-<p>認可サーバが発行するアクセス認可の文字列。
-入館証のようなものだ。</p>
-<h1 id="bearer-token">署名なしトークン(Bearer Token)</h1>
-<p>トークンを所有する任意のパーティ（Bearer=持参人払い）は、「トークンを所有している」という条件を満たせばトークンを利用することができる。
-電車の切符のように、買った本人でなくとも利用することができる。</p>
-<div class="highlight"><pre><span></span><code>headers={&quot;X-Token&quot;: secret_token}
-</code></pre></div>
-
-<h1 id="_4">現在のログイン処理</h1>
-<ol>
-<li>クライアントから、ユーザ名・パスワードを受け取り、ユーザー情報を取得する。（パスワードは、パスワードハッシュを用いる）</li>
-<li>ユーザー名・アクセススコープ・有効期限情報を付与した情報をエンコードし、アクセストークンとして返す。</li>
-<li>クライアントからリソースへのアクセスを要求された時、アクセストークンからユーザー名・アクセススコープをデコードし、権限に応じて処理を受け入れる。</li>
-</ol>
-<h1 id="_5">疑問</h1>
-<ul>
-<li>アクセストークン用のキー・バリューストア（アクセストークン・ユーザーIDのペア）は必要ないのか？</li>
-<li>可能性として無視できるレベルだが、意図と異なるユーザー情報が埋め込まれた同一のハッシュを生成できる可能性がある。</li>
-<li>アクセストークンを復元できた場合、情報を見ることができてしまう。</li>
-<li>トークンには、識別子型と内包型がある。</li>
-<li>アクセストークンは、RFC7519で定められるJWT(JSON Web Token)が用いられることが多い。</li>
-<li>識別子型は、RFC7662という標準仕様が存在する</li>
-<li>内包型には、RFC6749にてアクセストークンの署名方法が記されている。</li>
-<li>内包型のアクセストークンは、有効期限前にアクセストークンを失効させることが難しいと書かれた記事がある。アクセストークンに生成日時を埋め込めば可能では。</li>
-<li>そもそもJWTのアクセストークン自体に、仕様を利用した脆弱性があるとの声もある。</li>
-</ul>
-<h1 id="oauth2_1">認証時のパラメータは以下の通りだが、これはOAuth2の仕様なのだろうか？</h1>
-<p>grant_type="password",
-username=USERNAME,
-password=PASSWORD,
-scope=" ".join(["me", "items"]),  # 複数のスコープは、スペースで区切って指定する
-client_id=None,
-client_secret=None</p>
+                  <h1>記事00</h1>
                 
-                  
+                
                 
               
 
@@ -550,21 +427,21 @@ client_secret=None</p>
   
     <nav class="md-footer__inner md-grid" aria-label="フッター">
       
+      
         
-        <a href="../python-008-exceptions/" class="md-footer__link md-footer__link--prev" aria-label="前: 記事08" rel="prev">
-          <div class="md-footer__button md-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
-          </div>
+        <a href="infra-001-wsl/" class="md-footer__link md-footer__link--next" aria-label="次: 記事01" rel="next">
           <div class="md-footer__title">
             <div class="md-ellipsis">
               <span class="md-footer__direction">
-                前
+                次
               </span>
-              記事08
+              記事01
             </div>
           </div>
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
+          </div>
         </a>
-      
       
     </nav>
   
@@ -587,14 +464,14 @@ client_secret=None</p>
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "..", "features": [], "translations": {"clipboard.copy": "\u30af\u30ea\u30c3\u30d7\u30dc\u30fc\u30c9\u3078\u30b3\u30d4\u30fc", "clipboard.copied": "\u30b3\u30d4\u30fc\u3057\u307e\u3057\u305f", "search.config.lang": "ja", "search.config.pipeline": "trimmer, stemmer", "search.config.separator": "[\\s\\-\u3000\u3001\u3002\uff0c\uff0e]+", "search.placeholder": "\u691c\u7d22", "search.result.placeholder": "\u691c\u7d22\u30ad\u30fc\u30ef\u30fc\u30c9\u3092\u5165\u529b\u3057\u3066\u304f\u3060\u3055\u3044", "search.result.none": "\u4f55\u3082\u898b\u3064\u304b\u308a\u307e\u305b\u3093\u3067\u3057\u305f", "search.result.one": "1\u4ef6\u898b\u3064\u304b\u308a\u307e\u3057\u305f", "search.result.other": "#\u4ef6\u898b\u3064\u304b\u308a\u307e\u3057\u305f", "search.result.more.one": "\u3053\u306e\u30da\u30fc\u30b8\u5185\u306b\u3082\u30461\u4ef6\u898b\u3064\u304b\u308a\u307e\u3057\u305f", "search.result.more.other": "\u3053\u306e\u30da\u30fc\u30b8\u5185\u306b\u3042\u3068#\u4ef6\u898b\u3064\u304b\u308a\u307e\u3057\u305f", "search.result.term.missing": "\u691c\u7d22\u306b\u542b\u307e\u308c\u306a\u3044", "select.version.title": "Select version"}, "search": "../assets/javascripts/workers/search.709b4209.min.js", "version": null}</script>
+    <script id="__config" type="application/json">{"base": ".", "features": [], "translations": {"clipboard.copy": "\u30af\u30ea\u30c3\u30d7\u30dc\u30fc\u30c9\u3078\u30b3\u30d4\u30fc", "clipboard.copied": "\u30b3\u30d4\u30fc\u3057\u307e\u3057\u305f", "search.config.lang": "ja", "search.config.pipeline": "trimmer, stemmer", "search.config.separator": "[\\s\\-\u3000\u3001\u3002\uff0c\uff0e]+", "search.placeholder": "\u691c\u7d22", "search.result.placeholder": "\u691c\u7d22\u30ad\u30fc\u30ef\u30fc\u30c9\u3092\u5165\u529b\u3057\u3066\u304f\u3060\u3055\u3044", "search.result.none": "\u4f55\u3082\u898b\u3064\u304b\u308a\u307e\u305b\u3093\u3067\u3057\u305f", "search.result.one": "1\u4ef6\u898b\u3064\u304b\u308a\u307e\u3057\u305f", "search.result.other": "#\u4ef6\u898b\u3064\u304b\u308a\u307e\u3057\u305f", "search.result.more.one": "\u3053\u306e\u30da\u30fc\u30b8\u5185\u306b\u3082\u30461\u4ef6\u898b\u3064\u304b\u308a\u307e\u3057\u305f", "search.result.more.other": "\u3053\u306e\u30da\u30fc\u30b8\u5185\u306b\u3042\u3068#\u4ef6\u898b\u3064\u304b\u308a\u307e\u3057\u305f", "search.result.term.missing": "\u691c\u7d22\u306b\u542b\u307e\u308c\u306a\u3044", "select.version.title": "Select version"}, "search": "assets/javascripts/workers/search.709b4209.min.js", "version": null}</script>
     
     
-      <script src="../assets/javascripts/bundle.2b46852b.min.js"></script>
+      <script src="assets/javascripts/bundle.2b46852b.min.js"></script>
       
-        <script src="../js/print-site-instant-loading.js"></script>
+        <script src="js/print-site-instant-loading.js"></script>
       
-        <script src="../js/print-site.js"></script>
+        <script src="js/print-site.js"></script>
       
     
   </body>
