@@ -38,7 +38,7 @@ https://apps.microsoft.com/store/detail/ubuntu-2204-lts/9PN20MSR04DW?hl=ja-jp&gl
 
 Windows TerminalからUbuntu 22.04 LTSを起動し、セットアップを進める。
 
-![セットアップ画面](./img/infra-001-wsl/img_0.png "セットアップ画面")
+![セットアップ画面](../images/infra-001-wsl/img_0.png "セットアップ画面")
 
 
 WSLにログイン時に`/etc/update-motd.d/50-landscape-sysinfo: 17: cannot create /var/lib/landscape/landscape-sysinfo.cache: Permission denied`と表示されることがある。
