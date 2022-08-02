@@ -1,3 +1,5 @@
+include common/Makefile
+
 doc-build:
 	@cp -r articles/* docs
 	@cp -r images/* docs/img
@@ -9,6 +11,3 @@ doc-build:
 
 doc-serve: doc-build
 	@poetry run mkdocs serve -a localhost:8001
-
-aaa:
-	@echo '^\s*$$'
