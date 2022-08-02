@@ -1,4 +1,4 @@
-INHERIT: ./mkdocs_base.yml
+INHERIT: ./common/mkdocs_base.yml
 
 site_name: zenn 記事管理
 # site_description: sasano8's portfolio
