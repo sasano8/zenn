@@ -242,13 +242,15 @@ minikube version
 minikube config set driver docker
 # minikube config set driver kvm2
 minikube config set memory 4096  # デフォルトは2048
-minikube config set container-runtime cri-o  # デフォルトは2048
+minikube config set container-runtime cri-o  # いらない
 ```
 
 minikubeを起動する。
 
 ```
 minikube start
+# 指定がないと最新のkubernetesがインストールされるが、1.24では問題が生じたので任意のバージョンを指定
+# minikube start --kubernetes-version=v1.23.8
 ```
 
 `kubectl`をホストにインストールする。
@@ -379,7 +381,48 @@ Ubuntu 22.04のセットアップ からやり直す。
 
 
 
+# pyenvのインストール
+
+https://github.com/pyenv/pyenv/wiki#suggested-build-environment を参考に前提パッケージをインストール。
+
+```
+sudo apt-get update; sudo apt-get install make build-essential libssl-dev zlib1g-dev \
+libbz2-dev libreadline-dev libsqlite3-dev wget curl llvm \
+libncursesw5-dev xz-utils tk-dev libxml2-dev libxmlsec1-dev libffi-dev liblzma-dev
+```
+
+https://github.com/pyenv/pyenv を参考にpyenvをインストール。
+
+```
+git clone https://github.com/pyenv/pyenv.git ~/.pyenv
+cd ~/.pyenv && src/configure && make -C src
+```
+
+```
+echo 'export PYENV_ROOT="$HOME/.pyenv"' >> ~/.bashrc
+echo 'command -v pyenv >/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"' >> ~/.bashrc
+echo 'eval "$(pyenv init -)"' >> ~/.bashrc
+```
+
+任意のpythonをインストール。
+
+```
+pyenv install 3.8.6
+```
 
 
+# poetryのインストール
 
+https://python-poetry.org/docs/ を参考にインストール。
+
+```
+curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python -
+```
+
+シェルを再起動し次のコマンドを実行。
+
+```
+poetry config virtualenvs.create true
+poetry config virtualenvs.in-project true
+```
 
