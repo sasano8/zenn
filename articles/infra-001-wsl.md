@@ -426,3 +426,21 @@ poetry config virtualenvs.create true
 poetry config virtualenvs.in-project true
 ```
 
+# 新しいWindowsを買ったらやること
+
+- パフォーマンスを優先する（以下のみチェックしておくとよい）
+    - アイコンの代わりに縮小版を表示する
+    - スクリーンフォントの縁を滑らかにする
+
+
+- 画像やテキストの縁を滑らかにする -> オフ
+
+
+# ディストリビューションの削除
+
+``` cmd
+wsl --list -v
+wsl --shutdown
+wsl --unregisterd Ubuntu-22.04
+```
+
