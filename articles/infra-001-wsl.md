@@ -261,6 +261,12 @@ sudo install ${HOME}/.minikube/cache/linux/amd64/${VERSION}/kubectl /usr/local/b
 kubectl version
 ```
 
+`kubectl`の保管を有効化する。
+
+```
+echo "source <(kubectl completion bash)" >> ~/.bashrc
+```
+
 サンプルアプリケーションをデプロイする。
 
 ```
