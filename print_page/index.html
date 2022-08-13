@@ -622,6 +622,10 @@ sudo install <span class="cp">${</span><span class="n">HOME</span><span class="c
 kubectl version
 </code></pre></div>
 
+<p><code>kubectl</code>の保管を有効化する。</p>
+<div class="highlight"><pre><span></span><code>echo &quot;source &lt;(kubectl completion bash)&quot; &gt;&gt; ~/.bashrc
+</code></pre></div>
+
 <p>サンプルアプリケーションをデプロイする。</p>
 <div class="highlight"><pre><span></span><code>kubectl create deployment hello-minikube --image=k8s.gcr.io/echoserver:1.4
 kubectl expose deployment hello-minikube --type=NodePort --port=8080
