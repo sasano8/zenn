@@ -26,6 +26,11 @@ WSLから仮想化システム（NestedVM）を利用するため以下の環境
 
 - Windows 11
 
+# WSL（Windows Store版）のインストール
+
+WSLでSystemdを使うために、Windows Store版のWSLをインストールします。
+
+
 
 # Ubuntu 22.04のインストール
 
@@ -65,8 +70,22 @@ docker version
 docker run ubuntu:14.04 /bin/echo 'Hello world'
 ```
 
-
 # Systemdの有効化
+
+
+```
+sudo vi /etc/wsl.conf
+```
+
+```
+[boot]
+systemd=true
+```
+
+再起動する必要があるかも？？
+
+
+# Systemdの有効化（systemd-genieバージョン）※いずれ消す
 
 WSL上でsystemdを動作させるツールを、次を参考にインストールします。
 
@@ -118,6 +137,7 @@ source ~/.bashrc
 ```
 
 初回起動時は、`Waiting for systemd....!!`で止まるので`Ctrl-C`で一度停止し再度シェルにログインする。
+
 
 `snap`が使用できることを確認する。
 
