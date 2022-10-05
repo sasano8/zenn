@@ -444,6 +444,8 @@ Ubuntuのパッケージマネージャは、従来のaptからsnapに移行し�
 <ul>
 <li>Windows 11</li>
 </ul>
+<h1 id="wslwindows-store">WSL（Windows Store版）のインストール</h1>
+<p>WSLでSystemdを使うために、Windows Store版のWSLをインストールします。</p>
 <h1 id="ubuntu-2204">Ubuntu 22.04のインストール</h1>
 <p>Windows storeからUbuntu 22.04をインストールする。</p>
 <p>https://apps.microsoft.com/store/detail/ubuntu-2204-lts/9PN20MSR04DW?hl=ja-jp&amp;gl=JP</p>
@@ -467,6 +469,15 @@ docker run ubuntu:14.04 /bin/echo <span class="s1">&#39;Hello world&#39;</span>
 </code></pre></div>
 
 <h1 id="systemd">Systemdの有効化</h1>
+<div class="highlight"><pre><span></span><code>sudo vi /etc/wsl.conf
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code><span class="k">[boot]</span>
+<span class="na">systemd</span><span class="o">=</span><span class="s">true</span>
+</code></pre></div>
+
+<p>再起動する必要があるかも？？</p>
+<h1 id="systemdsystemd-genie">Systemdの有効化（systemd-genieバージョン）※いずれ消す</h1>
 <p>WSL上でsystemdを動作させるツールを、次を参考にインストールします。</p>
 <ul>
 <li>https://github.com/arkane-systems/genie</li>
