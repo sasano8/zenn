@@ -759,6 +759,19 @@ poetry config virtualenvs.in-project true
 <span class="n">wsl</span> <span class="o">--</span><span class="n">shutdown</span>
 <span class="n">wsl</span> <span class="o">--</span><span class="n">unregisterd</span> <span class="n">Ubuntu</span><span class="o">-</span><span class="mf">22.04</span>
 </code></pre></div>
+
+<h1 id="wsl">WSL肥大化問題</h1>
+<p>https://qiita.com/TsuyoshiUshio@github/items/7a745582bbcd35062430</p>
+<div class="highlight"><pre><span></span><code>wsl --shutdown
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code>docker volume prune
+</code></pre></div>
+
+<p>windowsで<code>vhd</code>でそれらしいファイルを検索してフルパスをメモする。</p>
+<p>管理者権限で起動する。</p>
+<div class="highlight"><pre><span></span><code>optimize-vhd -Path &lt;path&gt; -Mode full
+</code></pre></div>
                 
                   
                 
