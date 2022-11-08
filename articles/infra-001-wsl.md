@@ -470,3 +470,24 @@ wsl --shutdown
 wsl --unregisterd Ubuntu-22.04
 ```
 
+# WSL肥大化問題
+
+https://qiita.com/TsuyoshiUshio@github/items/7a745582bbcd35062430
+
+```
+wsl --shutdown
+```
+
+```
+docker volume prune
+```
+
+windowsで`vhd`でそれらしいファイルを検索してフルパスをメモする。
+
+
+管理者権限で起動する。
+
+```
+optimize-vhd -Path <path> -Mode full
+```
+
