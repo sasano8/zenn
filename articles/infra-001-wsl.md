@@ -484,16 +484,12 @@ docker volume prune
 wsl --shutdown
 ```
 
-コマンドプロンプトなどでwindows上の`vhd*`ファイルを検索する。
+
+powershellを管理者権限で起動し、windows上の`vhd*`ファイルを検索し、最適化する。
 
 ```
-dir /s /b c:\*.vhd*
-```
-
-
-powershellを管理者権限で起動する。
-
-```
+cd c:
+Get-ChildItem -Recurse -Force -ErrorAction SilentlyContinue -Filter "*.vhdx" | select FullName, length
 optimize-vhd -Mode full -Path <path>
 ```
 
