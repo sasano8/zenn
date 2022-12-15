@@ -475,11 +475,11 @@ wsl --unregister Ubuntu-22.04
 https://qiita.com/TsuyoshiUshio@github/items/7a745582bbcd35062430
 
 ```
-wsl --shutdown
+docker volume prune
 ```
 
 ```
-docker volume prune
+wsl --shutdown
 ```
 
 windowsで`vhd`でそれらしいファイルを検索してフルパスをメモする。
