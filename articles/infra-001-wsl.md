@@ -475,6 +475,8 @@ wsl --unregister Ubuntu-22.04
 https://qiita.com/TsuyoshiUshio@github/items/7a745582bbcd35062430
 
 ```
+docker image prune
+docker container prune
 docker volume prune
 ```
 
