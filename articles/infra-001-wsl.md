@@ -467,7 +467,7 @@ poetry config virtualenvs.in-project true
 ``` cmd
 wsl --list -v
 wsl --shutdown
-wsl --unregisterd Ubuntu-22.04
+wsl --unregister Ubuntu-22.04
 ```
 
 # WSL肥大化問題
