@@ -770,9 +770,12 @@ docker volume prune
 <div class="highlight"><pre><span></span><code>wsl --shutdown
 </code></pre></div>
 
-<p>windowsで<code>vhd</code>でそれらしいファイルを検索してフルパスをメモする。</p>
-<p>管理者権限で起動する。</p>
-<div class="highlight"><pre><span></span><code>optimize-vhd -Path &lt;path&gt; -Mode full
+<p>コマンドプロンプトなどでwindows上の<code>vhd*</code>ファイルを検索する。</p>
+<div class="highlight"><pre><span></span><code>dir /s /b c:\*.vhd*
+</code></pre></div>
+
+<p>powershellを管理者権限で起動する。</p>
+<div class="highlight"><pre><span></span><code>optimize-vhd -Mode full -Path &lt;path&gt;
 </code></pre></div>
                 
                   
