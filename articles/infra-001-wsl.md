@@ -484,12 +484,16 @@ docker volume prune
 wsl --shutdown
 ```
 
-windowsで`vhd`でそれらしいファイルを検索してフルパスをメモする。
-
-
-管理者権限で起動する。
+コマンドプロンプトなどでwindows上の`vhd*`ファイルを検索する。
 
 ```
-optimize-vhd -Path <path> -Mode full
+dir /s /b c:\*.vhd*
+```
+
+
+powershellを管理者権限で起動する。
+
+```
+optimize-vhd -Mode full -Path <path>
 ```
 
