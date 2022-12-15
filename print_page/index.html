@@ -779,12 +779,10 @@ docker volume prune
 <div class="highlight"><pre><span></span><code>wsl --shutdown
 </code></pre></div>
 
-<p>コマンドプロンプトなどでwindows上の<code>vhd*</code>ファイルを検索する。</p>
-<div class="highlight"><pre><span></span><code>dir /s /b c:\*.vhd*
-</code></pre></div>
-
-<p>powershellを管理者権限で起動する。</p>
-<div class="highlight"><pre><span></span><code>optimize-vhd -Mode full -Path &lt;path&gt;
+<p>powershellを管理者権限で起動し、windows上の<code>vhd*</code>ファイルを検索し、最適化する。</p>
+<div class="highlight"><pre><span></span><code>cd c:
+Get-ChildItem -Recurse -Force -ErrorAction SilentlyContinue -Filter &quot;*.vhdx&quot; | select FullName, length
+optimize-vhd -Mode full -Path &lt;path&gt;
 </code></pre></div></section><section class="print-page" id="python-001-fastapi"><h1 id="python-001-fastapi-_1">対象の読者</h1>
 <ul>
 <li>FastAPIをこれから初めてみようと思っている人</li>
