@@ -771,10 +771,10 @@ poetry config virtualenvs.in-project true
 
 <h1 id="infra-001-wsl-wsl">WSL肥大化問題</h1>
 <p>https://qiita.com/TsuyoshiUshio@github/items/7a745582bbcd35062430</p>
-<div class="highlight"><pre><span></span><code>wsl --shutdown
+<div class="highlight"><pre><span></span><code>docker volume prune
 </code></pre></div>
 
-<div class="highlight"><pre><span></span><code>docker volume prune
+<div class="highlight"><pre><span></span><code>wsl --shutdown
 </code></pre></div>
 
 <p>windowsで<code>vhd</code>でそれらしいファイルを検索してフルパスをメモする。</p>
