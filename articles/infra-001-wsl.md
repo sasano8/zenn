@@ -485,10 +485,10 @@ wsl --shutdown
 ```
 
 
-powershellを管理者権限で起動し、windows上の`vhd*`ファイルを検索し、最適化する。
+powershellを管理者権限で起動し、windows上の`vhd*`ファイルを検索し、それらしいファイルを最適化する。
 
 ```
-cd c:
+cd $HOME\..\..  # ドライブルートに移動
 Get-ChildItem -Recurse -Force -ErrorAction SilentlyContinue -Filter "*.vhdx" | select FullName, length
 optimize-vhd -Mode full -Path <path>
 ```
