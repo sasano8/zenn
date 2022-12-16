@@ -772,7 +772,7 @@ docker volume prune
 
 <p>powershellを管理者権限で起動し、windows上の<code>vhd*</code>ファイルを検索し、それらしいファイルを最適化する。</p>
 <div class="highlight"><pre><span></span><code>cd $HOME\..\..  # ドライブルートに移動
-Get-ChildItem -Recurse -Force -ErrorAction SilentlyContinue -Filter &quot;*.vhdx&quot; | select FullName, length
+Get-ChildItem -Recurse -Force -ErrorAction SilentlyContinue -Filter &quot;*.vhdx&quot; | select FullName, length, LastWriteTime
 optimize-vhd -Mode full -Path &lt;path&gt;
 </code></pre></div>
                 
