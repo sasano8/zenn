@@ -552,7 +552,7 @@ errors      # エンコードに失敗した場合のふるまい。(詳細)</p>
 <p>https://docs.python.org/ja/3.11/howto/logging.html#useful-handlers</p>
 <h2 id="_8">フィルター</h2>
 <p>人類には早いので使わない。</p>
-<h1 id="logging"><code>logging</code>の使用</h1>
+<h1 id="logging"><code>logging</code>の基礎</h1>
 <h2 id="_9">使用方法</h2>
 <h2 id="_10">ロギングの罠</h2>
 <p><code>logging</code>モジュールを使用する上で、癖を理解する必要があります。
@@ -707,21 +707,20 @@ root_logger = logging.getLogger()</p>
 <span class="n">child</span><span class="o">.</span><span class="n">propagate</span> <span class="o">=</span> <span class="kc">False</span>
 </code></pre></div>
 
-<h2 id="_13">ログを出力するよ～</h2>
-<h1 id="_14">ケース別</h1>
-<h2 id="_15">スタックトレースを出力する</h2>
+<h1 id="_13">ログを出力する</h1>
+<h1 id="_14">スタックトレースを出力する</h1>
 <p>例外発生時にスタックトレースも出力する。</p>
 <p><code>logging.exception("...")</code></p>
 <p>例外は発生していないが、トレース情報を出力したい場合。</p>
 <p><code>logging.error("...", stack_info=True)</code></p>
-<h2 id="_16">警告を出力する</h2>
-<h3 id="warnings"><code>warnings</code>の使用</h3>
+<h1 id="_15">警告を出力する</h1>
+<h2 id="warnings"><code>warnings</code>の使用</h2>
 <p><code>warnings</code>モジュールは、警告を出力するためのPython標準モジュールです。</p>
 <p>最新の仕様や正確な仕様の理解には、公式ドキュメントを参照ください。</p>
 <p>https://docs.python.org/ja/3/library/warnings.html</p>
 <p>警告レベルのログは、<code>logger.warning</code>で出力できますが、アプリケーションの警告レベルとは区別したいことがあります。</p>
 <p>例えば、アプリケーション内部で使用している将来的に廃止される非推奨な関数が呼び出された場合に、警告レベルを開発者のみに通知したい場合などです。</p>
-<h4 id="_17">使用方法</h4>
+<h3 id="_16">使用方法</h3>
 <p><code>warnings</code>モジュールは、次のように使用します。</p>
 <div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">warnings</span>
 <span class="n">warngins</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;deprecated&quot;</span><span class="p">)</span>
@@ -733,7 +732,7 @@ root_logger = logging.getLogger()</p>
 <span class="n">logging</span><span class="o">.</span><span class="n">captureWarnings</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
 </code></pre></div>
 
-<h5 id="_18">警告カテゴリ</h5>
+<h3 id="_17">警告カテゴリ</h3>
 <p>警告は、カテゴリに分類することができます。</p>
 <p>次にいくつかのカテゴリを紹介します。</p>
 <table>
@@ -764,7 +763,7 @@ root_logger = logging.getLogger()</p>
 </code></pre></div>
 
 <p>パッケージを提供する開発者は、カテゴリを適切に使用した方がいいかもしれませんが、多くの場合はデフォルトのカテゴリで十分です。</p>
-<h4 id="_19">警告フィルタ</h4>
+<h3 id="_18">警告フィルタ</h3>
 <p>警告が気になる場合、警告フィルタを使用し、警告の出力を制御することができます。</p>
 <table>
 <thead>
@@ -804,37 +803,37 @@ root_logger = logging.getLogger()</p>
 <div class="highlight"><pre><span></span><code><span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s1">&#39;ignore&#39;</span><span class="p">)</span>
 </code></pre></div>
 
-<h2 id="_20">進捗をコンソール上に可視化する</h2>
-<h3 id="tqdm"><code>tqdm</code>の使用</h3>
+<h1 id="_19">進捗をコンソール上に可視化する</h1>
+<h2 id="tqdm"><code>tqdm</code>の使用</h2>
 <p><code>tqdm</code>は、進捗をコンソール上に可視化したい時に使います。</p>
 <p>正確な仕様は、公式ドキュメントを参照ください。</p>
 <p>https://tqdm.github.io/</p>
-<h4 id="_21">インストール</h4>
+<h3 id="_20">インストール</h3>
 <p><code>tqdm</code>は、次のようにインストールします。</p>
 <div class="highlight"><pre><span></span><code>pip install tqdm
 </code></pre></div>
 
-<h4 id="_22">使用方法</h4>
-<h3 id="progressbar2"><code>progressbar2</code>の使用</h3>
+<h3 id="_21">使用方法</h3>
+<h2 id="progressbar2"><code>progressbar2</code>の使用</h2>
 <p><code>progressbar2</code>は、進捗をコンソール上に可視化したい時に使います。</p>
 <p><code>tqdm</code>の方が一般的ですが、<code>progressbar2</code>を好む人もいるようなので、紹介しておきます。</p>
 <p>正確な仕様は、公式ドキュメントを参照ください。</p>
 <p>https://progressbar-2.readthedocs.io/en/latest/</p>
-<h4 id="_23">インストール</h4>
+<h3 id="_22">インストール</h3>
 <p><code>progressbar2</code>は、次のようにインストールします。</p>
 <div class="highlight"><pre><span></span><code>pip install progressbar2
 </code></pre></div>
 
-<h4 id="_24">使用方法</h4>
-<h2 id="_25">ログを収集・監視する</h2>
-<h3 id="sentry"><code>sentry</code>の使用</h3>
+<h3 id="_23">使用方法</h3>
+<h1 id="_24">ログを収集・監視する</h1>
+<h2 id="sentry"><code>sentry</code>の使用</h2>
 <p><code>sentry</code> は、OSSのログ収集・監視ツールです。</p>
 <p>正確な仕様は、公式ドキュメントを参照ください。</p>
 <p>https://docs.sentry.io/platforms/python/</p>
-<h4 id="_26">インストール</h4>
-<h3 id="_27">同期・非同期化でロギングする</h3>
-<h3 id="_28">マルチプロセス化でロギングする</h3>
-<h1 id="_29">まとめ</h1>
+<h3 id="_25">インストール</h3>
+<h2 id="_26">同期・非同期化でロギングする</h2>
+<h2 id="_27">マルチプロセス化でロギングする</h2>
+<h1 id="_28">まとめ</h1>
 <p>ロガーは、次の挙動に気をつけて使用する。</p>
 <ul>
 <li>ルートロガーのハンドラー設定されていない場合、ルートロガーのハンドラーが初期化（<code>basicConfig</code>が実行）されることがある</li>
