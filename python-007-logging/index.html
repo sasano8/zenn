@@ -466,7 +466,81 @@
 <h1 id="_2">公式ドキュメント</h1>
 <p>最新の仕様や、より正確な仕様の理解には、公式ドキュメントを参照ください。</p>
 <p>https://docs.python.org/ja/3/library/logging.html</p>
-<h1 id="_3">癖</h1>
+<h1 id="_3">基礎</h1>
+<h2 id="_4">ログレベル</h2>
+<table>
+<thead>
+<tr>
+<th>レベル名</th>
+<th>数値</th>
+<th>備考</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>CRITICAL</td>
+<td>50</td>
+<td>致命的なエラーログ</td>
+</tr>
+<tr>
+<td>ERROR</td>
+<td>40</td>
+<td>エラーログ</td>
+</tr>
+<tr>
+<td>WARNING</td>
+<td>30</td>
+<td>警告</td>
+</tr>
+<tr>
+<td>SUCCESS</td>
+<td>25</td>
+<td>成功ログ。<code>logure</code>ライブラリ（後述）の拡張レベルで、<code>logging</code>モジュールには含まれない</td>
+</tr>
+<tr>
+<td>INFO</td>
+<td>20</td>
+<td>情報ログ</td>
+</tr>
+<tr>
+<td>DEBUG</td>
+<td>10</td>
+<td>デバッグログ</td>
+</tr>
+<tr>
+<td>TRACE</td>
+<td>5</td>
+<td>デバッグより詳細なログ。<code>logure</code>ライブラリ（後述）の拡張レベルで、<code>logging</code>モジュールには含まれない</td>
+</tr>
+<tr>
+<td>NOTSET</td>
+<td>0</td>
+<td>基本的に使用しない</td>
+</tr>
+</tbody>
+</table>
+<p>表示されるレベル名は次のようにカスタマイズ可能です。</p>
+<div class="highlight"><pre><span></span><code><span class="k">for</span> <span class="n">level</span><span class="p">,</span> <span class="n">name</span> <span class="ow">in</span> <span class="p">{</span><span class="n">logging</span><span class="o">.</span><span class="n">CRITICAL</span><span class="p">:</span> <span class="s2">&quot;FATAL&quot;</span><span class="p">,</span> <span class="n">logging</span><span class="o">.</span><span class="n">WARNING</span><span class="p">:</span> <span class="s2">&quot;WARN&quot;</span><span class="p">}</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">addLevelName</span><span class="p">(</span><span class="n">level</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+</code></pre></div>
+
+<h2 id="_5">ロガー</h2>
+<h2 id="_6">フォーマッタ</h2>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">logging</span>
+
+<span class="n">fmt</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">Formatter</span><span class="p">(</span>
+    <span class="s2">&quot;</span><span class="si">%(asctime)s</span><span class="s2"> </span><span class="si">%(levelname).5s</span><span class="s2"> </span><span class="si">%(name)s</span><span class="s2">  </span><span class="si">%(filename)s</span><span class="s2">:</span><span class="si">%(lineno)s</span><span class="s2"> </span><span class="si">%(message)s</span><span class="s2">&quot;</span><span class="p">,</span>
+    <span class="n">datefmt</span><span class="o">=</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2"> %H:%M:%S&quot;</span>
+<span class="p">)</span>
+
+<span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span><span class="nb">format</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">%(asctime)s</span><span class="s2"> </span><span class="si">%(levelname).5s</span><span class="s2"> </span><span class="si">%(name)s</span><span class="s2"> </span><span class="si">%(filename)s</span><span class="s2">:</span><span class="si">%(lineno)s</span><span class="s2"> </span><span class="si">%(message)s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">datefmt</span><span class="o">=</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2"> %H:%M:%S&quot;</span><span class="p">)</span>
+</code></pre></div>
+
+<h2 id="_7">ハンドラー</h2>
+<p>https://docs.python.org/ja/3.11/howto/logging.html#useful-handlers</p>
+<h2 id="_8">フィルター</h2>
+<p>人類には早いので使わない。</p>
+<h1 id="_9">ロギングの罠</h1>
 <p><code>logging</code>モジュールを使用する上で、癖を理解する必要があります。
 <code>logging</code>モジュール初学者の方は、この章は読み飛ばして、理解が深まったところで戻ってきてください。</p>
 <p>まず、以下のコードをご覧ください。</p>
@@ -506,7 +580,7 @@ INFO:mylogger:hello 3
 [&lt;StreamHandler &lt;stderr&gt; (NOTSET)&gt;]
 </code></pre></div>
 
-<h2 id="_4">簡単な概念</h2>
+<h2 id="_10">簡単な概念</h2>
 <ul>
 <li>ロガー（<code>getLogger("mylogger")</code>）: ログを出力するための任意の名前を持つオブジェクト</li>
 <li>ルートロガー（<code>logging.root</code>）: 全ての親となるロガー。</li>
@@ -526,7 +600,7 @@ INFO:mylogger:hello 3
 <span class="c1"># False</span>
 </code></pre></div>
 
-<h2 id="_5">実行結果における違和感</h2>
+<h2 id="_11">実行結果における違和感</h2>
 <p>おそらく、実行結果に次の違和感を覚えたのではないでしょうか？</p>
 <ol>
 <li>なぜ、<code>logging.root.handlers</code>の状態が変わっているのだろうか</li>
@@ -619,80 +693,6 @@ root_logger = logging.getLogger()</p>
 <span class="n">child</span><span class="o">.</span><span class="n">propagate</span> <span class="o">=</span> <span class="kc">False</span>
 </code></pre></div>
 
-<h1 id="_6">基礎</h1>
-<h2 id="_7">ログレベル</h2>
-<table>
-<thead>
-<tr>
-<th>レベル名</th>
-<th>数値</th>
-<th>備考</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>CRITICAL</td>
-<td>50</td>
-<td>致命的なエラーログ</td>
-</tr>
-<tr>
-<td>ERROR</td>
-<td>40</td>
-<td>エラーログ</td>
-</tr>
-<tr>
-<td>WARNING</td>
-<td>30</td>
-<td>警告</td>
-</tr>
-<tr>
-<td>SUCCESS</td>
-<td>25</td>
-<td>成功ログ。<code>logure</code>ライブラリ（後述）の拡張レベルで、<code>logging</code>モジュールには標準では含まれない</td>
-</tr>
-<tr>
-<td>INFO</td>
-<td>20</td>
-<td>情報ログ</td>
-</tr>
-<tr>
-<td>DEBUG</td>
-<td>10</td>
-<td>デバッグログ</td>
-</tr>
-<tr>
-<td>TRACE</td>
-<td>5</td>
-<td>デバッグより詳細なログ。<code>logure</code>ライブラリ（後述）の拡張レベルで、<code>logging</code>モジュールには標準では含まれない</td>
-</tr>
-<tr>
-<td>NOTSET</td>
-<td>0</td>
-<td>基本的に使用しない</td>
-</tr>
-</tbody>
-</table>
-<p>表示されるレベル名は次のようにカスタマイズ可能です。</p>
-<div class="highlight"><pre><span></span><code><span class="k">for</span> <span class="n">level</span><span class="p">,</span> <span class="n">name</span> <span class="ow">in</span> <span class="p">{</span><span class="n">logging</span><span class="o">.</span><span class="n">CRITICAL</span><span class="p">:</span> <span class="s2">&quot;FATAL&quot;</span><span class="p">,</span> <span class="n">logging</span><span class="o">.</span><span class="n">WARNING</span><span class="p">:</span> <span class="s2">&quot;WARN&quot;</span><span class="p">}</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-    <span class="n">logging</span><span class="o">.</span><span class="n">addLevelName</span><span class="p">(</span><span class="n">level</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
-</code></pre></div>
-
-<h2 id="_8">ロガー</h2>
-<h2 id="_9">フォーマッタ</h2>
-<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">logging</span>
-
-<span class="n">fmt</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">Formatter</span><span class="p">(</span>
-    <span class="s2">&quot;</span><span class="si">%(asctime)s</span><span class="s2"> </span><span class="si">%(levelname).5s</span><span class="s2"> </span><span class="si">%(name)s</span><span class="s2">  </span><span class="si">%(filename)s</span><span class="s2">:</span><span class="si">%(lineno)s</span><span class="s2"> </span><span class="si">%(message)s</span><span class="s2">&quot;</span><span class="p">,</span>
-    <span class="n">datefmt</span><span class="o">=</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2"> %H:%M:%S&quot;</span>
-<span class="p">)</span>
-
-<span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span><span class="nb">format</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">%(asctime)s</span><span class="s2"> </span><span class="si">%(levelname).5s</span><span class="s2"> </span><span class="si">%(name)s</span><span class="s2"> </span><span class="si">%(filename)s</span><span class="s2">:</span><span class="si">%(lineno)s</span><span class="s2"> </span><span class="si">%(message)s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">datefmt</span><span class="o">=</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2"> %H:%M:%S&quot;</span><span class="p">)</span>
-</code></pre></div>
-
-<h2 id="_10">ハンドラー</h2>
-<p>https://docs.python.org/ja/3.11/howto/logging.html#useful-handlers</p>
-<h2 id="_11">フィルター</h2>
-<p>人類には早いので使わない。</p>
 <h1 id="_12">高度なロギング</h1>
 <h2 id="_13">同期・非同期化でのロギング</h2>
 <h2 id="_14">マルチプロセス化でのロギング</h2>
