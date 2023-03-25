@@ -93,7 +93,7 @@ https://docs.python.org/ja/3.11/howto/logging.html#useful-handlers
 人類には早いので使わない。
 
 
-# `logging`の使用
+# `logging`の基礎
 
 ## 使用方法
 
@@ -294,12 +294,11 @@ child.propagate = False
 ```
 
 
-## ログを出力するよ～
+# ログを出力する
 
 
-# ケース別
 
-## スタックトレースを出力する
+# スタックトレースを出力する
 
 例外発生時にスタックトレースも出力する。
 
@@ -310,10 +309,10 @@ child.propagate = False
 `logging.error("...", stack_info=True)`
 
 
-## 警告を出力する
+# 警告を出力する
 
 
-### `warnings`の使用
+## `warnings`の使用
 
 `warnings`モジュールは、警告を出力するためのPython標準モジュールです。
 
@@ -327,7 +326,7 @@ https://docs.python.org/ja/3/library/warnings.html
 例えば、アプリケーション内部で使用している将来的に廃止される非推奨な関数が呼び出された場合に、警告レベルを開発者のみに通知したい場合などです。
 
 
-#### 使用方法
+### 使用方法
 
 `warnings`モジュールは、次のように使用します。
 
@@ -346,7 +345,7 @@ logging.captureWarnings(True)
 ```
 
 
-##### 警告カテゴリ
+### 警告カテゴリ
 
 警告は、カテゴリに分類することができます。
 
@@ -369,7 +368,7 @@ warngins.warn("deprecated", DeprecationWarning)
 パッケージを提供する開発者は、カテゴリを適切に使用した方がいいかもしれませんが、多くの場合はデフォルトのカテゴリで十分です。
 
 
-#### 警告フィルタ
+### 警告フィルタ
 
 警告が気になる場合、警告フィルタを使用し、警告の出力を制御することができます。
 
@@ -389,10 +388,10 @@ warngins.warn("deprecated", DeprecationWarning)
 warnings.filterwarnings('ignore')
 ```
 
-## 進捗をコンソール上に可視化する
+# 進捗をコンソール上に可視化する
 
 
-### `tqdm`の使用
+## `tqdm`の使用
 
 `tqdm`は、進捗をコンソール上に可視化したい時に使います。
 
@@ -400,7 +399,7 @@ warnings.filterwarnings('ignore')
 
 https://tqdm.github.io/
 
-#### インストール
+### インストール
 
 `tqdm`は、次のようにインストールします。
 
@@ -408,10 +407,10 @@ https://tqdm.github.io/
 pip install tqdm
 ```
 
-#### 使用方法
+### 使用方法
 
 
-### `progressbar2`の使用
+## `progressbar2`の使用
 
 `progressbar2`は、進捗をコンソール上に可視化したい時に使います。
 
@@ -423,7 +422,7 @@ pip install tqdm
 https://progressbar-2.readthedocs.io/en/latest/
 
 
-#### インストール
+### インストール
 
 `progressbar2`は、次のようにインストールします。
 
@@ -431,13 +430,13 @@ https://progressbar-2.readthedocs.io/en/latest/
 pip install progressbar2
 ```
 
-#### 使用方法
+### 使用方法
 
 
-## ログを収集・監視する
+# ログを収集・監視する
 
 
-### `sentry`の使用
+## `sentry`の使用
 
 `sentry` は、OSSのログ収集・監視ツールです。
 
@@ -445,13 +444,13 @@ pip install progressbar2
 
 https://docs.sentry.io/platforms/python/
 
-#### インストール
+### インストール
 
 
 
-### 同期・非同期化でロギングする
+## 同期・非同期化でロギングする
 
-### マルチプロセス化でロギングする
+## マルチプロセス化でロギングする
 
 
 
