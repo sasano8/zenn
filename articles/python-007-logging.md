@@ -22,7 +22,7 @@ Pythonの`logging`モジュールは、アプリケーションの開発や運�
 https://docs.python.org/ja/3/library/logging.html
 
 
-# 基礎
+# ロギングの基礎
 
 ## ログレベル
 
@@ -73,7 +73,11 @@ https://docs.python.org/ja/3.11/howto/logging.html#useful-handlers
 人類には早いので使わない。
 
 
-# ロギングの罠
+# `logging`の使用
+
+## 使用方法
+
+## ロギングの罠
 
 `logging`モジュールを使用する上で、癖を理解する必要があります。
 `logging`モジュール初学者の方は、この章は読み飛ばして、理解が深まったところで戻ってきてください。
@@ -269,9 +273,10 @@ child = getLogger("child")
 child.propagate = False
 ```
 
+
 # `warnings`の使用
 
-`warnings`モジュールは、`logging`モジュールと同様に、警告を出力するためのモジュールです。
+`warnings`モジュールは、警告を出力するためのモジュールです。
 
 最新の仕様や正確な仕様の理解には、公式ドキュメントを参照ください。
 
