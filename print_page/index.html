@@ -1397,7 +1397,7 @@ Baseを継承した際は、__tablename__を設定し、具象化する必要が
 一方で、<code>logging</code>モジュールは挙動に癖があり、使いこなすのが少し難しい側面があります。</p>
 <p>この記事では、<code>logging</code>モジュールの基礎教養とセットアップ方法や癖を紹介します。</p>
 <h1 id="python-007-logging-_2">公式ドキュメント</h1>
-<p>最新の仕様や、より正確な仕様の理解には、公式ドキュメントを参照ください。</p>
+<p>最新の仕様や正確な仕様の理解には、公式ドキュメントを参照ください。</p>
 <p>https://docs.python.org/ja/3/library/logging.html</p>
 <h1 id="python-007-logging-_3">基礎</h1>
 <h2 id="python-007-logging-_4">ログレベル</h2>
@@ -1627,11 +1627,99 @@ root_logger = logging.getLogger()</p>
 </code></pre></div>
 
 <h1 id="python-007-logging-warnings"><code>warnings</code>の使用</h1>
+<p><code>warnings</code>モジュールは、<code>logging</code>モジュールと同様に、警告を出力するためのモジュールです。</p>
+<p>最新の仕様や正確な仕様の理解には、公式ドキュメントを参照ください。</p>
+<p>https://docs.python.org/ja/3/library/warnings.html</p>
+<p>警告レベルのログは、<code>logger.warning</code>で出力できますが、アプリケーションの警告レベルとは区別したいことがあります。</p>
+<p>例えば、アプリケーション内部で使用している将来的に廃止される非推奨な関数が呼び出された場合に、警告レベルを開発者のみに通知したい場合などです。</p>
+<h2 id="python-007-logging-_12">使用方法</h2>
+<p><code>warnings</code>モジュールは、次のように使用します。</p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">warnings</span>
+<span class="n">warngins</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;deprecated&quot;</span><span class="p">)</span>
+</code></pre></div>
+
+<p><code>warnings</code>で発せられた警告は、標準出力に出力されます。</p>
+<p>また、<code>captureWarnings</code> を使用すると、ロギングシステムにリダイレクトされるようになります。具体的には、警告が<code>warnings.formatwarning()</code> でフォーマット化され、結果の文字列が 'py.warnings' という名のロガーに、 <code>WARNING</code> の重大度でロギングされるようになります。</p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">logging</span>
+<span class="n">logging</span><span class="o">.</span><span class="n">captureWarnings</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+</code></pre></div>
+
+<h2 id="python-007-logging-_13">警告カテゴリ</h2>
+<p>警告は、カテゴリに分類することができます。</p>
+<p>次にいくつかのカテゴリを紹介します。</p>
+<table>
+<thead>
+<tr>
+<th>レベル名</th>
+<th>備考</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>UserWarning</code></td>
+<td>デフォルトのカテゴリです</td>
+</tr>
+<tr>
+<td><code>DeprecationWarning</code></td>
+<td>非推奨であることを示すカテゴリです</td>
+</tr>
+<tr>
+<td><code>FutureWarning</code></td>
+<td>まだ、実験的な機能であることを示すカテゴリです</td>
+</tr>
+</tbody>
+</table>
+<p>警告にカテゴリを適用するには次のようにします。</p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">warnings</span>
+<span class="n">warngins</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;deprecated&quot;</span><span class="p">,</span> <span class="ne">DeprecationWarning</span><span class="p">)</span>
+</code></pre></div>
+
+<p>パッケージを提供する開発者は、カテゴリを適切に使用した方がいいかもしれませんが、多くの場合はデフォルトのカテゴリで十分です。</p>
+<h2 id="python-007-logging-_14">警告フィルタ</h2>
+<p>警告が気になる場合、警告フィルタを使用し、警告の出力を制御することができます。</p>
+<table>
+<thead>
+<tr>
+<th>警告フィルタ</th>
+<th>備考</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>default</td>
+<td>デフォルトのカテゴリです</td>
+</tr>
+<tr>
+<td>error</td>
+<td>非推奨であることを示すカテゴリです</td>
+</tr>
+<tr>
+<td>ignore</td>
+<td>まだ、実験的な機能であることを示すカテゴリです</td>
+</tr>
+<tr>
+<td>always</td>
+<td>まだ、実験的な機能であることを示すカテゴリです</td>
+</tr>
+<tr>
+<td>module</td>
+<td>まだ、実験的な機能であることを示すカテゴリです</td>
+</tr>
+<tr>
+<td>once</td>
+<td>まだ、実験的な機能であることを示すカテゴリです</td>
+</tr>
+</tbody>
+</table>
+<p>警告フィルタは、次のように適用します。</p>
+<div class="highlight"><pre><span></span><code><span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s1">&#39;ignore&#39;</span><span class="p">)</span>
+</code></pre></div>
+
 <h1 id="python-007-logging-tqdm"><code>tqdm</code>の使用</h1>
-<h1 id="python-007-logging-_12">高度なロギング</h1>
-<h2 id="python-007-logging-_13">同期・非同期化でのロギング</h2>
-<h2 id="python-007-logging-_14">マルチプロセス化でのロギング</h2>
-<h1 id="python-007-logging-_15">まとめ</h1>
+<h1 id="python-007-logging-_15">高度なロギング</h1>
+<h2 id="python-007-logging-_16">同期・非同期化でのロギング</h2>
+<h2 id="python-007-logging-_17">マルチプロセス化でのロギング</h2>
+<h1 id="python-007-logging-_18">まとめ</h1>
 <p>ロガーは、次の挙動に気をつけて使用する。</p>
 <ul>
 <li>ルートロガーのハンドラー設定されていない場合、ルートロガーのハンドラーが初期化（<code>basicConfig</code>が実行）されることがある</li>
@@ -1647,7 +1735,7 @@ root_logger = logging.getLogger()</p>
 <div class="highlight"><pre><span></span><code><span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span><span class="n">handlers</span><span class="o">=</span><span class="p">[</span><span class="n">logging</span><span class="o">.</span><span class="n">NullHandler</span><span class="p">()])</span>
 </code></pre></div>
 
-<h1 id="python-007-logging-_16">その他ロギングに関するライブラリやモジュールの紹介</h1>
+<h1 id="python-007-logging-_19">その他ロギングに関するライブラリやモジュールの紹介</h1>
 <ul>
 <li><code>warnings</code></li>
 <li><code>logure</code></li>
