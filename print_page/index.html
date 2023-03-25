@@ -1423,7 +1423,7 @@ Baseを継承した際は、__tablename__を設定し、具象化する必要が
 <tr>
 <td>WARNING</td>
 <td>30</td>
-<td>警告</td>
+<td>警告ログ</td>
 </tr>
 <tr>
 <td>SUCCESS</td>
@@ -1629,7 +1629,7 @@ root_logger = logging.getLogger()</p>
 </code></pre></div>
 
 <h1 id="python-007-logging-warnings"><code>warnings</code>の使用</h1>
-<p><code>warnings</code>モジュールは、警告を出力するためのモジュールです。</p>
+<p><code>warnings</code>モジュールは、警告を出力するためのPython標準モジュールです。</p>
 <p>最新の仕様や正確な仕様の理解には、公式ドキュメントを参照ください。</p>
 <p>https://docs.python.org/ja/3/library/warnings.html</p>
 <p>警告レベルのログは、<code>logger.warning</code>で出力できますが、アプリケーションの警告レベルとは区別したいことがあります。</p>
@@ -1718,10 +1718,35 @@ root_logger = logging.getLogger()</p>
 </code></pre></div>
 
 <h1 id="python-007-logging-tqdm"><code>tqdm</code>の使用</h1>
-<h1 id="python-007-logging-_16">高度なロギング</h1>
-<h2 id="python-007-logging-_17">同期・非同期化でのロギング</h2>
-<h2 id="python-007-logging-_18">マルチプロセス化でのロギング</h2>
-<h1 id="python-007-logging-_19">まとめ</h1>
+<p><code>tqdm</code>は、進捗をコンソール上に可視化したい時に使います。</p>
+<p>正確な仕様は、公式ドキュメントを参照ください。</p>
+<p>https://tqdm.github.io/</p>
+<h2 id="python-007-logging-_16">インストール</h2>
+<p><code>tqdm</code>は、次のようにインストールします。</p>
+<div class="highlight"><pre><span></span><code>pip install tqdm
+</code></pre></div>
+
+<h2 id="python-007-logging-_17">使用方法</h2>
+<h1 id="python-007-logging-progressbar2"><code>progressbar2</code>の使用</h1>
+<p><code>progressbar2</code>は、進捗をコンソール上に可視化したい時に使います。</p>
+<p><code>tqdm</code>の方が一般的ですが、<code>progressbar2</code>を好む人もいるようなので、紹介しておきます。</p>
+<p>正確な仕様は、公式ドキュメントを参照ください。</p>
+<p>https://progressbar-2.readthedocs.io/en/latest/</p>
+<h2 id="python-007-logging-_18">インストール</h2>
+<p><code>progressbar2</code>は、次のようにインストールします。</p>
+<div class="highlight"><pre><span></span><code>pip install progressbar2
+</code></pre></div>
+
+<h2 id="python-007-logging-_19">使用方法</h2>
+<h1 id="python-007-logging-sentry"><code>sentry</code>の使用</h1>
+<p><code>sentry</code> は、OSSのログ収集・監視ツールです。</p>
+<p>正確な仕様は、公式ドキュメントを参照ください。</p>
+<p>https://docs.sentry.io/platforms/python/</p>
+<h2 id="python-007-logging-_20">インストール</h2>
+<h1 id="python-007-logging-_21">高度なロギング</h1>
+<h2 id="python-007-logging-_22">同期・非同期化でのロギング</h2>
+<h2 id="python-007-logging-_23">マルチプロセス化でのロギング</h2>
+<h1 id="python-007-logging-_24">まとめ</h1>
 <p>ロガーは、次の挙動に気をつけて使用する。</p>
 <ul>
 <li>ルートロガーのハンドラー設定されていない場合、ルートロガーのハンドラーが初期化（<code>basicConfig</code>が実行）されることがある</li>
@@ -1735,15 +1760,7 @@ root_logger = logging.getLogger()</p>
 </ul>
 <p>ルートロガーを無効化したい場合に次のようにする。</p>
 <div class="highlight"><pre><span></span><code><span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span><span class="n">handlers</span><span class="o">=</span><span class="p">[</span><span class="n">logging</span><span class="o">.</span><span class="n">NullHandler</span><span class="p">()])</span>
-</code></pre></div>
-
-<h1 id="python-007-logging-_20">その他ロギングに関するライブラリやモジュールの紹介</h1>
-<ul>
-<li><code>warnings</code></li>
-<li><code>logure</code></li>
-<li><code>sentry</code></li>
-<li><code>tqdm</code></li>
-</ul></section><section class="print-page" id="python-008-exceptions"><h1 id="python-008-exceptions-_1">例外処理</h1>
+</code></pre></div></section><section class="print-page" id="python-008-exceptions"><h1 id="python-008-exceptions-_1">例外処理</h1>
 <h1 id="python-008-exceptions-raise">エラーをキャッチしてそのままraiseしたい</h1>
 <p>次のように、例外を捕捉後に任意の処理を挟んで同じ例外を発生させることができる。</p>
 <div class="highlight"><pre><span></span><code><span class="k">try</span><span class="p">:</span>
