@@ -1469,6 +1469,18 @@ Baseを継承した際は、__tablename__を設定し、具象化する必要が
 <span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span><span class="nb">format</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">%(asctime)s</span><span class="s2"> </span><span class="si">%(levelname).5s</span><span class="s2"> </span><span class="si">%(name)s</span><span class="s2"> </span><span class="si">%(filename)s</span><span class="s2">:</span><span class="si">%(lineno)s</span><span class="s2"> </span><span class="si">%(message)s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">datefmt</span><span class="o">=</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2"> %H:%M:%S&quot;</span><span class="p">)</span>
 </code></pre></div>
 
+<p>https://docs.python.org/ja/3/library/stdtypes.html#old-string-formatting</p>
+<p>filename    # 出力先ファイル名
+filemode    # ファイル出力モード。(デフォルト:filemode='a')
+stream      # 出力先ストリーム。(デフォルト:stream=sys.stderr)
+format      # 出力フォーマット。(詳細)(デフォルト:format='%(levelname)s:%(name)s:%(message)s')
+datefmt     # 日付フォーマット
+level       # 出力レベル。(デフォルト:level=logging.WARNING)
+style       # フォーマットスタイル。(デフォルト: style='%')
+handlers    # 出力ハンドラリスト。
+force       # force=Trueを指定すると利用前に全ハンドラが一度クローズされる。
+encoding    # エンコーディングルール。encoding='utf-8'など
+errors      # エンコードに失敗した場合のふるまい。(詳細)</p>
 <h2 id="python-007-logging-_7">ハンドラー</h2>
 <p>https://docs.python.org/ja/3.11/howto/logging.html#useful-handlers</p>
 <h2 id="python-007-logging-_8">フィルター</h2>
@@ -1628,13 +1640,21 @@ root_logger = logging.getLogger()</p>
 <span class="n">child</span><span class="o">.</span><span class="n">propagate</span> <span class="o">=</span> <span class="kc">False</span>
 </code></pre></div>
 
-<h1 id="python-007-logging-warnings"><code>warnings</code>の使用</h1>
+<h2 id="python-007-logging-_13">ログを出力するよ～</h2>
+<h1 id="python-007-logging-_14">ケース別</h1>
+<h2 id="python-007-logging-_15">スタックトレースを出力する</h2>
+<p>例外発生時にスタックトレースも出力する。</p>
+<p><code>logging.exception("...")</code></p>
+<p>例外は発生していないが、トレース情報を出力したい場合。</p>
+<p><code>logging.error("...", stack_info=True)</code></p>
+<h2 id="python-007-logging-_16">警告を出力する</h2>
+<h3 id="python-007-logging-warnings"><code>warnings</code>の使用</h3>
 <p><code>warnings</code>モジュールは、警告を出力するためのPython標準モジュールです。</p>
 <p>最新の仕様や正確な仕様の理解には、公式ドキュメントを参照ください。</p>
 <p>https://docs.python.org/ja/3/library/warnings.html</p>
 <p>警告レベルのログは、<code>logger.warning</code>で出力できますが、アプリケーションの警告レベルとは区別したいことがあります。</p>
 <p>例えば、アプリケーション内部で使用している将来的に廃止される非推奨な関数が呼び出された場合に、警告レベルを開発者のみに通知したい場合などです。</p>
-<h2 id="python-007-logging-_13">使用方法</h2>
+<h4 id="python-007-logging-_17">使用方法</h4>
 <p><code>warnings</code>モジュールは、次のように使用します。</p>
 <div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">warnings</span>
 <span class="n">warngins</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;deprecated&quot;</span><span class="p">)</span>
@@ -1646,7 +1666,7 @@ root_logger = logging.getLogger()</p>
 <span class="n">logging</span><span class="o">.</span><span class="n">captureWarnings</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
 </code></pre></div>
 
-<h2 id="python-007-logging-_14">警告カテゴリ</h2>
+<h5 id="python-007-logging-_18">警告カテゴリ</h5>
 <p>警告は、カテゴリに分類することができます。</p>
 <p>次にいくつかのカテゴリを紹介します。</p>
 <table>
@@ -1677,7 +1697,7 @@ root_logger = logging.getLogger()</p>
 </code></pre></div>
 
 <p>パッケージを提供する開発者は、カテゴリを適切に使用した方がいいかもしれませんが、多くの場合はデフォルトのカテゴリで十分です。</p>
-<h2 id="python-007-logging-_15">警告フィルタ</h2>
+<h4 id="python-007-logging-_19">警告フィルタ</h4>
 <p>警告が気になる場合、警告フィルタを使用し、警告の出力を制御することができます。</p>
 <table>
 <thead>
@@ -1717,36 +1737,37 @@ root_logger = logging.getLogger()</p>
 <div class="highlight"><pre><span></span><code><span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s1">&#39;ignore&#39;</span><span class="p">)</span>
 </code></pre></div>
 
-<h1 id="python-007-logging-tqdm"><code>tqdm</code>の使用</h1>
+<h2 id="python-007-logging-_20">進捗をコンソール上に可視化する</h2>
+<h3 id="python-007-logging-tqdm"><code>tqdm</code>の使用</h3>
 <p><code>tqdm</code>は、進捗をコンソール上に可視化したい時に使います。</p>
 <p>正確な仕様は、公式ドキュメントを参照ください。</p>
 <p>https://tqdm.github.io/</p>
-<h2 id="python-007-logging-_16">インストール</h2>
+<h4 id="python-007-logging-_21">インストール</h4>
 <p><code>tqdm</code>は、次のようにインストールします。</p>
 <div class="highlight"><pre><span></span><code>pip install tqdm
 </code></pre></div>
 
-<h2 id="python-007-logging-_17">使用方法</h2>
-<h1 id="python-007-logging-progressbar2"><code>progressbar2</code>の使用</h1>
+<h4 id="python-007-logging-_22">使用方法</h4>
+<h3 id="python-007-logging-progressbar2"><code>progressbar2</code>の使用</h3>
 <p><code>progressbar2</code>は、進捗をコンソール上に可視化したい時に使います。</p>
 <p><code>tqdm</code>の方が一般的ですが、<code>progressbar2</code>を好む人もいるようなので、紹介しておきます。</p>
 <p>正確な仕様は、公式ドキュメントを参照ください。</p>
 <p>https://progressbar-2.readthedocs.io/en/latest/</p>
-<h2 id="python-007-logging-_18">インストール</h2>
+<h4 id="python-007-logging-_23">インストール</h4>
 <p><code>progressbar2</code>は、次のようにインストールします。</p>
 <div class="highlight"><pre><span></span><code>pip install progressbar2
 </code></pre></div>
 
-<h2 id="python-007-logging-_19">使用方法</h2>
-<h1 id="python-007-logging-sentry"><code>sentry</code>の使用</h1>
+<h4 id="python-007-logging-_24">使用方法</h4>
+<h2 id="python-007-logging-_25">ログを収集・監視する</h2>
+<h3 id="python-007-logging-sentry"><code>sentry</code>の使用</h3>
 <p><code>sentry</code> は、OSSのログ収集・監視ツールです。</p>
 <p>正確な仕様は、公式ドキュメントを参照ください。</p>
 <p>https://docs.sentry.io/platforms/python/</p>
-<h2 id="python-007-logging-_20">インストール</h2>
-<h1 id="python-007-logging-_21">高度なロギング</h1>
-<h2 id="python-007-logging-_22">同期・非同期化でのロギング</h2>
-<h2 id="python-007-logging-_23">マルチプロセス化でのロギング</h2>
-<h1 id="python-007-logging-_24">まとめ</h1>
+<h4 id="python-007-logging-_26">インストール</h4>
+<h3 id="python-007-logging-_27">同期・非同期化でロギングする</h3>
+<h3 id="python-007-logging-_28">マルチプロセス化でロギングする</h3>
+<h1 id="python-007-logging-_29">まとめ</h1>
 <p>ロガーは、次の挙動に気をつけて使用する。</p>
 <ul>
 <li>ルートロガーのハンドラー設定されていない場合、ルートロガーのハンドラーが初期化（<code>basicConfig</code>が実行）されることがある</li>
