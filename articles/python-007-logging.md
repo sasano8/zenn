@@ -30,7 +30,7 @@ https://docs.python.org/ja/3/library/logging.html
 | ---- | ---- | ---- |
 |  CRITICAL  |  50  |  致命的なエラーログ  |
 |  ERROR  |  40  |  エラーログ  |
-|  WARNING  |  30  |  警告  |
+|  WARNING  |  30  |  警告ログ  |
 |  SUCCESS  |  25  |  成功ログ。`logure`ライブラリ（後述）の拡張レベルで、`logging`モジュールには含まれない  |
 |  INFO  |  20  |  情報ログ  |
 |  DEBUG  |  10  |  デバッグログ  |
@@ -276,7 +276,7 @@ child.propagate = False
 
 # `warnings`の使用
 
-`warnings`モジュールは、警告を出力するためのモジュールです。
+`warnings`モジュールは、警告を出力するためのPython標準モジュールです。
 
 最新の仕様や正確な仕様の理解には、公式ドキュメントを参照ください。
 
@@ -353,6 +353,58 @@ warnings.filterwarnings('ignore')
 
 # `tqdm`の使用
 
+`tqdm`は、進捗をコンソール上に可視化したい時に使います。
+
+正確な仕様は、公式ドキュメントを参照ください。
+
+https://tqdm.github.io/
+
+## インストール
+
+`tqdm`は、次のようにインストールします。
+
+``` shell
+pip install tqdm
+```
+
+## 使用方法
+
+
+# `progressbar2`の使用
+
+`progressbar2`は、進捗をコンソール上に可視化したい時に使います。
+
+`tqdm`の方が一般的ですが、`progressbar2`を好む人もいるようなので、紹介しておきます。
+
+
+正確な仕様は、公式ドキュメントを参照ください。
+
+https://progressbar-2.readthedocs.io/en/latest/
+
+
+## インストール
+
+`progressbar2`は、次のようにインストールします。
+
+``` shell
+pip install progressbar2
+```
+
+## 使用方法
+
+
+
+# `sentry`の使用
+
+`sentry` は、OSSのログ収集・監視ツールです。
+
+正確な仕様は、公式ドキュメントを参照ください。
+
+https://docs.sentry.io/platforms/python/
+
+## インストール
+
+
 
 
 # 高度なロギング
@@ -382,11 +434,4 @@ warnings.filterwarnings('ignore')
 logging.basicConfig(handlers=[logging.NullHandler()])
 ```
 
-
-# その他ロギングに関するライブラリやモジュールの紹介
-
-- `warnings`
-- `logure`
-- `sentry`
-- `tqdm`
 
