@@ -17,7 +17,7 @@ Pythonの`logging`モジュールは、アプリケーションの開発や運�
 
 # 公式ドキュメント
 
-最新の仕様や、より正確な仕様の理解には、公式ドキュメントを参照ください。
+最新の仕様や正確な仕様の理解には、公式ドキュメントを参照ください。
 
 https://docs.python.org/ja/3/library/logging.html
 
@@ -270,6 +270,80 @@ child.propagate = False
 ```
 
 # `warnings`の使用
+
+`warnings`モジュールは、`logging`モジュールと同様に、警告を出力するためのモジュールです。
+
+最新の仕様や正確な仕様の理解には、公式ドキュメントを参照ください。
+
+https://docs.python.org/ja/3/library/warnings.html
+
+
+警告レベルのログは、`logger.warning`で出力できますが、アプリケーションの警告レベルとは区別したいことがあります。
+
+例えば、アプリケーション内部で使用している将来的に廃止される非推奨な関数が呼び出された場合に、警告レベルを開発者のみに通知したい場合などです。
+
+
+## 使用方法
+
+`warnings`モジュールは、次のように使用します。
+
+``` python
+import warnings
+warngins.warn("deprecated")
+```
+
+`warnings`で発せられた警告は、標準出力に出力されます。
+
+また、`captureWarnings` を使用すると、ロギングシステムにリダイレクトされるようになります。具体的には、警告が`warnings.formatwarning()` でフォーマット化され、結果の文字列が 'py.warnings' という名のロガーに、 `WARNING` の重大度でロギングされるようになります。
+
+``` python
+import logging
+logging.captureWarnings(True)
+```
+
+
+## 警告カテゴリ
+
+警告は、カテゴリに分類することができます。
+
+次にいくつかのカテゴリを紹介します。
+
+|  レベル名  |  備考  |
+| ---- | ---- |
+|  `UserWarning`  |  デフォルトのカテゴリです  |
+|  `DeprecationWarning`  |  非推奨であることを示すカテゴリです  |
+|  `FutureWarning`  |  まだ、実験的な機能であることを示すカテゴリです  |
+
+
+警告にカテゴリを適用するには次のようにします。
+
+``` python
+import warnings
+warngins.warn("deprecated", DeprecationWarning)
+```
+
+パッケージを提供する開発者は、カテゴリを適切に使用した方がいいかもしれませんが、多くの場合はデフォルトのカテゴリで十分です。
+
+
+## 警告フィルタ
+
+警告が気になる場合、警告フィルタを使用し、警告の出力を制御することができます。
+
+|  警告フィルタ  |  備考  |
+| ---- | ---- |
+|  default  |  デフォルトのカテゴリです  |
+|  error  |  非推奨であることを示すカテゴリです  |
+|  ignore  |  まだ、実験的な機能であることを示すカテゴリです  |
+|  always  |  まだ、実験的な機能であることを示すカテゴリです  |
+|  module  |  まだ、実験的な機能であることを示すカテゴリです  |
+|  once  |  まだ、実験的な機能であることを示すカテゴリです  |
+
+
+警告フィルタは、次のように適用します。
+
+``` python
+warnings.filterwarnings('ignore')
+```
 
 
 # `tqdm`の使用
