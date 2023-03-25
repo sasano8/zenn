@@ -693,6 +693,8 @@ root_logger = logging.getLogger()</p>
 <span class="n">child</span><span class="o">.</span><span class="n">propagate</span> <span class="o">=</span> <span class="kc">False</span>
 </code></pre></div>
 
+<h1 id="warnings"><code>warnings</code>の使用</h1>
+<h1 id="tqdm"><code>tqdm</code>の使用</h1>
 <h1 id="_12">高度なロギング</h1>
 <h2 id="_13">同期・非同期化でのロギング</h2>
 <h2 id="_14">マルチプロセス化でのロギング</h2>
@@ -702,7 +704,7 @@ root_logger = logging.getLogger()</p>
 <li>ルートロガーのハンドラー設定されていない場合、ルートロガーのハンドラーが初期化（<code>basicConfig</code>が実行）されることがある</li>
 <li>ロガーのデフォルトログレベルは<code>WARNING</code></li>
 <li>ハンドラーのデフォルトログレベルは<code>NOTSET</code></li>
-<li>ロガーは、自信に関連付けられた全てのハンドラーを呼び出す</li>
+<li>ロガーは、自身に関連付けられた全てのハンドラーを呼び出す</li>
 <li>ハンドラーは、上位のロガーに関連付けられた全てのハンドラーを呼び出す</li>
 <li><code>basicConfig</code> は ルートロガーにハンドラーが設定されていれば、何もしない（<code>force</code>オプションで強制的に適用可能）</li>
 <li>ライブラリ開発者は、ルートロガーを使用しないでください。</li>
