@@ -466,7 +466,7 @@
 <h1 id="_2">公式ドキュメント</h1>
 <p>最新の仕様や正確な仕様の理解には、公式ドキュメントを参照ください。</p>
 <p>https://docs.python.org/ja/3/library/logging.html</p>
-<h1 id="_3">基礎</h1>
+<h1 id="_3">ロギングの基礎</h1>
 <h2 id="_4">ログレベル</h2>
 <table>
 <thead>
@@ -540,7 +540,9 @@
 <p>https://docs.python.org/ja/3.11/howto/logging.html#useful-handlers</p>
 <h2 id="_8">フィルター</h2>
 <p>人類には早いので使わない。</p>
-<h1 id="_9">ロギングの罠</h1>
+<h1 id="logging"><code>logging</code>の使用</h1>
+<h2 id="_9">使用方法</h2>
+<h2 id="_10">ロギングの罠</h2>
 <p><code>logging</code>モジュールを使用する上で、癖を理解する必要があります。
 <code>logging</code>モジュール初学者の方は、この章は読み飛ばして、理解が深まったところで戻ってきてください。</p>
 <p>まず、以下のコードをご覧ください。</p>
@@ -580,7 +582,7 @@ INFO:mylogger:hello 3
 [&lt;StreamHandler &lt;stderr&gt; (NOTSET)&gt;]
 </code></pre></div>
 
-<h2 id="_10">簡単な概念</h2>
+<h2 id="_11">簡単な概念</h2>
 <ul>
 <li>ロガー（<code>getLogger("mylogger")</code>）: ログを出力するための任意の名前を持つオブジェクト</li>
 <li>ルートロガー（<code>logging.root</code>）: 全ての親となるロガー。</li>
@@ -600,7 +602,7 @@ INFO:mylogger:hello 3
 <span class="c1"># False</span>
 </code></pre></div>
 
-<h2 id="_11">実行結果における違和感</h2>
+<h2 id="_12">実行結果における違和感</h2>
 <p>おそらく、実行結果に次の違和感を覚えたのではないでしょうか？</p>
 <ol>
 <li>なぜ、<code>logging.root.handlers</code>の状態が変わっているのだろうか</li>
@@ -694,12 +696,12 @@ root_logger = logging.getLogger()</p>
 </code></pre></div>
 
 <h1 id="warnings"><code>warnings</code>の使用</h1>
-<p><code>warnings</code>モジュールは、<code>logging</code>モジュールと同様に、警告を出力するためのモジュールです。</p>
+<p><code>warnings</code>モジュールは、警告を出力するためのモジュールです。</p>
 <p>最新の仕様や正確な仕様の理解には、公式ドキュメントを参照ください。</p>
 <p>https://docs.python.org/ja/3/library/warnings.html</p>
 <p>警告レベルのログは、<code>logger.warning</code>で出力できますが、アプリケーションの警告レベルとは区別したいことがあります。</p>
 <p>例えば、アプリケーション内部で使用している将来的に廃止される非推奨な関数が呼び出された場合に、警告レベルを開発者のみに通知したい場合などです。</p>
-<h2 id="_12">使用方法</h2>
+<h2 id="_13">使用方法</h2>
 <p><code>warnings</code>モジュールは、次のように使用します。</p>
 <div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">warnings</span>
 <span class="n">warngins</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;deprecated&quot;</span><span class="p">)</span>
@@ -711,7 +713,7 @@ root_logger = logging.getLogger()</p>
 <span class="n">logging</span><span class="o">.</span><span class="n">captureWarnings</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
 </code></pre></div>
 
-<h2 id="_13">警告カテゴリ</h2>
+<h2 id="_14">警告カテゴリ</h2>
 <p>警告は、カテゴリに分類することができます。</p>
 <p>次にいくつかのカテゴリを紹介します。</p>
 <table>
@@ -742,7 +744,7 @@ root_logger = logging.getLogger()</p>
 </code></pre></div>
 
 <p>パッケージを提供する開発者は、カテゴリを適切に使用した方がいいかもしれませんが、多くの場合はデフォルトのカテゴリで十分です。</p>
-<h2 id="_14">警告フィルタ</h2>
+<h2 id="_15">警告フィルタ</h2>
 <p>警告が気になる場合、警告フィルタを使用し、警告の出力を制御することができます。</p>
 <table>
 <thead>
@@ -783,10 +785,10 @@ root_logger = logging.getLogger()</p>
 </code></pre></div>
 
 <h1 id="tqdm"><code>tqdm</code>の使用</h1>
-<h1 id="_15">高度なロギング</h1>
-<h2 id="_16">同期・非同期化でのロギング</h2>
-<h2 id="_17">マルチプロセス化でのロギング</h2>
-<h1 id="_18">まとめ</h1>
+<h1 id="_16">高度なロギング</h1>
+<h2 id="_17">同期・非同期化でのロギング</h2>
+<h2 id="_18">マルチプロセス化でのロギング</h2>
+<h1 id="_19">まとめ</h1>
 <p>ロガーは、次の挙動に気をつけて使用する。</p>
 <ul>
 <li>ルートロガーのハンドラー設定されていない場合、ルートロガーのハンドラーが初期化（<code>basicConfig</code>が実行）されることがある</li>
@@ -802,7 +804,7 @@ root_logger = logging.getLogger()</p>
 <div class="highlight"><pre><span></span><code><span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span><span class="n">handlers</span><span class="o">=</span><span class="p">[</span><span class="n">logging</span><span class="o">.</span><span class="n">NullHandler</span><span class="p">()])</span>
 </code></pre></div>
 
-<h1 id="_19">その他ロギングに関するライブラリやモジュールの紹介</h1>
+<h1 id="_20">その他ロギングに関するライブラリやモジュールの紹介</h1>
 <ul>
 <li><code>warnings</code></li>
 <li><code>logure</code></li>
