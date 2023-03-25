@@ -228,8 +228,10 @@ child.propagate = False
 |  CRITICAL  |  50  |  致命的なエラーログ  |
 |  ERROR  |  40  |  エラーログ  |
 |  WARNING  |  30  |  警告  |
+|  SUCCESS  |  25  |  成功ログ。`logure`ライブラリ（後述）の拡張レベルで、`logging`モジュールには標準では含まれない  |
 |  INFO  |  20  |  情報ログ  |
 |  DEBUG  |  10  |  デバッグログ  |
+|  TRACE  |  5  |  デバッグより詳細なログ。`logure`ライブラリ（後述）の拡張レベルで、`logging`モジュールには標準では含まれない   |
 |  NOTSET  |  0  |  基本的に使用しない  |
 
 
