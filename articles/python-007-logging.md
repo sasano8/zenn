@@ -22,7 +22,58 @@ Pythonの`logging`モジュールは、アプリケーションの開発や運�
 https://docs.python.org/ja/3/library/logging.html
 
 
-# 癖
+# 基礎
+
+## ログレベル
+
+|  レベル名  |  数値  |  備考  |
+| ---- | ---- | ---- |
+|  CRITICAL  |  50  |  致命的なエラーログ  |
+|  ERROR  |  40  |  エラーログ  |
+|  WARNING  |  30  |  警告  |
+|  SUCCESS  |  25  |  成功ログ。`logure`ライブラリ（後述）の拡張レベルで、`logging`モジュールには含まれない  |
+|  INFO  |  20  |  情報ログ  |
+|  DEBUG  |  10  |  デバッグログ  |
+|  TRACE  |  5  |  デバッグより詳細なログ。`logure`ライブラリ（後述）の拡張レベルで、`logging`モジュールには含まれない   |
+|  NOTSET  |  0  |  基本的に使用しない  |
+
+
+表示されるレベル名は次のようにカスタマイズ可能です。
+
+``` python
+for level, name in {logging.CRITICAL: "FATAL", logging.WARNING: "WARN"}.items():
+    logging.addLevelName(level, name)
+```
+
+
+## ロガー
+
+## フォーマッタ
+
+
+``` python
+import logging
+
+fmt = logging.Formatter(
+    "%(asctime)s %(levelname).5s %(name)s  %(filename)s:%(lineno)s %(message)s",
+    datefmt="%Y-%m-%d %H:%M:%S"
+)
+
+logging.basicConfig(format="%(asctime)s %(levelname).5s %(name)s %(filename)s:%(lineno)s %(message)s", datefmt="%Y-%m-%d %H:%M:%S")
+```
+
+## ハンドラー
+
+https://docs.python.org/ja/3.11/howto/logging.html#useful-handlers
+
+
+
+## フィルター
+
+人類には早いので使わない。
+
+
+# ロギングの罠
 
 `logging`モジュールを使用する上で、癖を理解する必要があります。
 `logging`モジュール初学者の方は、この章は読み飛ばして、理解が深まったところで戻ってきてください。
@@ -217,57 +268,6 @@ from logging import getLogger
 child = getLogger("child")
 child.propagate = False
 ```
-
-
-# 基礎
-
-## ログレベル
-
-|  レベル名  |  数値  |  備考  |
-| ---- | ---- | ---- |
-|  CRITICAL  |  50  |  致命的なエラーログ  |
-|  ERROR  |  40  |  エラーログ  |
-|  WARNING  |  30  |  警告  |
-|  SUCCESS  |  25  |  成功ログ。`logure`ライブラリ（後述）の拡張レベルで、`logging`モジュールには標準では含まれない  |
-|  INFO  |  20  |  情報ログ  |
-|  DEBUG  |  10  |  デバッグログ  |
-|  TRACE  |  5  |  デバッグより詳細なログ。`logure`ライブラリ（後述）の拡張レベルで、`logging`モジュールには標準では含まれない   |
-|  NOTSET  |  0  |  基本的に使用しない  |
-
-
-表示されるレベル名は次のようにカスタマイズ可能です。
-
-``` python
-for level, name in {logging.CRITICAL: "FATAL", logging.WARNING: "WARN"}.items():
-    logging.addLevelName(level, name)
-```
-
-
-## ロガー
-
-## フォーマッタ
-
-
-``` python
-import logging
-
-fmt = logging.Formatter(
-    "%(asctime)s %(levelname).5s %(name)s  %(filename)s:%(lineno)s %(message)s",
-    datefmt="%Y-%m-%d %H:%M:%S"
-)
-
-logging.basicConfig(format="%(asctime)s %(levelname).5s %(name)s %(filename)s:%(lineno)s %(message)s", datefmt="%Y-%m-%d %H:%M:%S")
-```
-
-## ハンドラー
-
-https://docs.python.org/ja/3.11/howto/logging.html#useful-handlers
-
-
-
-## フィルター
-
-人類には早いので使わない。
 
 
 # 高度なロギング
