@@ -9,14 +9,14 @@
       
       
       
-        <link rel="canonical" href="https://github.com/sasano8/zenn/python-005-sqlalchemy_inherit/">
+        <link rel="canonical" href="https://github.com/sasano8/zenn/python-009-ideas/">
       
       <link rel="icon" href="../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-7.2.2">
     
     
       
-        <title>sqlalchemy - zenn 記事管理</title>
+        <title>pythonで使うテクニック集 - zenn 記事管理</title>
       
     
     
@@ -103,7 +103,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              sqlalchemy
+              pythonで使うテクニック集
             
           </span>
         </div>
@@ -323,21 +323,11 @@
 
   
   
-    
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../python-005-sqlalchemy_inherit/" class="md-nav__link">
         記事06
       </a>
-      
     </li>
   
 
@@ -378,11 +368,21 @@
 
   
   
+    
   
-    <li class="md-nav__item">
-      <a href="../python-009-ideas/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         記事09
       </a>
+      
     </li>
   
 
@@ -454,171 +454,39 @@
 
 
                 
-                  <a href="https://github.com/sasano8/zenn/edit/main/articles/python-005-sqlalchemy_inherit.md" title="編集" class="md-content__button md-icon">
+                  <a href="https://github.com/sasano8/zenn/edit/main/articles/python-009-ideas.md" title="編集" class="md-content__button md-icon">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25z"/></svg>
                   </a>
                 
                 
-                <h1 id="_1">環境</h1>
-<ul>
-<li>postgress</li>
-<li>sqlalchemy</li>
-<li>alembic</li>
-</ul>
-<h1 id="_2">制約命名ルール</h1>
-<p>制約名は以下を参考とする。</p>
-<h2 id="sqlalchemy">sqlalchemy</h2>
-<ul>
-<li>主キー: {tablename}_pkey</li>
-<li>ユニークインデックス: {table_name}_{column_name}_key</li>
-<li>インデックス: ix_{table_name}_{column_name}</li>
-<li>check制約: ?</li>
-<li>デフォルト制約: ?</li>
-<li>外部キー制約: ?</li>
-</ul>
-<h2 id="_3">個人ルール</h2>
-<ul>
-<li>主キー: pk_</li>
-<li>ユニークインデックス: uq_</li>
-<li>インデックス: ix_</li>
-<li>check制約: ck_</li>
-<li>デフォルト制約: df_</li>
-<li>外部キー制約: fk_</li>
-</ul>
-<h1 id="_4">はじめに</h1>
-<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">sqlalchemy</span> <span class="k">as</span> <span class="nn">sa</span>
-<span class="kn">from</span> <span class="nn">sqlalchemy.ext.declarative</span> <span class="kn">import</span> <span class="n">declarative_base</span>
-<span class="n">Base</span> <span class="o">=</span> <span class="n">declarative_base</span><span class="p">()</span>
-</code></pre></div>
+                <h1 id="_1">コンソールに進捗を表示する</h1>
+<p>ファイル送受信など重たい処理などで、「どこまで処理が進んでいるか」「どれくらい時間がかかった」などが分かると親切です。</p>
+<p>ここでは、それをコンソールに表示する方法を紹介します。</p>
+<!-- :::message
+これから紹介する方法は実行環境により上手く表示されないことがあります
 
-<h1 id="_5">共通化・抽象化の基本</h1>
-<p>共通カラム・共通オプション・共通プロパティをクラス間で共有するために、ミックスインやカスタムBaseを使用する方法を紹介する。
-公式のドキュメントは以下を参照。</p>
-<ul>
-<li><a href="https://docs.sqlalchemy.org/en/13/orm/extensions/declarative/mixins.html">ミックスイン</a></li>
-</ul>
-<h2 id="ng1">NGケース１</h2>
-<p>Baseを継承したクラスを抽象クラスとして利用することはできない。
-Baseを継承した際は、__tablename__を設定し、具象化する必要がある。</p>
-<div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="n">CommonTable</span>(<span class="n">Base</span>):
-  <span class="nb">id</span> = <span class="n">sa</span>.<span class="n">Column</span>(<span class="n">sa</span>.<span class="n">Integer</span>, <span class="n">primary_key</span>=<span class="nb">True</span>, <span class="nb">index</span>=<span class="nb">True</span>)
-  <span class="nb">name</span> = <span class="n">sa</span>.<span class="n">Column</span>(<span class="n">sa</span>.<span class="n">String</span>(<span class="mi">255</span>), <span class="n">nullable</span>=<span class="nb">False</span>)
+- thread/multiprocess/eventloop上での実行
 
-<span class="c1"># =&gt; sqlalchemy.exc.InvalidRequestError: Class &lt;class &#39;CommonTable&#39;&gt; does not have a __table__ or __tablename__ specified and does not inherit from an existing table-mapped class.</span>
-</code></pre></div>
+::: -->
 
-<h2 id="ng2">NGケース２</h2>
-<p>制約名は、スキーマで一意なため、共通化することができない。</p>
-<div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="n">CommonTable:</span>
-  <span class="nb">id</span> = <span class="n">sa</span>.<span class="n">Column</span>(<span class="n">sa</span>.<span class="n">Integer</span>, <span class="n">primary_key</span>=<span class="nb">True</span>, <span class="nb">index</span>=<span class="nb">True</span>)
-  <span class="nb">name</span> = <span class="n">sa</span>.<span class="n">Column</span>(<span class="n">sa</span>.<span class="n">String</span>(<span class="mi">255</span>), <span class="n">nullable</span>=<span class="nb">False</span>)
-
-<span class="n">__table_args__</span> = (
-  <span class="n">sa</span>.<span class="n">UniqueConstraint</span>(<span class="s">&quot;name&quot;</span>, <span class="nb">name</span>=<span class="s">&quot;uq_name&quot;</span>),
-)
-
-<span class="k">class</span> <span class="n">Table1</span>(<span class="n">CommonBase</span>, <span class="n">Base</span>):
-  <span class="n">__tablename__</span> = <span class="s">&quot;table1&quot;</span>
-
-<span class="k">class</span> <span class="n">Table2</span>(<span class="n">CommonBase</span>, <span class="n">Base</span>):
-  <span class="n">__tablename__</span> = <span class="s">&quot;table2&quot;</span>
-
-<span class="c1"># =&gt; sqlalchemy.exc.ProgrammingError: (psycopg2.errors.DuplicateTable) relation &quot;uq_name&quot; already exists</span>
-</code></pre></div>
-
-<h2 id="ng3">NGケース３</h2>
-<p>ケース２と同じく。</p>
-<div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="n">CommonTable:</span>
-  <span class="nb">id</span> = <span class="n">sa</span>.<span class="n">Column</span>(<span class="n">sa</span>.<span class="n">Integer</span>, <span class="n">primary_key</span>=<span class="nb">True</span>, <span class="nb">index</span>=<span class="nb">True</span>)
-  <span class="nb">name</span> = <span class="n">sa</span>.<span class="n">Column</span>(<span class="n">sa</span>.<span class="n">String</span>(<span class="mi">255</span>), <span class="n">nullable</span>=<span class="nb">False</span>)
-
-<span class="k">class</span> <span class="n">Table1</span>(<span class="n">CommonBase</span>, <span class="n">Base</span>):
-  <span class="n">__tablename__</span> = <span class="s">&quot;table1&quot;</span>
-  <span class="n">__table_args__</span> = (
-    <span class="n">sa</span>.<span class="n">UniqueConstraint</span>(<span class="s">&quot;name&quot;</span>, <span class="nb">name</span>=<span class="s">&quot;uq_name&quot;</span>),
-  )
-
-<span class="k">class</span> <span class="n">Table2</span>(<span class="n">CommonBase</span>, <span class="n">Base</span>):
-  <span class="n">__tablename__</span> = <span class="s">&quot;table2&quot;</span>
-  <span class="n">__table_args__</span> = (
-    <span class="n">sa</span>.<span class="n">UniqueConstraint</span>(<span class="s">&quot;name&quot;</span>, <span class="nb">name</span>=<span class="s">&quot;uq_name&quot;</span>),
-  )
-
-<span class="c1"># =&gt; sqlalchemy.exc.ProgrammingError: (psycopg2.errors.DuplicateTable) relation &quot;uq_name&quot; already exists</span>
-</code></pre></div>
-
-<h2 id="ok4">OKケース４</h2>
-<p>制約名は省略することができる。</p>
-<div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="n">CommonTable:</span>
-  <span class="nb">id</span> = <span class="n">sa</span>.<span class="n">Column</span>(<span class="n">sa</span>.<span class="n">Integer</span>, <span class="n">primary_key</span>=<span class="nb">True</span>, <span class="nb">index</span>=<span class="nb">True</span>)
-  <span class="nb">name</span> = <span class="n">sa</span>.<span class="n">Column</span>(<span class="n">sa</span>.<span class="n">String</span>(<span class="mi">255</span>), <span class="n">nullable</span>=<span class="nb">False</span>)
-
-<span class="k">class</span> <span class="n">Table1</span>(<span class="n">CommonBase</span>, <span class="n">Base</span>):
-  <span class="n">__tablename__</span> = <span class="s">&quot;table1&quot;</span>
-  <span class="n">__table_args__</span> = (
-    <span class="n">sa</span>.<span class="n">UniqueConstraint</span>(<span class="s">&quot;name&quot;</span>),
-  )
-</code></pre></div>
-
-<h2 id="ng5">NGケース５</h2>
-<p>共通クラスにおける__targle_args__等のオプション宣言は、@declared_attrを用いること
-そうでない場合、ORMが意図を正しく解釈しない。</p>
-<div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="n">CommonTable</span><span class="p">:</span>
-  <span class="n">id</span> <span class="o">=</span> <span class="n">sa</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">sa</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">primary_key</span><span class="o">=</span><span class="n">True</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">True</span><span class="p">)</span>
-  <span class="n">name</span> <span class="o">=</span> <span class="n">sa</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">sa</span><span class="o">.</span><span class="n">String</span><span class="p">(</span><span class="mi">255</span><span class="p">),</span> <span class="n">nullable</span><span class="o">=</span><span class="n">False</span><span class="p">)</span>
-  <span class="n">__table_args__</span> <span class="o">=</span> <span class="p">(</span>
-    <span class="n">sa</span><span class="o">.</span><span class="n">UniqueConstraint</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">),</span>
-  <span class="p">)</span>
-
-<span class="k">class</span> <span class="n">Table1</span><span class="p">(</span><span class="n">CommonBase</span><span class="p">,</span> <span class="n">Base</span><span class="p">):</span>
-  <span class="n">__tablename__</span> <span class="o">=</span> <span class="s2">&quot;table1&quot;</span>
-
-<span class="k">class</span> <span class="n">Table2</span><span class="p">(</span><span class="n">CommonBase</span><span class="p">,</span> <span class="n">Base</span><span class="p">):</span>
-  <span class="n">__tablename__</span> <span class="o">=</span> <span class="s2">&quot;table2&quot;</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">tqdm</span> <span class="kn">import</span> <span class="n">tqdm</span>
+<span class="kn">from</span> <span class="nn">concurrent.futures</span> <span class="kn">import</span> <span class="n">ThreadPoolExecutor</span>
+<span class="kn">import</span> <span class="nn">time</span>
 
 
-<span class="c1"># alembicによるオートマイグレーションでは同じテーブルに制約をつけようとしている</span>
-<span class="n">def</span> <span class="n">upgrade</span><span class="p">():</span>
-  <span class="c1"># ### commands auto generated by Alembic - please adjust! ###</span>
-  <span class="n">op</span><span class="o">.</span><span class="n">create_unique_constraint</span><span class="p">(</span><span class="n">None</span><span class="p">,</span> <span class="s1">&#39;table2&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">])</span>
-  <span class="n">op</span><span class="o">.</span><span class="n">create_unique_constraint</span><span class="p">(</span><span class="n">None</span><span class="p">,</span> <span class="s1">&#39;table2&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">])</span>
-</code></pre></div>
+<span class="k">def</span> <span class="nf">func1</span><span class="p">():</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">),</span> <span class="n">position</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 
-<h1 id="_6">ミックスインによる共通化</h1>
-<p>プレーンな抽象宣言クラスとBaseをミックスインする。</p>
-<h2 id="1">方法１</h2>
-<div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="n">Common:</span>
-  <span class="nb">id</span> = <span class="n">sa</span>.<span class="n">Column</span>(<span class="n">sa</span>.<span class="n">Integer</span>, <span class="n">primary_key</span>=<span class="nb">True</span>, <span class="nb">index</span>=<span class="nb">True</span>)
-  <span class="nb">name</span> = <span class="n">sa</span>.<span class="n">Column</span>(<span class="n">sa</span>.<span class="n">String</span>(<span class="mi">255</span>), <span class="n">nullable</span>=<span class="nb">False</span>)
 
-  <span class="n">__table_args__</span> = (
-    <span class="n">sa</span>.<span class="n">UniqueConstraint</span>(<span class="s">&quot;name&quot;</span>, <span class="nb">name</span>=<span class="s">&quot;uix_name&quot;</span>),
-  )
+<span class="k">def</span> <span class="nf">func2</span><span class="p">():</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">20</span><span class="p">),</span> <span class="n">position</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 
-<span class="k">class</span> <span class="n">MyTable</span>(<span class="n">Common</span>, <span class="n">Base</span>):
-  <span class="n">__tablename__</span> = <span class="s">&quot;mytable&quot;</span>
-</code></pre></div>
 
-<h2 id="2">方法２</h2>
-<div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="n">CommonBase:</span>
-  <span class="nb">id</span> = <span class="n">sa</span>.<span class="n">Column</span>(<span class="n">sa</span>.<span class="n">Integer</span>, <span class="n">primary_key</span>=<span class="nb">True</span>, <span class="nb">index</span>=<span class="nb">True</span>)
-  <span class="nb">name</span> = <span class="n">sa</span>.<span class="n">Column</span>(<span class="n">sa</span>.<span class="n">String</span>(<span class="mi">255</span>), <span class="n">nullable</span>=<span class="nb">False</span>)
-
-<span class="k">class</span> <span class="n">MyTable</span>(<span class="n">CommonBase</span>, <span class="n">Base</span>):
-  <span class="n">__tablename__</span> = <span class="s">&quot;mytable&quot;</span>
-</code></pre></div>
-
-<h1 id="base">Baseクラス拡張による共通化</h1>
-<div class="highlight"><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nl">Base</span><span class="p">:</span><span class="w"></span>
-<span class="w">    </span><span class="nv">@declared_attr</span><span class="w"></span>
-<span class="w">    </span><span class="n">def</span><span class="w"> </span><span class="n">__tablename__</span><span class="p">(</span><span class="n">cls</span><span class="p">)</span><span class="err">:</span><span class="w"></span>
-<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">cls</span><span class="p">.</span><span class="n">__name__</span><span class="p">.</span><span class="nf">lower</span><span class="p">()</span><span class="w"></span>
-
-<span class="w">    </span><span class="n">__table_args__</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="err">{}</span><span class="w"></span>
-
-<span class="w">    </span><span class="n">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">Column</span><span class="p">(</span><span class="k">Integer</span><span class="p">,</span><span class="w"> </span><span class="n">primary_key</span><span class="o">=</span><span class="k">True</span><span class="p">)</span><span class="w"></span>
-
-<span class="n">Base</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">declarative_base</span><span class="p">(</span><span class="n">cls</span><span class="o">=</span><span class="n">Base</span><span class="p">)</span><span class="w"></span>
+<span class="k">with</span> <span class="n">ThreadPoolExecutor</span><span class="p">(</span><span class="n">max_workers</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span> <span class="k">as</span> <span class="n">th</span><span class="p">:</span>
+    <span class="n">r1</span> <span class="o">=</span> <span class="n">th</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span><span class="n">func1</span><span class="p">)</span>
+    <span class="n">r2</span> <span class="o">=</span> <span class="n">th</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span><span class="n">func2</span><span class="p">)</span>
 </code></pre></div>
                 
                   
@@ -642,7 +510,7 @@ Baseを継承した際は、__tablename__を設定し、具象化する必要が
     <nav class="md-footer__inner md-grid" aria-label="フッター">
       
         
-        <a href="../python-004-pycharmdocker/" class="md-footer__link md-footer__link--prev" aria-label="前: 記事05" rel="prev">
+        <a href="../python-008-exceptions/" class="md-footer__link md-footer__link--prev" aria-label="前: 記事08" rel="prev">
           <div class="md-footer__button md-icon">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
           </div>
@@ -651,20 +519,20 @@ Baseを継承した際は、__tablename__を設定し、具象化する必要が
               <span class="md-footer__direction">
                 前
               </span>
-              記事05
+              記事08
             </div>
           </div>
         </a>
       
       
         
-        <a href="../python-007-logging/" class="md-footer__link md-footer__link--next" aria-label="次: 記事07" rel="next">
+        <a href="../security-001-oauth2/" class="md-footer__link md-footer__link--next" aria-label="次: 記事10" rel="next">
           <div class="md-footer__title">
             <div class="md-ellipsis">
               <span class="md-footer__direction">
                 次
               </span>
-              記事07
+              記事10
             </div>
           </div>
           <div class="md-footer__button md-icon">

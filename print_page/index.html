@@ -335,6 +335,21 @@
   
   
     <li class="md-nav__item">
+      <a href="../python-007-logging/" class="md-nav__link">
+        記事07
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../python-008-exceptions/" class="md-nav__link">
         記事08
       </a>
@@ -350,8 +365,23 @@
   
   
     <li class="md-nav__item">
-      <a href="../security-001-oauth2/" class="md-nav__link">
+      <a href="../python-009-ideas/" class="md-nav__link">
         記事09
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../security-001-oauth2/" class="md-nav__link">
+        記事10
       </a>
     </li>
   
@@ -1362,7 +1392,256 @@ Baseを継承した際は、__tablename__を設定し、具象化する必要が
 <span class="w">    </span><span class="n">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">Column</span><span class="p">(</span><span class="k">Integer</span><span class="p">,</span><span class="w"> </span><span class="n">primary_key</span><span class="o">=</span><span class="k">True</span><span class="p">)</span><span class="w"></span>
 
 <span class="n">Base</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">declarative_base</span><span class="p">(</span><span class="n">cls</span><span class="o">=</span><span class="n">Base</span><span class="p">)</span><span class="w"></span>
-</code></pre></div></section><section class="print-page" id="python-008-exceptions"><h1 id="python-008-exceptions-_1">例外処理</h1>
+</code></pre></div></section><section class="print-page" id="python-007-logging"><h1 id="python-007-logging-_1">概要</h1>
+<p>Pythonの<code>logging</code>モジュールは、アプリケーションの開発や運用において、アプリケーションの状態を知るための非常に便利なモジュールです。
+一方で、<code>logging</code>モジュールは挙動に癖があり、使いこなすのが少し難しい側面があります。</p>
+<p>この記事では、<code>logging</code>モジュールの基礎教養とセットアップ方法や癖を紹介します。</p>
+<h1 id="python-007-logging-_2">公式ドキュメント</h1>
+<p>最新の仕様や、より正確な仕様の理解には、公式ドキュメントを参照ください。</p>
+<p>https://docs.python.org/ja/3/library/logging.html</p>
+<h1 id="python-007-logging-_3">癖</h1>
+<p><code>logging</code>モジュールを使用する上で、癖を理解する必要があります。
+<code>logging</code>モジュール初学者の方は、この章は読み飛ばして、理解が深まったところで戻ってきてください。</p>
+<p>まず、以下のコードをご覧ください。</p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">from</span> <span class="nn">logging</span> <span class="kn">import</span> <span class="n">getLogger</span><span class="p">,</span> <span class="n">StreamHandler</span><span class="p">,</span> <span class="n">Formatter</span>
+
+<span class="c1"># セットアップ</span>
+<span class="n">formatter</span> <span class="o">=</span> <span class="n">Formatter</span><span class="p">(</span>
+    <span class="s2">&quot;</span><span class="si">%(asctime)s</span><span class="s2"> </span><span class="si">%(name)s</span><span class="s2"> </span><span class="si">%(levelname)s</span><span class="s2"> </span><span class="si">%(filename)s</span><span class="s2">:</span><span class="si">%(lineno)s</span><span class="s2"> </span><span class="si">%(message)s</span><span class="s2">&quot;</span><span class="p">,</span>
+    <span class="n">datefmt</span><span class="o">=</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2"> %H:%M:%S&quot;</span>
+<span class="p">)</span>
+
+<span class="n">sh</span> <span class="o">=</span> <span class="n">StreamHandler</span><span class="p">()</span>
+<span class="n">sh</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">)</span>
+<span class="n">sh</span><span class="o">.</span><span class="n">setFormatter</span><span class="p">(</span><span class="n">formatter</span><span class="p">)</span>
+
+<span class="n">mylogger</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;mylogger&quot;</span><span class="p">)</span>
+<span class="n">mylogger</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">)</span>
+<span class="n">mylogger</span><span class="o">.</span><span class="n">addHandler</span><span class="p">(</span><span class="n">sh</span><span class="p">)</span>
+
+
+<span class="c1"># 動作検証</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">getLevelName</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">level</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">handlers</span><span class="p">)</span>
+<span class="n">mylogger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;hello 1&quot;</span><span class="p">)</span>
+<span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;hello 2&quot;</span><span class="p">)</span>
+<span class="n">mylogger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;hello 3&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">handlers</span><span class="p">)</span>
+</code></pre></div>
+
+<p>実行結果は次のようになります。</p>
+<div class="highlight"><pre><span></span><code>WARNING
+[]
+2023-03-22 01:07:51 mylogger INFO aaa.py:20 hello 1
+2023-03-22 01:07:51 mylogger INFO aaa.py:22 hello 3
+INFO:mylogger:hello 3
+[&lt;StreamHandler &lt;stderr&gt; (NOTSET)&gt;]
+</code></pre></div>
+
+<h2 id="python-007-logging-_4">簡単な概念</h2>
+<ul>
+<li>ロガー（<code>getLogger("mylogger")</code>）: ログを出力するための任意の名前を持つオブジェクト</li>
+<li>ルートロガー（<code>logging.root</code>）: 全ての親となるロガー。</li>
+<li>ハンドラー群（<code>logging.root.handlers</code>）: ロガーは、複数のハンドラーを持つ</li>
+<li>ハンドラー（<code>StreamHandler</code>）: ディスクリプタ（標準出力やファイル）にメッセージを出力する。StreamHandlerは、標準出力にメッセージを出力するハンドラー</li>
+<li>フォーマッタ（<code>Formatter（...）</code>）: どのようにメッセージを出力するか形式を決める</li>
+<li>ログレベル（<code>logging.INFO</code>）: ログのレベル。<code>INFO</code>や<code>WARNING</code>などにログを分類するためのもの。ハンドラーは、ハンドラー自身に設定されたログレベル以上のログを出力する</li>
+<li>出力（<code>mylogger.info</code>など）: ログレベルとメッセージをハンドラーに渡す</li>
+</ul>
+<p>ちなみに、ルートロガーは<code>logging.root</code>、あるいは、<code>logging.getLogger()</code>で取得します。</p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">logging</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">root</span> <span class="ow">is</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">root</span> <span class="ow">is</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;root&quot;</span><span class="p">))</span>  <span class="c1"># root という名前で取得したロガーはルートロガーではない</span>
+
+<span class="c1"># True</span>
+<span class="c1"># False</span>
+</code></pre></div>
+
+<h2 id="python-007-logging-_5">実行結果における違和感</h2>
+<p>おそらく、実行結果に次の違和感を覚えたのではないでしょうか？</p>
+<ol>
+<li>なぜ、<code>logging.root.handlers</code>の状態が変わっているのだろうか</li>
+<li>なぜ、<code>"hello 3"</code>が２回出力されるのだろうか</li>
+</ol>
+<p>違和感 1. は、<code>logging.info("hello 2")</code>が関係しています。</p>
+<p><a href="https://github.com/python/cpython/blob/3.11/Lib/logging/__init__.py#L2140">cpython</a> で、次のようにコードが書かれています。</p>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">info</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">root</span><span class="o">.</span><span class="n">handlers</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">basicConfig</span><span class="p">()</span>
+    <span class="n">root</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</code></pre></div>
+
+<p><code>logging</code>モジュールは、シングルトンでルートロガーを持ち、<code>logging.info</code>などを呼び出した際に、ハンドラーが未設定な場合、<code>basicConfig</code>（明示的に引数を指定しない場合はデフォルトハンドラーとデフォルトフォーマッタが適用されます）が呼び出されます。
+これにより、デフォルトハンドラー（<code>&lt;StreamHandler &lt;stderr&gt; (NOTSET)&gt;</code>）が設定され、ルートロガーの状態が変わります。</p>
+<p><code>logging.info</code>は使うな！！！!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+NullHandlerとかロガーを明示的に指定しておけ！！！
+root_logger = logging.getLogger()</p>
+<p>違和感 2. は、ロガーは親子関係を持つことと、ハンドラーのログレベルが関係しています。</p>
+<p>全てのロガーは、ルートロガーの子となり、子ロガーに与えたログはルートロガーに伝搬し、次のような結果となります。</p>
+<ul>
+<li><code>2023-03-22 01:07:51 mylogger INFO aaa.py:22 hello 3</code>: <code>mylogger</code>のハンドラから出力されたログ</li>
+<li><code>INFO:mylogger:hello 3</code>: <code>mylogger</code>のログがルートロガーへ伝搬され、ルートロガーのハンドラから出力されたログ</li>
+</ul>
+<p>公式ドキュメントでは、次のように述べられています。</p>
+<p>https://docs.python.org/ja/3.11/howto/logging.html#logging-levels</p>
+<blockquote>
+<p>ロガーに直接関連付けられたハンドラに加えて、ロガーの上位にあるロガーすべてに関連付けられたハンドラ がメッセージを処理する際に呼び出されます (ただしロガーの propagate フラグが false 値にセットされている場合を除きます。その場合は、祖先ハンドラへの伝搬はそこで止まります)。</p>
+</blockquote>
+<p>この部分を次のコードで確認してみましょう。</p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">logging</span>
+
+<span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">WARNING</span><span class="p">)</span>
+
+<span class="n">root</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">()</span>
+
+<span class="n">sh</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">StreamHandler</span><span class="p">()</span>
+<span class="n">sh</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">)</span>
+
+<span class="n">child</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;child&quot;</span><span class="p">)</span>
+<span class="n">child</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">)</span>
+<span class="n">child</span><span class="o">.</span><span class="n">addHandler</span><span class="p">(</span><span class="n">sh</span><span class="p">)</span>
+
+
+<span class="n">root</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">)</span>
+<span class="c1"># INFO:child:a</span>
+
+<span class="n">root</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;b&quot;</span><span class="p">)</span>
+<span class="c1"># 何も出力されない</span>
+
+<span class="n">child</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;c&quot;</span><span class="p">)</span>
+<span class="c1"># c</span>
+<span class="c1"># INFO:child:c</span>
+
+<span class="n">child</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;d&quot;</span><span class="p">)</span>
+<span class="c1"># d</span>
+<span class="c1"># INFO:child:d</span>
+
+<span class="n">child</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;e&quot;</span><span class="p">)</span>
+<span class="c1"># 何も出力されない</span>
+</code></pre></div>
+
+<p><code>WARNING</code>レベルのルートロガーと、<code>INFO</code>レベルの<code>child</code>ロガーを作成し、ログの出力を確認しました。</p>
+<p><code>child.info("d")</code>の部分に違和感を感じませんか？</p>
+<p><code>child</code>ロガーは<code>INFO</code>レベルですが、<code>root</code>ロガーは<code>WARNING</code>レベルです。
+ですので、<code>root</code>ロガーに<code>INFO</code>レベルのログが伝搬されても、そのログは無視されるように思えませんか？</p>
+<p>答えは、<code>root</code>ハンドラーのログレベルにあります。</p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">logging</span>
+
+<span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">WARNING</span><span class="p">)</span>
+
+<span class="n">root</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">root</span><span class="o">.</span><span class="n">handlers</span><span class="p">)</span>
+<span class="c1"># [&lt;StreamHandler &lt;stderr&gt; (NOTSET)&gt;]</span>
+</code></pre></div>
+
+<p>明示的に、デフォルトハンドラーのログレベルを設定しない場合、<code>NOTSET</code>（全てのログを出力する）となります。</p>
+<p>また、</p>
+<blockquote>
+<p>ロガーの上位にあるロガーすべてに関連付けられたハンドラ がメッセージを処理する際に呼び出されます</p>
+</blockquote>
+<p>ことから、ロガー自身のレベルでなく、ハンドラーのレベルが参照されるため、このような挙動になるわけです。</p>
+<p>私は、ルートロガーが嫌いなので、<code>NullHandler</code>（全てのログを無視するハンドラー）を使用して、次のようにして無効化しています。</p>
+<p><code>logging.basicConfig(handlers=[logging.NullHandler()])</code></p>
+<p>ルートロガーを使用する場合は、<code>basicConfig</code>などの挙動に注意しましょう。</p>
+<p>ちなみに、次のようにすると親ロガーへの伝搬を無効化できます（私は使用しませんが）。</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">logging</span> <span class="kn">import</span> <span class="n">getLogger</span>
+
+<span class="n">child</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;child&quot;</span><span class="p">)</span>
+<span class="n">child</span><span class="o">.</span><span class="n">propagate</span> <span class="o">=</span> <span class="kc">False</span>
+</code></pre></div>
+
+<h1 id="python-007-logging-_6">基礎</h1>
+<h2 id="python-007-logging-_7">ログレベル</h2>
+<table>
+<thead>
+<tr>
+<th>レベル名</th>
+<th>数値</th>
+<th>備考</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>CRITICAL</td>
+<td>50</td>
+<td>致命的なエラーログ</td>
+</tr>
+<tr>
+<td>ERROR</td>
+<td>40</td>
+<td>エラーログ</td>
+</tr>
+<tr>
+<td>WARNING</td>
+<td>30</td>
+<td>警告</td>
+</tr>
+<tr>
+<td>INFO</td>
+<td>20</td>
+<td>情報ログ</td>
+</tr>
+<tr>
+<td>DEBUG</td>
+<td>10</td>
+<td>デバッグログ</td>
+</tr>
+<tr>
+<td>NOTSET</td>
+<td>0</td>
+<td>基本的に使用しない</td>
+</tr>
+</tbody>
+</table>
+<p>表示されるレベル名は次のようにカスタマイズ可能です。</p>
+<div class="highlight"><pre><span></span><code><span class="k">for</span> <span class="n">level</span><span class="p">,</span> <span class="n">name</span> <span class="ow">in</span> <span class="p">{</span><span class="n">logging</span><span class="o">.</span><span class="n">CRITICAL</span><span class="p">:</span> <span class="s2">&quot;FATAL&quot;</span><span class="p">,</span> <span class="n">logging</span><span class="o">.</span><span class="n">WARNING</span><span class="p">:</span> <span class="s2">&quot;WARN&quot;</span><span class="p">}</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">addLevelName</span><span class="p">(</span><span class="n">level</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+</code></pre></div>
+
+<h2 id="python-007-logging-_8">ロガー</h2>
+<h2 id="python-007-logging-_9">フォーマッタ</h2>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">logging</span>
+
+<span class="n">fmt</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">Formatter</span><span class="p">(</span>
+    <span class="s2">&quot;</span><span class="si">%(asctime)s</span><span class="s2"> </span><span class="si">%(levelname).5s</span><span class="s2"> </span><span class="si">%(name)s</span><span class="s2">  </span><span class="si">%(filename)s</span><span class="s2">:</span><span class="si">%(lineno)s</span><span class="s2"> </span><span class="si">%(message)s</span><span class="s2">&quot;</span><span class="p">,</span>
+    <span class="n">datefmt</span><span class="o">=</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2"> %H:%M:%S&quot;</span>
+<span class="p">)</span>
+
+<span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span><span class="nb">format</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">%(asctime)s</span><span class="s2"> </span><span class="si">%(levelname).5s</span><span class="s2"> </span><span class="si">%(name)s</span><span class="s2"> </span><span class="si">%(filename)s</span><span class="s2">:</span><span class="si">%(lineno)s</span><span class="s2"> </span><span class="si">%(message)s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">datefmt</span><span class="o">=</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2"> %H:%M:%S&quot;</span><span class="p">)</span>
+</code></pre></div>
+
+<h2 id="python-007-logging-_10">ハンドラー</h2>
+<p>https://docs.python.org/ja/3.11/howto/logging.html#useful-handlers</p>
+<h2 id="python-007-logging-_11">フィルター</h2>
+<p>人類には早いので使わない。</p>
+<h1 id="python-007-logging-_12">高度なロギング</h1>
+<h2 id="python-007-logging-_13">同期・非同期化でのロギング</h2>
+<h2 id="python-007-logging-_14">マルチプロセス化でのロギング</h2>
+<h1 id="python-007-logging-_15">まとめ</h1>
+<p>ロガーは、次の挙動に気をつけて使用する。</p>
+<ul>
+<li>ルートロガーのハンドラー設定されていない場合、ルートロガーのハンドラーが初期化（<code>basicConfig</code>が実行）されることがある</li>
+<li>ロガーのデフォルトログレベルは<code>WARNING</code></li>
+<li>ハンドラーのデフォルトログレベルは<code>NOTSET</code></li>
+<li>ロガーは、自信に関連付けられた全てのハンドラーを呼び出す</li>
+<li>ハンドラーは、上位のロガーに関連付けられた全てのハンドラーを呼び出す</li>
+<li><code>basicConfig</code> は ルートロガーにハンドラーが設定されていれば、何もしない（<code>force</code>オプションで強制的に適用可能）</li>
+<li>ライブラリ開発者は、ルートロガーを使用しないでください。</li>
+<li>ライブラリ開発者がユーザーに警告をしたい場合は、<code>warnings</code>モジュールを使用する。</li>
+</ul>
+<p>ルートロガーを無効化したい場合に次のようにする。</p>
+<div class="highlight"><pre><span></span><code><span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span><span class="n">handlers</span><span class="o">=</span><span class="p">[</span><span class="n">logging</span><span class="o">.</span><span class="n">NullHandler</span><span class="p">()])</span>
+</code></pre></div>
+
+<h1 id="python-007-logging-_16">その他ロギングに関するライブラリやモジュールの紹介</h1>
+<ul>
+<li><code>warnings</code></li>
+<li><code>logure</code></li>
+<li><code>sentry</code></li>
+<li><code>tqdm</code></li>
+</ul></section><section class="print-page" id="python-008-exceptions"><h1 id="python-008-exceptions-_1">例外処理</h1>
 <h1 id="python-008-exceptions-raise">エラーをキャッチしてそのままraiseしたい</h1>
 <p>次のように、例外を捕捉後に任意の処理を挟んで同じ例外を発生させることができる。</p>
 <div class="highlight"><pre><span></span><code><span class="k">try</span><span class="p">:</span>
@@ -1408,6 +1687,34 @@ Baseを継承した際は、__tablename__を設定し、具象化する必要が
     <span class="k">raise</span> <span class="ne">Exception</span><span class="p">()</span>
 <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">())</span>
+</code></pre></div></section><section class="print-page" id="python-009-ideas"><h1 id="python-009-ideas-_1">コンソールに進捗を表示する</h1>
+<p>ファイル送受信など重たい処理などで、「どこまで処理が進んでいるか」「どれくらい時間がかかった」などが分かると親切です。</p>
+<p>ここでは、それをコンソールに表示する方法を紹介します。</p>
+<!-- :::message
+これから紹介する方法は実行環境により上手く表示されないことがあります
+
+- thread/multiprocess/eventloop上での実行
+
+::: -->
+
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">tqdm</span> <span class="kn">import</span> <span class="n">tqdm</span>
+<span class="kn">from</span> <span class="nn">concurrent.futures</span> <span class="kn">import</span> <span class="n">ThreadPoolExecutor</span>
+<span class="kn">import</span> <span class="nn">time</span>
+
+
+<span class="k">def</span> <span class="nf">func1</span><span class="p">():</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">),</span> <span class="n">position</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">func2</span><span class="p">():</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">20</span><span class="p">),</span> <span class="n">position</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+
+<span class="k">with</span> <span class="n">ThreadPoolExecutor</span><span class="p">(</span><span class="n">max_workers</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span> <span class="k">as</span> <span class="n">th</span><span class="p">:</span>
+    <span class="n">r1</span> <span class="o">=</span> <span class="n">th</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span><span class="n">func1</span><span class="p">)</span>
+    <span class="n">r2</span> <span class="o">=</span> <span class="n">th</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span><span class="n">func2</span><span class="p">)</span>
 </code></pre></div></section><section class="print-page" id="security-001-oauth2"><h1 id="security-001-oauth2-oauth2">OAuth2</h1>
 <p>RFF6750に登録されている認証スキームである。
 OAuthは、認可サーバがクライアントに対し発行するアクセストークン（アクセス認可の文字列）を用いることで、保護リソースへのアクセスを許可する。アクセストークンは、リソース所有者の直接的なクレデンシャルを共有するものではない。</p>
