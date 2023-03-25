@@ -62,6 +62,26 @@ fmt = logging.Formatter(
 logging.basicConfig(format="%(asctime)s %(levelname).5s %(name)s %(filename)s:%(lineno)s %(message)s", datefmt="%Y-%m-%d %H:%M:%S")
 ```
 
+
+https://docs.python.org/ja/3/library/stdtypes.html#old-string-formatting
+
+
+
+filename	# 出力先ファイル名
+filemode	# ファイル出力モード。(デフォルト:filemode='a')
+stream		# 出力先ストリーム。(デフォルト:stream=sys.stderr)
+format		# 出力フォーマット。(詳細)(デフォルト:format='%(levelname)s:%(name)s:%(message)s')
+datefmt		# 日付フォーマット
+level		# 出力レベル。(デフォルト:level=logging.WARNING)
+style		# フォーマットスタイル。(デフォルト: style='%')
+handlers	# 出力ハンドラリスト。
+force		# force=Trueを指定すると利用前に全ハンドラが一度クローズされる。
+encoding	# エンコーディングルール。encoding='utf-8'など
+errors		# エンコードに失敗した場合のふるまい。(詳細)
+
+
+
+
 ## ハンドラー
 
 https://docs.python.org/ja/3.11/howto/logging.html#useful-handlers
@@ -274,7 +294,26 @@ child.propagate = False
 ```
 
 
-# `warnings`の使用
+## ログを出力するよ～
+
+
+# ケース別
+
+## スタックトレースを出力する
+
+例外発生時にスタックトレースも出力する。
+
+`logging.exception("...")`
+
+例外は発生していないが、トレース情報を出力したい場合。
+
+`logging.error("...", stack_info=True)`
+
+
+## 警告を出力する
+
+
+### `warnings`の使用
 
 `warnings`モジュールは、警告を出力するためのPython標準モジュールです。
 
@@ -288,7 +327,7 @@ https://docs.python.org/ja/3/library/warnings.html
 例えば、アプリケーション内部で使用している将来的に廃止される非推奨な関数が呼び出された場合に、警告レベルを開発者のみに通知したい場合などです。
 
 
-## 使用方法
+#### 使用方法
 
 `warnings`モジュールは、次のように使用します。
 
@@ -307,7 +346,7 @@ logging.captureWarnings(True)
 ```
 
 
-## 警告カテゴリ
+##### 警告カテゴリ
 
 警告は、カテゴリに分類することができます。
 
@@ -330,7 +369,7 @@ warngins.warn("deprecated", DeprecationWarning)
 パッケージを提供する開発者は、カテゴリを適切に使用した方がいいかもしれませんが、多くの場合はデフォルトのカテゴリで十分です。
 
 
-## 警告フィルタ
+#### 警告フィルタ
 
 警告が気になる場合、警告フィルタを使用し、警告の出力を制御することができます。
 
@@ -350,8 +389,10 @@ warngins.warn("deprecated", DeprecationWarning)
 warnings.filterwarnings('ignore')
 ```
 
+## 進捗をコンソール上に可視化する
 
-# `tqdm`の使用
+
+### `tqdm`の使用
 
 `tqdm`は、進捗をコンソール上に可視化したい時に使います。
 
@@ -359,7 +400,7 @@ warnings.filterwarnings('ignore')
 
 https://tqdm.github.io/
 
-## インストール
+#### インストール
 
 `tqdm`は、次のようにインストールします。
 
@@ -367,10 +408,10 @@ https://tqdm.github.io/
 pip install tqdm
 ```
 
-## 使用方法
+#### 使用方法
 
 
-# `progressbar2`の使用
+### `progressbar2`の使用
 
 `progressbar2`は、進捗をコンソール上に可視化したい時に使います。
 
@@ -382,7 +423,7 @@ pip install tqdm
 https://progressbar-2.readthedocs.io/en/latest/
 
 
-## インストール
+#### インストール
 
 `progressbar2`は、次のようにインストールします。
 
@@ -390,11 +431,13 @@ https://progressbar-2.readthedocs.io/en/latest/
 pip install progressbar2
 ```
 
-## 使用方法
+#### 使用方法
 
 
+## ログを収集・監視する
 
-# `sentry`の使用
+
+### `sentry`の使用
 
 `sentry` は、OSSのログ収集・監視ツールです。
 
@@ -402,16 +445,13 @@ pip install progressbar2
 
 https://docs.sentry.io/platforms/python/
 
-## インストール
+#### インストール
 
 
 
+### 同期・非同期化でロギングする
 
-# 高度なロギング
-
-## 同期・非同期化でのロギング
-
-## マルチプロセス化でのロギング
+### マルチプロセス化でロギングする
 
 
 
