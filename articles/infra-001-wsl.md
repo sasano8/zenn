@@ -489,7 +489,9 @@ powershellを管理者権限で起動し、windows上の`vhd*`ファイルを検
 
 ```
 cd $HOME\..\..  # ドライブルートに移動
-Get-ChildItem -Recurse -Force -ErrorAction SilentlyContinue -Filter "*.vhdx" | select FullName, length, LastWriteTime
-optimize-vhd -Mode full -Path <path>
+Get-ChildItem -Recurse -Force -ErrorAction SilentlyContinue -Filter "*.vhdx" | ForEach-Object { 
+  Write-Output "Optimizing: $($_.FullName) Size: $($_.length)"
+  optimize-vhd -Mode full -Path $_.FullName
+}
 ```
 
