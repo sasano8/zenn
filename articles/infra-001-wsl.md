@@ -106,6 +106,7 @@ resolv.conf を設定する。
 
 ```
 echo "nameserver 8.8.8.8" | sudo tee /etc/resolv.conf
+sudo chattr +i /etc/resolv.conf  # systemd-resolved による上書きを防ぐ
 ```
 
 # KVM仮想化の確認
