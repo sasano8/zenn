@@ -70,8 +70,9 @@ docker version
 docker run ubuntu:14.04 /bin/echo 'Hello world'
 ```
 
-# Systemdの有効化
+# WSL 環境の設定
 
+## Systemdの有効化
 
 ```
 sudo vi /etc/wsl.conf
@@ -83,6 +84,30 @@ systemd=true
 ```
 
 再起動する必要があるかも？？
+
+## resolv.conf の設定
+
+まず、resolv.conf ファイルを確認する。
+
+```
+ll /etc/resolv.conf
+# /etc/resolv.conf -> ../run/systemd/resolve/stub-resolv.conf
+```
+
+エイリアスが張られている場合はファイルを削除する。
+エイリアスは、systemd-resolved によるもの。
+WSL は、/etc や /home 配下のディレクトリは永続的に保持されるが、/runs 配下は保持されない。
+
+```
+sudo rm /etc/resolv.conf
+```
+
+resolv.conf を設定する。
+
+```
+echo "nameserver 8.8.8.8" | sudo tee /etc/resolv.conf
+```
+
 
 
 # Systemdの有効化（systemd-genieバージョン）※いずれ消す
