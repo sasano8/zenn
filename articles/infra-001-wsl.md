@@ -362,50 +362,12 @@ Ubuntu 22.04のセットアップ からやり直す。
 
 
 
-# pyenvのインストール
+# uv のインストール
 
-https://github.com/pyenv/pyenv/wiki#suggested-build-environment を参考に前提パッケージをインストール。
+次のリンクを参考に uv をインストールする。
 
-```
-sudo apt-get update; sudo apt-get install make build-essential libssl-dev zlib1g-dev \
-libbz2-dev libreadline-dev libsqlite3-dev wget curl llvm \
-libncursesw5-dev xz-utils tk-dev libxml2-dev libxmlsec1-dev libffi-dev liblzma-dev
-```
+https://docs.astral.sh/uv/getting-started/installation/
 
-https://github.com/pyenv/pyenv を参考にpyenvをインストール。
-
-```
-git clone https://github.com/pyenv/pyenv.git ~/.pyenv
-cd ~/.pyenv && src/configure && make -C src
-```
-
-```
-echo 'export PYENV_ROOT="$HOME/.pyenv"' >> ~/.bashrc
-echo 'command -v pyenv >/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"' >> ~/.bashrc
-echo 'eval "$(pyenv init -)"' >> ~/.bashrc
-```
-
-任意のpythonをインストール。
-
-```
-pyenv install 3.8.6
-```
-
-
-# poetryのインストール
-
-https://python-poetry.org/docs/ を参考にインストール。
-
-```
-curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python -
-```
-
-シェルを再起動し次のコマンドを実行。
-
-```
-poetry config virtualenvs.create true
-poetry config virtualenvs.in-project true
-```
 
 # 新しいWindowsを買ったらやること
 
